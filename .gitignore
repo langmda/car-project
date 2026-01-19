@@ -1,0 +1,30 @@
+# STM32CubeIDE 临时文件
+Debug/
+Release/
+*.launch
+*.tmp
+*.bak
+*.swp
+.DS_Store
+
+# Keil 临时文件
+MDK-ARM/Objects/
+MDK-ARM/Listings/
+MDK-ARM/*.axf
+MDK-ARM/*.elf
+MDK-ARM/*.hex
+MDK-ARM/*.bak
+MDK-ARM/*.lnp
+MDK-ARM/*.opt
+MDK-ARM/*.uvguix.*
+
+# IAR 临时文件
+EWARM/Debug/
+EWARM/Release/
+EWARM/*.dep
+EWARM/*.ewd
+EWARM/*.eww
+
+# CubeMX 临时生成文件（非核心配置）
+Core/Startup/.*
+*.cache
