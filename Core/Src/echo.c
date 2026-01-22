@@ -34,7 +34,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         encoder_counter++;      //记录更新中断的次数，用于实现1s的更新中断
         if(encoder_counter >= 50) // 每过1s就读取传感器数据并发送，并计算车速
         {
-            //Sensor_Read_And_Transmit(); //读取传感器数据并发送
+            read_and_transmit = 1;
             encoder_counter = 0;
         }
     }

@@ -4,6 +4,7 @@
 #include "echo.h"
 #include "uart.h"
 #include "usart.h"
+#include "sensor.h"
 
 //命令
 #define STOP        0X00	//停止
@@ -18,31 +19,47 @@
 #define AUTOMATIC  0x01		//自主避障模式
 #define MANUAL     0x02		//手动操作模式
 
+#define CMD_TIMEOUT 500
+uint32_t last_cmd_time = 0;  // 最后一次收到指令的时间
+uint32_t cmd_start_time = 0;	//指令开始时间
+uint8_t current_cmd = STOP;  // 当前有效指令（默认停止）
+
 void User_Code()
 {
+	if (HAL_GetTick() - last_cmd_time > CMD_TIMEOUT)
+    {
+        current_cmd = STOP;  // 超时→停止
+    }
 	if (mode == MANUAL)
 	{
-		if (uart_rx_buffer[0] == STOP)            //停止
-			{Set_Motor(0, 0);	uart_rx_buffer[0] = 0x00;}
-		else if (uart_rx_buffer[0] == MOVE_FORWARD)    //前进
-			{Set_Motor(30, 30);	HAL_Delay(1000); uart_rx_buffer[0] = 0x00;}
-		else if (uart_rx_buffer[0] == BACK_OFF)   //后退
-			{Set_Motor(-30, -30); HAL_Delay(1000); uart_rx_buffer[0] = 0x00;}
-		else if (uart_rx_buffer[0] == TURN_LEFT)   //左转
-			{Set_Motor(-30, 30); HAL_Delay(1000); uart_rx_buffer[0] = 0x00;}
-		else if (uart_rx_buffer[0] == TURN_RIGHT)   //右转
-			{Set_Motor(30, -30); HAL_Delay(1000); uart_rx_buffer[0] = 0x00;}
-		/*HAL_UART_Transmit(&huart2, 	//UART硬件的句柄的地址
-						  uart_rx_buffer, 	 	//要发送的数据的地址
-						  sizeof(uart_rx_buffer),				//要发送的数据大小(字节)
-						  100);*/
+		switch(current_cmd)
+		{
+			case STOP:
+				Set_Motor(0, 0);
+				break;
+			case MOVE_FORWARD:
+				Set_Motor(30, 30);  // 持续前进（只要current_cmd是前进，就一直执行）
+				break;
+			case BACK_OFF:
+				Set_Motor(-30, -30);
+				break;
+			case TURN_LEFT:
+				Set_Motor(-30, 30);
+				break;
+			case TURN_RIGHT:
+				Set_Motor(30, -30);
+				break;
+			default:
+				Set_Motor(0, 0);
+				break;
+		}
 	}
 	else if(mode == AUTOMATIC)
 	{
 		//先检测正前方障碍物的距离
 		Set_Angle(90);
 		front_distance = Get_Median_Distance(3);
-		if(front_distance > 0 && front_distance < 60 || front_distance == 0)   //前方障碍物距离较近
+		if(front_distance > 0 && front_distance < 60)   //前方障碍物距离较近
 		{
 			Set_Motor(0, 0);
 			Get_Left_Right_Distance();
@@ -75,5 +92,9 @@ void User_Code()
 			//前进
 			Set_Motor(30, 30);
 		}
+	}
+	if(read_and_transmit == 1)
+	{
+		Sensor_Read_And_Transmit(); //读取传感器数据并发送
 	}
 }

@@ -22,4 +22,6 @@ typedef struct {
 void Encoder_Read(void);
 void Sensor_Read_And_Transmit(void);
 
+extern uint8_t read_and_transmit;
+
 #endif

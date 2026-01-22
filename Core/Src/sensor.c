@@ -7,6 +7,8 @@ RawData_t raw_data;
 
 uint32_t adc_buf[2];
 
+uint8_t read_and_transmit = 0;
+
 void Encoder_Read(void) {
 	// 读取原始脉冲数
 	raw_data.encoder_left_cnt = __HAL_TIM_GET_COUNTER(&htim2);

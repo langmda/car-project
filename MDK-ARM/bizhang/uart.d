@@ -32,3 +32,4 @@ bizhang\uart.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h
 bizhang\uart.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
 bizhang\uart.o: ../Core/Inc/usart.h
 bizhang\uart.o: ../Core/Inc/main.h
+bizhang\uart.o: ../Core/Inc/user.h
