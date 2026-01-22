@@ -32,3 +32,6 @@ bizhang\echo.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h
 bizhang\echo.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
 bizhang\echo.o: ../Core/Inc/tim.h
 bizhang\echo.o: ../Core/Inc/main.h
+bizhang\echo.o: ../Core/Inc/servo.h
+bizhang\echo.o: ../Core/Inc/motor.h
+bizhang\echo.o: ../Core/Inc/sensor.h

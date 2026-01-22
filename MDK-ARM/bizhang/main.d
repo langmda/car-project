@@ -35,3 +35,6 @@ bizhang\main.o: ../Core/Inc/tim.h
 bizhang\main.o: ../Core/Inc/usart.h
 bizhang\main.o: ../Core/Inc/gpio.h
 bizhang\main.o: ../Core/Inc/user.h
+bizhang\main.o: ../Core/Inc/uart.h
+bizhang\main.o: ../Core/Inc/Dht11.h
+bizhang\main.o: ../Core/Inc/sensor.h

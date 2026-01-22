@@ -33,3 +33,6 @@ bizhang\user.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
 bizhang\user.o: ../Core/Inc/motor.h
 bizhang\user.o: ../Core/Inc/servo.h
 bizhang\user.o: ../Core/Inc/echo.h
+bizhang\user.o: ../Core/Inc/uart.h
+bizhang\user.o: ../Core/Inc/usart.h
+bizhang\user.o: ../Core/Inc/main.h

@@ -1,5 +1,8 @@
 #include "echo.h"
 #include "tim.h"
+#include "servo.h"
+#include "motor.h"
+#include "sensor.h"
 
 uint32_t echo_start = 0;    // Echo上升沿的计数值（发出超声波）
 uint32_t echo_end = 0;      // Echo下降沿的计数值（超声波返回）
@@ -8,6 +11,10 @@ float distance = 0.0f;      // 最终测距结果（单位：cm）
 uint8_t capture_state = 0;  // 捕获状态：0=等待上升沿，1=等待下降沿
 uint8_t echo_measure_done = 0;		//全局标志位：标记测距完成
 uint8_t distance_lock = 0;		//对距离操作的状态锁
+float left_distance;		
+float right_distance;
+float front_distance;
+uint16_t encoder_counter = 0;	//用于舵机定时器的更新中断中（20ms），计数来实现1s读取一次编码器数据
 
 // 简易μs延时函数（基于系统时钟72MHz）
 void delay_us(uint32_t us)
@@ -17,12 +24,19 @@ void delay_us(uint32_t us)
     while(ticks--);
 }
 
-//更新中断函数，用于记录测距过程中计数器溢出次数，来计算距离
+//更新中断函数，用于记录测距过程中计数器溢出次数，来计算距离，并实现1s读取一次编码器数据
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
     if (htim->Instance == TIM1)
     {
-        tim1_overflow++; // 每溢出一次（20ms），计数+1
+        tim1_overflow++; // 记录测距过程中计数器溢出次数
+
+        encoder_counter++;      //记录更新中断的次数，用于实现1s的更新中断
+        if(encoder_counter >= 50) // 每过1s就读取传感器数据并发送，并计算车速
+        {
+            //Sensor_Read_And_Transmit(); //读取传感器数据并发送
+            encoder_counter = 0;
+        }
     }
 }
 
@@ -99,3 +113,68 @@ void Wait_Echo_Measure()
     }
 }
 
+// 多次测距并返回中位数（count：测距次数，建议奇数如3/5）
+float Get_Median_Distance(uint8_t count)
+{
+    float distances[count]; // 存储多次测距结果
+    uint8_t valid_cnt = 0;  // 有效数据计数
+    uint8_t i, j;
+    float temp;
+
+    // 1. 多次测距，收集有效数据
+    for(i = 0; i < count; i++)
+    {
+        Trig();
+        Wait_Echo_Measure();
+        while(distance_lock){}; // 等待解锁
+        
+        // 过滤无效值（超出量程）
+        if(distance > 2.0f && distance < 400.0f)
+        {
+            distances[valid_cnt++] = distance;
+        }
+        
+        HAL_Delay(60); // 两次测距间隔，避免声波干扰
+    }
+
+    // 2. 若无有效数据，返回0
+    if(valid_cnt == 0) return 0.0f;
+
+    // 3. 冒泡排序（升序）
+    for(i = 0; i < valid_cnt - 1; i++)
+    {
+        for(j = 0; j < valid_cnt - i - 1; j++)
+        {
+            if(distances[j] > distances[j+1])
+            {
+                temp = distances[j];
+                distances[j] = distances[j+1];
+                distances[j+1] = temp;
+            }
+        }
+    }
+
+    // 4. 返回中位数（奇数个取中间，偶数个取中间两个平均）
+    if(valid_cnt % 2 == 1)
+    {
+        return distances[valid_cnt / 2];
+    }
+    else
+    {
+        return (distances[valid_cnt/2 - 1] + distances[valid_cnt/2]) / 2.0f;
+    }
+}
+
+//获取左右障碍物的距离
+void Get_Left_Right_Distance()
+{
+    Set_Angle(30);		//测量右边
+	right_distance = Get_Median_Distance(3);
+
+	HAL_Delay(60);		//在两次测量中间添加延时，避免上一次的声波影响测量
+		
+    Set_Angle(150);		//测量左边
+    left_distance = Get_Median_Distance(3);
+
+    Set_Angle(90);
+}

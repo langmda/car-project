@@ -31,6 +31,9 @@ virtualFolder:
                 - path: ../Core/Src/stm32f1xx_it.c
                 - path: ../Core/Src/stm32f1xx_hal_msp.c
                 - path: ../Core/Src/motor.c
+                - path: ../Core/Src/DHT11.c
+                - path: ../Core/Src/uart.c
+                - path: ../Core/Src/sensor.c
               folders: []
     - name: Drivers
       files: []

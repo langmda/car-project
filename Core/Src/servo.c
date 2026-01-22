@@ -20,5 +20,5 @@ void Set_Angle(int angle)
     __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, pwm_pulse);
     
     // 添加短暂延时，让舵机稳定到目标角度
-    HAL_Delay(300); 
+    HAL_Delay(200); 
 }

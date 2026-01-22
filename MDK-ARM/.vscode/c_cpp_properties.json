@@ -3,16 +3,16 @@
         {
             "name": "bizhang",
             "includePath": [
-                "d:\\work\\stm32cubemx\\bizhang\\bizhang\\Core\\Inc",
-                "d:\\work\\stm32cubemx\\bizhang\\bizhang\\Drivers\\STM32F1xx_HAL_Driver\\Inc",
-                "d:\\work\\stm32cubemx\\bizhang\\bizhang\\Drivers\\STM32F1xx_HAL_Driver\\Inc\\Legacy",
-                "d:\\work\\stm32cubemx\\bizhang\\bizhang\\Drivers\\CMSIS\\Device\\ST\\STM32F1xx\\Include",
-                "d:\\work\\stm32cubemx\\bizhang\\bizhang\\Drivers\\CMSIS\\Include",
+                "d:\\work\\stm32cubemx\\bizhang\\Core\\Inc",
+                "d:\\work\\stm32cubemx\\bizhang\\Drivers\\STM32F1xx_HAL_Driver\\Inc",
+                "d:\\work\\stm32cubemx\\bizhang\\Drivers\\STM32F1xx_HAL_Driver\\Inc\\Legacy",
+                "d:\\work\\stm32cubemx\\bizhang\\Drivers\\CMSIS\\Device\\ST\\STM32F1xx\\Include",
+                "d:\\work\\stm32cubemx\\bizhang\\Drivers\\CMSIS\\Include",
                 "D:\\tool\\Keil\\ARM\\ARMCC\\include",
                 "D:\\tool\\Keil\\ARM\\ARMCC\\include\\rw",
-                "d:\\work\\stm32cubemx\\bizhang\\bizhang\\MDK-ARM",
-                "d:\\work\\stm32cubemx\\bizhang\\bizhang\\Core\\Src",
-                "d:\\work\\stm32cubemx\\bizhang\\bizhang\\Drivers\\STM32F1xx_HAL_Driver\\Src"
+                "d:\\work\\stm32cubemx\\bizhang\\MDK-ARM",
+                "d:\\work\\stm32cubemx\\bizhang\\Core\\Src",
+                "d:\\work\\stm32cubemx\\bizhang\\Drivers\\STM32F1xx_HAL_Driver\\Src"
             ],
             "defines": [
                 "USE_HAL_DRIVER",
