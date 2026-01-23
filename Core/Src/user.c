@@ -19,9 +19,8 @@
 #define AUTOMATIC  0x01		//自主避障模式
 #define MANUAL     0x02		//手动操作模式
 
-#define CMD_TIMEOUT 500
-uint32_t last_cmd_time = 0;  // 最后一次收到指令的时间
-uint32_t cmd_start_time = 0;	//指令开始时间
+#define CMD_TIMEOUT 200		//指令超时时间，如果距离上一次收到指令超过该事件，就会将命令切换为停止
+uint32_t last_cmd_time = 0;  // 上一次收到指令的时间
 uint8_t current_cmd = STOP;  // 当前有效指令（默认停止）
 
 void User_Code()
@@ -96,5 +95,6 @@ void User_Code()
 	if(read_and_transmit == 1)
 	{
 		Sensor_Read_And_Transmit(); //读取传感器数据并发送
+		read_and_transmit = 0;
 	}
 }

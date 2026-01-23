@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
+#include "dma.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -92,6 +93,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_ADC1_Init();
   MX_TIM2_Init();
   MX_TIM3_Init();
@@ -114,7 +116,7 @@ int main(void)
 
   HAL_UART_Receive_IT(&huart2,	uart_rx_buffer,	sizeof(uart_rx_buffer));
 
-  //  HAL_ADC_Start_DMA(&hadc1, adc_buf, 2); 
+  HAL_ADC_Start_DMA(&hadc1, (uint32_t*)adc_buf, 2); 
 
   //DHT11_Init();
   
@@ -125,7 +127,7 @@ int main(void)
   while (1)
   {
     User_Code();
-	  
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

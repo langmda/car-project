@@ -3,21 +3,19 @@
 
 #include "stm32f1xx_hal.h"
 
-extern uint32_t adc_buf[2];
+extern uint16_t adc_buf[2];
 
-// 传输给手机的数据结构体
+#pragma pack(1)  // 强制1字节对齐，关闭自动填充
 typedef struct {
-    // DHT11原始值
-    uint8_t humi;   // 湿度整数（如80）
-    uint8_t temp;   // 温度整数（如25）
-    // 编码器原始值（1秒内的脉冲数）
-    int32_t encoder_left_cnt; // 左电机脉冲数
-    int32_t encoder_right_cnt;// 右电机脉冲数
-    // ADC原始值（0~4095）
-    uint32_t pi_bat_voltage;    // 电池1 ADC值
-    uint32_t motor_bat_voltage;    // 电池2 ADC值
-    uint16_t reserved;         // 对齐（可选）
+    uint8_t humi;          // 湿度（1字节）
+    uint8_t temp;          // 温度（1字节）
+    int32_t encoder_left_cnt;  // 左编码器（4字节）
+    int32_t encoder_right_cnt; // 右编码器（4字节）
+    uint16_t pi_adc;   // 树莓派电压（4字节）
+    uint16_t motor_adc;// 电机电压（4字节）
+    uint16_t reserved;     // 保留字段（2字节）
 } RawData_t;
+#pragma pack()  // 恢复默认对齐
 
 void Encoder_Read(void);
 void Sensor_Read_And_Transmit(void);

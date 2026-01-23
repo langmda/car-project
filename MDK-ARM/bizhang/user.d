@@ -36,3 +36,4 @@ bizhang\user.o: ../Core/Inc/echo.h
 bizhang\user.o: ../Core/Inc/uart.h
 bizhang\user.o: ../Core/Inc/usart.h
 bizhang\user.o: ../Core/Inc/main.h
+bizhang\user.o: ../Core/Inc/sensor.h

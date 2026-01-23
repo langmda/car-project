@@ -24,7 +24,7 @@ void delay_us(uint32_t us)
     while(ticks--);
 }
 
-//更新中断函数，用于记录测距过程中计数器溢出次数，来计算距离，并实现1s读取一次编码器数据
+//更新中断函数，用于记录测距过程中计数器溢出次数，来计算距离，并实现1s读取一次传感器数据
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
     if (htim->Instance == TIM1)
