@@ -9,10 +9,10 @@ extern uint16_t adc_buf[2];
 typedef struct {
     uint8_t humi;          // 湿度（1字节）
     uint8_t temp;          // 温度（1字节）
-    int32_t encoder_left_cnt;  // 左编码器（4字节）
-    int32_t encoder_right_cnt; // 右编码器（4字节）
-    uint16_t pi_adc;   // 树莓派电压（4字节）
-    uint16_t motor_adc;// 电机电压（4字节）
+    int16_t encoder_left_cnt;  // 左编码器（2字节）
+    int16_t encoder_right_cnt; // 右编码器（2字节）
+    uint16_t pi_adc;   // 树莓派电压（2字节）
+    uint16_t motor_adc;// 电机电压（2字节）
     uint16_t reserved;     // 保留字段（2字节）
 } RawData_t;
 #pragma pack()  // 恢复默认对齐

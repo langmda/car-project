@@ -39,3 +39,6 @@ bizhang\main.o: ../Core/Inc/user.h
 bizhang\main.o: ../Core/Inc/uart.h
 bizhang\main.o: ../Core/Inc/Dht11.h
 bizhang\main.o: ../Core/Inc/sensor.h
+bizhang\main.o: ../Core/Inc/echo.h
+bizhang\main.o: D:\tool\Keil\ARM\ARMCC\Bin\..\include\stdio.h
+bizhang\main.o: ../Core/Inc/motor.h

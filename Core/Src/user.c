@@ -6,32 +6,20 @@
 #include "usart.h"
 #include "sensor.h"
 
-//命令
-#define STOP        0X00	//停止
-#define MOVE_FORWARD 0X01	//前进
-#define TURN_LEFT 0X02		//左转
-#define TURN_RIGHT 0X03		//右转
-#define BACK_OFF 0X04		//后退
-#define MODE_SWITCH 0X05	//模式切换
-#define LED_SWITCH 0x06     //灯光切换
-
-//模式
-#define AUTOMATIC  0x01		//自主避障模式
-#define MANUAL     0x02		//手动操作模式
-
 #define CMD_TIMEOUT 200		//指令超时时间，如果距离上一次收到指令超过该事件，就会将命令切换为停止
 uint32_t last_cmd_time = 0;  // 上一次收到指令的时间
-uint8_t current_cmd = STOP;  // 当前有效指令（默认停止）
+uint8_t mode = MANUAL;		//默认模式为手动操作
+uint8_t uart_rx_buffer[] = {0x00};
 
 void User_Code()
-{
-	if (HAL_GetTick() - last_cmd_time > CMD_TIMEOUT)
-    {
-        current_cmd = STOP;  // 超时→停止
-    }
+{	
 	if (mode == MANUAL)
 	{
-		switch(current_cmd)
+		if (HAL_GetTick() - last_cmd_time > CMD_TIMEOUT)	//指令超时处理
+		{
+			uart_rx_buffer[0] = STOP;  // 超时→停止
+		}
+		switch(uart_rx_buffer[0])
 		{
 			case STOP:
 				Set_Motor(0, 0);

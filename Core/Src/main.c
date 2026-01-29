@@ -30,6 +30,13 @@
 #include "uart.h"
 #include "Dht11.h"
 #include "sensor.h"
+#include "echo.h"
+#include "stdio.h"
+#include "motor.h"
+#include "IIC.h"
+#include "inv_mpu.h"
+#include "inv_mpu_dmp_motion_driver.h"
+#include "mpu6050.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -109,10 +116,8 @@ int main(void)
 
   HAL_TIM_Base_Start_IT(&htim1);
 
-  HAL_TIM_Encoder_Start(&htim2, TIM_CHANNEL_1);
-  HAL_TIM_Encoder_Start(&htim2, TIM_CHANNEL_2);
-  HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_1);
-  HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_2);
+  HAL_TIM_Encoder_Start(&htim2, TIM_CHANNEL_ALL);
+  HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL);
 
   HAL_UART_Receive_IT(&huart2,	uart_rx_buffer,	sizeof(uart_rx_buffer));
 
@@ -120,14 +125,21 @@ int main(void)
 
   //DHT11_Init();
   
+  MPU_Init();
+  mpu_dmp_init();
+	float gx, gy, gz;    // 陀螺仪数据
+	float ax, ay, az;    // 加速度数据
+  
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    User_Code();
-
+    //User_Code();  
+	mpu_dmp_get_data(&gx, &gy, &gz);
+	
+	  
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
