@@ -1,0 +1,22 @@
+<RCC>
+    <qresource prefix="/">
+        <file>image/后退.png</file>
+        <file>image/前进.png</file>
+        <file>image/右转.png</file>
+        <file>image/左转.png</file>
+        <file>image/音量.png</file>
+        <file>image/上一首.png</file>
+        <file>image/下一首.png</file>
+        <file>image/暂停.png</file>
+        <file>image/播放.png</file>
+        <file>image/参数调试.png</file>
+        <file>image/传感数据.png</file>
+        <file>image/地图构建.png</file>
+        <file>image/故障诊断.png</file>
+        <file>image/实时画面.png</file>
+        <file>image/数据记录.png</file>
+        <file>image/小车控制.png</file>
+        <file>image/音乐播放.png</file>
+        <file>image/语音交互.png</file>
+    </qresource>
+</RCC>

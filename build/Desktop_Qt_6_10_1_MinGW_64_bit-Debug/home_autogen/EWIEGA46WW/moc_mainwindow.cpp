@@ -1,0 +1,251 @@
+/****************************************************************************
+** Meta object code from reading C++ file 'mainwindow.h'
+**
+** Created by: The Qt Meta Object Compiler version 69 (Qt 6.10.1)
+**
+** WARNING! All changes made in this file will be lost!
+*****************************************************************************/
+
+#include "../../../../mainwindow.h"
+#include <QtCore/qmetatype.h>
+
+#include <QtCore/qtmochelpers.h>
+
+#include <memory>
+
+
+#include <QtCore/qxptype_traits.h>
+#if !defined(Q_MOC_OUTPUT_REVISION)
+#error "The header file 'mainwindow.h' doesn't include <QObject>."
+#elif Q_MOC_OUTPUT_REVISION != 69
+#error "This file was generated using the moc from 6.10.1. It"
+#error "cannot be used with the include files from this version of Qt."
+#error "(The moc has changed too much.)"
+#endif
+
+#ifndef Q_CONSTINIT
+#define Q_CONSTINIT
+#endif
+
+QT_WARNING_PUSH
+QT_WARNING_DISABLE_DEPRECATED
+QT_WARNING_DISABLE_GCC("-Wuseless-cast")
+namespace {
+struct qt_meta_tag_ZN10MainWindowE_t {};
+} // unnamed namespace
+
+template <> constexpr inline auto MainWindow::qt_create_metaobjectdata<qt_meta_tag_ZN10MainWindowE_t>()
+{
+    namespace QMC = QtMocConstants;
+    QtMocHelpers::StringRefStorage qt_stringData {
+        "MainWindow",
+        "on_CarControlButton_clicked",
+        "",
+        "on_SenSorDataButton_clicked",
+        "on_MusicButton_clicked",
+        "on_ParameteButton_clicked",
+        "on_DataRecordButton_clicked",
+        "on_CameraButton_clicked",
+        "on_FaultButton_clicked",
+        "on_VoiceInteractionButton_clicked",
+        "on_Parameter_BackHomeButton_clicked",
+        "on_CarControl_BackHomeButton_clicked",
+        "on_SensorData_BackHomeButton_clicked",
+        "on_Music_BackHomeButton_clicked",
+        "on_DataRecord_BackHomeButton_clicked",
+        "on_Camera_BackHomeButton_clicked",
+        "on_Fault_BackHomeButton_clicked",
+        "on_VoiceInteraction_BackHomeButton_clicked",
+        "on_FrontButton_clicked",
+        "on_LeftButton_clicked",
+        "on_RightButton_clicked",
+        "on_BackButton_clicked",
+        "on_SwitchModeButton_clicked",
+        "on_LedButton_clicked",
+        "on_SwitchBtn_clicked",
+        "on_PrevBtn_clicked",
+        "on_NextBtn_clicked",
+        "on_VolumeSlider_valueChanged",
+        "value",
+        "on_MusicListWidget_itemClicked",
+        "QListWidgetItem*",
+        "item",
+        "on_ProgressSlider_sliderReleased",
+        "on_MusicModeBtn_released",
+        "on_UpdataParameterBtn_clicked",
+        "on_DataRecordBtn_clicked",
+        "on_captureBtn_clicked",
+        "on_recordBtn_clicked",
+        "on_selectPhotoDirBtn_clicked",
+        "on_selectVideoDirBtn_clicked"
+    };
+
+    QtMocHelpers::UintData qt_methods {
+        // Slot 'on_CarControlButton_clicked'
+        QtMocHelpers::SlotData<void()>(1, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_SenSorDataButton_clicked'
+        QtMocHelpers::SlotData<void()>(3, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_MusicButton_clicked'
+        QtMocHelpers::SlotData<void()>(4, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_ParameteButton_clicked'
+        QtMocHelpers::SlotData<void()>(5, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_DataRecordButton_clicked'
+        QtMocHelpers::SlotData<void()>(6, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_CameraButton_clicked'
+        QtMocHelpers::SlotData<void()>(7, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_FaultButton_clicked'
+        QtMocHelpers::SlotData<void()>(8, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_VoiceInteractionButton_clicked'
+        QtMocHelpers::SlotData<void()>(9, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_Parameter_BackHomeButton_clicked'
+        QtMocHelpers::SlotData<void()>(10, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_CarControl_BackHomeButton_clicked'
+        QtMocHelpers::SlotData<void()>(11, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_SensorData_BackHomeButton_clicked'
+        QtMocHelpers::SlotData<void()>(12, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_Music_BackHomeButton_clicked'
+        QtMocHelpers::SlotData<void()>(13, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_DataRecord_BackHomeButton_clicked'
+        QtMocHelpers::SlotData<void()>(14, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_Camera_BackHomeButton_clicked'
+        QtMocHelpers::SlotData<void()>(15, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_Fault_BackHomeButton_clicked'
+        QtMocHelpers::SlotData<void()>(16, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_VoiceInteraction_BackHomeButton_clicked'
+        QtMocHelpers::SlotData<void()>(17, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_FrontButton_clicked'
+        QtMocHelpers::SlotData<void()>(18, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_LeftButton_clicked'
+        QtMocHelpers::SlotData<void()>(19, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_RightButton_clicked'
+        QtMocHelpers::SlotData<void()>(20, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_BackButton_clicked'
+        QtMocHelpers::SlotData<void()>(21, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_SwitchModeButton_clicked'
+        QtMocHelpers::SlotData<void()>(22, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_LedButton_clicked'
+        QtMocHelpers::SlotData<void()>(23, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_SwitchBtn_clicked'
+        QtMocHelpers::SlotData<void()>(24, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_PrevBtn_clicked'
+        QtMocHelpers::SlotData<void()>(25, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_NextBtn_clicked'
+        QtMocHelpers::SlotData<void()>(26, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_VolumeSlider_valueChanged'
+        QtMocHelpers::SlotData<void(int)>(27, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Int, 28 },
+        }}),
+        // Slot 'on_MusicListWidget_itemClicked'
+        QtMocHelpers::SlotData<void(QListWidgetItem *)>(29, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { 0x80000000 | 30, 31 },
+        }}),
+        // Slot 'on_ProgressSlider_sliderReleased'
+        QtMocHelpers::SlotData<void()>(32, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_MusicModeBtn_released'
+        QtMocHelpers::SlotData<void()>(33, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_UpdataParameterBtn_clicked'
+        QtMocHelpers::SlotData<void()>(34, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_DataRecordBtn_clicked'
+        QtMocHelpers::SlotData<void()>(35, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_captureBtn_clicked'
+        QtMocHelpers::SlotData<void()>(36, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_recordBtn_clicked'
+        QtMocHelpers::SlotData<void()>(37, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_selectPhotoDirBtn_clicked'
+        QtMocHelpers::SlotData<void()>(38, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_selectVideoDirBtn_clicked'
+        QtMocHelpers::SlotData<void()>(39, 2, QMC::AccessPrivate, QMetaType::Void),
+    };
+    QtMocHelpers::UintData qt_properties {
+    };
+    QtMocHelpers::UintData qt_enums {
+    };
+    return QtMocHelpers::metaObjectData<MainWindow, qt_meta_tag_ZN10MainWindowE_t>(QMC::MetaObjectFlag{}, qt_stringData,
+            qt_methods, qt_properties, qt_enums);
+}
+Q_CONSTINIT const QMetaObject MainWindow::staticMetaObject = { {
+    QMetaObject::SuperData::link<QMainWindow::staticMetaObject>(),
+    qt_staticMetaObjectStaticContent<qt_meta_tag_ZN10MainWindowE_t>.stringdata,
+    qt_staticMetaObjectStaticContent<qt_meta_tag_ZN10MainWindowE_t>.data,
+    qt_static_metacall,
+    nullptr,
+    qt_staticMetaObjectRelocatingContent<qt_meta_tag_ZN10MainWindowE_t>.metaTypes,
+    nullptr
+} };
+
+void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    auto *_t = static_cast<MainWindow *>(_o);
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        switch (_id) {
+        case 0: _t->on_CarControlButton_clicked(); break;
+        case 1: _t->on_SenSorDataButton_clicked(); break;
+        case 2: _t->on_MusicButton_clicked(); break;
+        case 3: _t->on_ParameteButton_clicked(); break;
+        case 4: _t->on_DataRecordButton_clicked(); break;
+        case 5: _t->on_CameraButton_clicked(); break;
+        case 6: _t->on_FaultButton_clicked(); break;
+        case 7: _t->on_VoiceInteractionButton_clicked(); break;
+        case 8: _t->on_Parameter_BackHomeButton_clicked(); break;
+        case 9: _t->on_CarControl_BackHomeButton_clicked(); break;
+        case 10: _t->on_SensorData_BackHomeButton_clicked(); break;
+        case 11: _t->on_Music_BackHomeButton_clicked(); break;
+        case 12: _t->on_DataRecord_BackHomeButton_clicked(); break;
+        case 13: _t->on_Camera_BackHomeButton_clicked(); break;
+        case 14: _t->on_Fault_BackHomeButton_clicked(); break;
+        case 15: _t->on_VoiceInteraction_BackHomeButton_clicked(); break;
+        case 16: _t->on_FrontButton_clicked(); break;
+        case 17: _t->on_LeftButton_clicked(); break;
+        case 18: _t->on_RightButton_clicked(); break;
+        case 19: _t->on_BackButton_clicked(); break;
+        case 20: _t->on_SwitchModeButton_clicked(); break;
+        case 21: _t->on_LedButton_clicked(); break;
+        case 22: _t->on_SwitchBtn_clicked(); break;
+        case 23: _t->on_PrevBtn_clicked(); break;
+        case 24: _t->on_NextBtn_clicked(); break;
+        case 25: _t->on_VolumeSlider_valueChanged((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
+        case 26: _t->on_MusicListWidget_itemClicked((*reinterpret_cast<std::add_pointer_t<QListWidgetItem*>>(_a[1]))); break;
+        case 27: _t->on_ProgressSlider_sliderReleased(); break;
+        case 28: _t->on_MusicModeBtn_released(); break;
+        case 29: _t->on_UpdataParameterBtn_clicked(); break;
+        case 30: _t->on_DataRecordBtn_clicked(); break;
+        case 31: _t->on_captureBtn_clicked(); break;
+        case 32: _t->on_recordBtn_clicked(); break;
+        case 33: _t->on_selectPhotoDirBtn_clicked(); break;
+        case 34: _t->on_selectVideoDirBtn_clicked(); break;
+        default: ;
+        }
+    }
+}
+
+const QMetaObject *MainWindow::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->dynamicMetaObject() : &staticMetaObject;
+}
+
+void *MainWindow::qt_metacast(const char *_clname)
+{
+    if (!_clname) return nullptr;
+    if (!strcmp(_clname, qt_staticMetaObjectStaticContent<qt_meta_tag_ZN10MainWindowE_t>.strings))
+        return static_cast<void*>(this);
+    return QMainWindow::qt_metacast(_clname);
+}
+
+int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = QMainWindow::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 35)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 35;
+    }
+    if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
+        if (_id < 35)
+            *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
+        _id -= 35;
+    }
+    return _id;
+}
+QT_WARNING_POP

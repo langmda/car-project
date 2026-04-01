@@ -1,0 +1,12 @@
+# ninja log v6
+8	1540	7967166974105459	home_autogen/timestamp	b80d211e26831700
+8	1540	7967166974105459	home_autogen/mocs_compilation.cpp	b80d211e26831700
+8	1540	7967166974105459	D:/work/qt/home/build/Desktop_Qt_6_10_1_MinGW_64_bit-Debug/home_autogen/timestamp	b80d211e26831700
+8	1540	7967166974105459	D:/work/qt/home/build/Desktop_Qt_6_10_1_MinGW_64_bit-Debug/home_autogen/mocs_compilation.cpp	b80d211e26831700
+1550	1709	7967166976929463	home_autogen/EWIEGA46WW/qrc_source.cpp	afa6b2f75b97081b
+1550	1709	7967166976929463	D:/work/qt/home/build/Desktop_Qt_6_10_1_MinGW_64_bit-Debug/home_autogen/EWIEGA46WW/qrc_source.cpp	afa6b2f75b97081b
+1736	2570	7967166977345885	CMakeFiles/home.dir/home_autogen/EWIEGA46WW/qrc_source.cpp.obj	7512c668c0ad9fdd
+1718	7001	7967166977164972	CMakeFiles/home.dir/main.cpp.obj	d76faef328e59c02
+1709	7050	7967166977084958	CMakeFiles/home.dir/home_autogen/mocs_compilation.cpp.obj	4b5c6bf1352e674a
+1727	8251	7967166977246207	CMakeFiles/home.dir/mainwindow.cpp.obj	94b94276ea981c80
+8252	8787	7967167042504606	home.exe	c6049fced3c10f12
