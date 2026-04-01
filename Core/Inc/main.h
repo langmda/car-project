@@ -31,7 +31,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+extern DMA_HandleTypeDef hdma_usart2_rx;
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

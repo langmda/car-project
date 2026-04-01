@@ -33,3 +33,6 @@ bizhang\uart.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
 bizhang\uart.o: ../Core/Inc/usart.h
 bizhang\uart.o: ../Core/Inc/main.h
 bizhang\uart.o: ../Core/Inc/user.h
+bizhang\uart.o: ../Core/Inc/pid.h
+bizhang\uart.o: D:\tool\Keil\ARM\ARMCC\Bin\..\include\stdio.h
+bizhang\uart.o: ../Core/Inc/servo.h

@@ -1,110 +1,183 @@
 #include "dht11.h"
+#include "delay.h"
+#include "usart.h"  // å¦‚æžœéœ€è¦è°ƒè¯•è¾“å‡º
 
-// ====================== ½ö±£ÁôÕâ1¸öÎ¢ÃëÑÓÊ±º¯Êý ======================
-// Î¢ÃëÑÓÊ±º¯Êý£¨HAL¿âÎÞÔ­ÉúusÑÓÊ±£¬ÊÖ¶¯ÊµÏÖ£¬ÊÊÅä72MHzÏµÍ³Ê±ÖÓ£©
-void DHT11_DelayUs(u16 us)
-{
-    // ¼ÆËãÑÓÊ±¼ÆÊýÖµ£ºHCLK=72MHz ¡ú 1us=72¸öÊ±ÖÓÖÜÆÚ£¬³ýÒÔ8¼õÉÙÑ­»·´ÎÊý
-    uint32_t ticks = (HAL_RCC_GetHCLKFreq() / 1000000) * us / 8;
-    while(ticks--);
+// å¤ä½DHT11
+void DHT11_Rst(void)	   
+{                 
+	DHT11_Mode(OUT); 	// SET OUTPUT
+	DHT11_Low; 	      // æ‹‰ä½ŽDQ
+	delay_ms(20);    	// ä¸»æœºæ‹‰ä½Ž18~30ms
+	DHT11_High; 			// DQ=1 
+	delay_us(13);     	// ä¸»æœºæ‹‰é«˜10~35us
 }
 
-// DHT11Òý½ÅÉèÖÃÎªÊä³öÄ£Ê½£¨ÍÆÍìÊä³ö+ÉÏÀ­£©
-void DHT11_Set_Out(void)
-{
-    GPIO_InitTypeDef GPIO_InitStruct = {0};
+// ç­‰å¾…DHT11çš„å›žåº”
+// è¿”å›ž1:æœªæ£€æµ‹åˆ°DHT11çš„å­˜åœ¨
+// è¿”å›ž0:å­˜åœ¨
+u8 DHT11_Check(void) 	   
+{   
+	u8 retry=0;
+	DHT11_Mode(IN);// SET INPUT	 
     
-    __HAL_RCC_GPIOB_CLK_ENABLE();  // ¶ÔÓ¦DHT11_PORTµÄÊ±ÖÓÊ¹ÄÜ
+    // æ”¹ä¸ºHALåº“è¯»å–å¼•è„š
+    while (HAL_GPIO_ReadPin(DHT11_GPIO_PORT, DHT11_GPIO_PIN) && retry<100) // DHT11ä¼šæ‹‰ä½Ž40~80us
+	{
+		retry++;
+		delay_us(1);
+	}
+	 
+	if(retry>=100) return 1;
+	
+	retry=0;
     
-    GPIO_InitStruct.Pin = DHT11_PIN;
-    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;  // ÍÆÍìÊä³ö
-    GPIO_InitStruct.Pull = GPIO_PULLUP;          // ÉÏÀ­£¨DHT11ÐèÒª£©
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW; // µÍËÙ¼´¿É
-    HAL_GPIO_Init(DHT11_PORT, &GPIO_InitStruct);
+    // æ”¹ä¸ºHALåº“è¯»å–å¼•è„š
+    while (!HAL_GPIO_ReadPin(DHT11_GPIO_PORT, DHT11_GPIO_PIN) && retry<100) // DHT11æ‹‰ä½ŽåŽä¼šå†æ¬¡æ‹‰é«˜40~80us
+	{
+		retry++;
+		delay_us(1);
+	}
+	
+	if(retry>=100) return 1;	    
+	
+	return 0;
 }
 
-// DHT11Òý½ÅÉèÖÃÎªÊäÈëÄ£Ê½£¨ÉÏÀ­ÊäÈë£©
-void DHT11_Set_In(void)
+// ä»ŽDHT11è¯»å–ä¸€ä¸ªä½
+// è¿”å›žå€¼ï¼š1/0
+u8 DHT11_Read_Bit(void) 			 
 {
-    GPIO_InitTypeDef GPIO_InitStruct = {0};
+ 	u8 retry=0;
     
-    __HAL_RCC_GPIOB_CLK_ENABLE();  // ¶ÔÓ¦DHT11_PORTµÄÊ±ÖÓÊ¹ÄÜ
+    // æ”¹ä¸ºHALåº“è¯»å–å¼•è„š
+	while(HAL_GPIO_ReadPin(DHT11_GPIO_PORT, DHT11_GPIO_PIN) && retry<100) // ç­‰å¾…å˜ä¸ºä½Žç”µå¹³
+	{
+		retry++;
+		delay_us(1);
+	}
+	
+	retry=0;
     
-    GPIO_InitStruct.Pin = DHT11_PIN;
-    GPIO_InitStruct.Mode = GPIO_MODE_INPUT;     // ÊäÈëÄ£Ê½
-    GPIO_InitStruct.Pull = GPIO_PULLUP;         // ÉÏÀ­£¬±ÜÃâ¸¡¿Õ
-    HAL_GPIO_Init(DHT11_PORT, &GPIO_InitStruct);
+    // æ”¹ä¸ºHALåº“è¯»å–å¼•è„š
+	while(!HAL_GPIO_ReadPin(DHT11_GPIO_PORT, DHT11_GPIO_PIN) && retry<100) // ç­‰å¾…å˜é«˜ç”µå¹³
+	{
+		retry++;
+		delay_us(1);
+	}
+	
+	delay_us(40); // ç­‰å¾…40us
+    
+    // æ”¹ä¸ºHALåº“è¯»å–å¼•è„š
+	if(HAL_GPIO_ReadPin(DHT11_GPIO_PORT, DHT11_GPIO_PIN))
+        return 1;
+	else 
+        return 0;		   
 }
 
-// DHT11³õÊ¼»¯£¨·¢ËÍÆðÊ¼ÐÅºÅ£¬µÈ´ýÏìÓ¦£©
-u8 DHT11_Init(void)
-{
-    DHT11_Set_Out();                     // ÏÈÉèÎªÊä³ö
-    HAL_GPIO_WritePin(DHT11_PORT, DHT11_PIN, GPIO_PIN_SET); // À­¸ß±ê×¼
-    HAL_Delay(100);                      // µÈ´ýDHT11ÉÏµçÎÈ¶¨
-    
-    // ·¢ËÍÆðÊ¼ÐÅºÅ£ºÀ­µÍÖÁÉÙ18ms
-    HAL_GPIO_WritePin(DHT11_PORT, DHT11_PIN, GPIO_PIN_RESET);
-    HAL_Delay(20);
-    HAL_GPIO_WritePin(DHT11_PORT, DHT11_PIN, GPIO_PIN_SET);
-    DHT11_DelayUs(30);                  // À­¸ß20~40us
-    
-    // ÇÐ»»ÎªÊäÈë£¬µÈ´ýDHT11ÏìÓ¦
-    DHT11_Set_In();
-    while(HAL_GPIO_ReadPin(DHT11_PORT, DHT11_PIN) == GPIO_PIN_SET); // µÈ´ýDHT11À­µÍ
-    while(HAL_GPIO_ReadPin(DHT11_PORT, DHT11_PIN) == GPIO_PIN_RESET); // µÈ´ýDHT11À­¸ß
-    while(HAL_GPIO_ReadPin(DHT11_PORT, DHT11_PIN) == GPIO_PIN_SET); // µÈ´ýDHT11À­µÍ
-    
-    return 0; // ³õÊ¼»¯³É¹¦
+// ä»ŽDHT11è¯»å–ä¸€ä¸ªå­—èŠ‚
+// è¿”å›žå€¼ï¼šè¯»åˆ°çš„æ•°æ®
+u8 DHT11_Read_Byte(void)    
+{        
+	u8 i, dat;
+	dat=0;
+	for (i=0; i<8; i++) 
+	{
+		dat <<= 1; 
+		dat |= DHT11_Read_Bit();
+	}						    
+	return dat;
 }
 
-// ¶ÁÈ¡1×Ö½ÚÊý¾Ý£¨DHT11µÄÎ»Ê±Ðò½âÎö£©
-u8 DHT11_Read_Byte(void)
-{
-    u8 data = 0;
-    u8 i;
-    for(i=0; i<8; i++)
-    {
-        while(HAL_GPIO_ReadPin(DHT11_PORT, DHT11_PIN) == GPIO_PIN_RESET); // µÈ´ýÀ­¸ß
-        DHT11_DelayUs(40); // ÑÓÊ±40us£¬ÅÐ¶ÏÊÇ0£¨<40us£©»¹ÊÇ1£¨>40us£©
+// ä»ŽDHT11è¯»å–ä¸€æ¬¡æ•°æ®
+// temp:æ¸©åº¦å€¼(èŒƒå›´:0~50Â°)
+// humi:æ¹¿åº¦å€¼(èŒƒå›´:20%~90%)
+// è¿”å›žå€¼ï¼š0,æ­£å¸¸;1,è¯»å–å¤±è´¥
+u8 DHT11_Read_Data(u8 *temp, u8 *humi)    
+{        
+ 	u8 buf[5];
+	u8 i;
+	
+	*temp = 0;
+    *humi = 0;
+	
+	DHT11_Rst();
+	if(DHT11_Check() == 0)
+	{
+		for(i=0; i<5; i++) // è¯»å–40ä½æ•°æ®
+		{
+			buf[i] = DHT11_Read_Byte();
+            
+            // è°ƒè¯•è¾“å‡ºåŽŸå§‹æ•°æ®
+            /*
+            char debug[50];
+            sprintf(debug, "Byte%d: 0x%02X\r\n", i, buf[i]);
+            HAL_UART_Transmit(&huart2, (uint8_t*)debug, strlen(debug), 100);
+            */
+		}
         
-        data <<= 1;
-        if(HAL_GPIO_ReadPin(DHT11_PORT, DHT11_PIN) == GPIO_PIN_SET)
+        // è°ƒè¯•è¾“å‡ºæ‰€æœ‰æ•°æ®
+        /*
+        char debug[100];
+        sprintf(debug, "Raw: %d %d %d %d %d\r\n", buf[0], buf[1], buf[2], buf[3], buf[4]);
+        HAL_UART_Transmit(&huart2, (uint8_t*)debug, strlen(debug), 100);
+        */
+        
+		if((buf[0] + buf[1] + buf[2] + buf[3]) == buf[4])
+		{
+			*humi = buf[0];
+			*temp = buf[2];
+            return 0;
+		}
+        else
         {
-            data |= 0x01; // ¸ßµçÆ½=1
+            // æ ¡éªŒå’Œé”™è¯¯
+            return 2;
         }
-        while(HAL_GPIO_ReadPin(DHT11_PORT, DHT11_PIN) == GPIO_PIN_SET); // µÈ´ýÀ­µÍ
-    }
-    return data;
+	}
+	else 
+        return 1;
 }
 
-// ¶ÁÈ¡ÎÂÊª¶ÈÊý¾Ý£¨ºËÐÄº¯Êý£©
-// ·µ»ØÖµ£º0=³É¹¦£¬1=Ð£ÑéÊ§°Ü£»temp=ÎÂ¶È£¨ÕûÊý£©£¬humi=Êª¶È£¨ÕûÊý£©
-u8 DHT11_Read_Data(u8 *temp, u8 *humi)
+// åˆå§‹åŒ–DHT11çš„IOå£ DQ åŒæ—¶æ£€æµ‹DHT11çš„å­˜åœ¨
+// è¿”å›ž1:ä¸å­˜åœ¨
+// è¿”å›ž0:å­˜åœ¨    	 	
+u8 DHT11_Init(void)
+{	 
+ 	GPIO_InitTypeDef GPIO_InitStructure;	
+    
+    // ä½¿èƒ½GPIOæ—¶é’Ÿ
+    DHT11_GPIO_CLK_ENABLE();
+    
+ 	GPIO_InitStructure.Pin = DHT11_GPIO_PIN;
+ 	GPIO_InitStructure.Mode = GPIO_MODE_OUTPUT_PP; 	// æŽ¨æŒ½è¾“å‡º
+ 	GPIO_InitStructure.Pull = GPIO_PULLUP;          // ä¸Šæ‹‰
+ 	GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_HIGH;
+ 	HAL_GPIO_Init(DHT11_GPIO_PORT, &GPIO_InitStructure);
+ 	
+    HAL_GPIO_WritePin(DHT11_GPIO_PORT, DHT11_GPIO_PIN, GPIO_PIN_SET); // è¾“å‡ºé«˜
+			    
+	DHT11_Rst();  // å¤ä½DHT11
+	return DHT11_Check(); // ç­‰å¾…DHT11çš„å›žåº”
+} 
+
+// DHT11å¼•è„šè¾“å‡ºæ¨¡å¼æŽ§åˆ¶
+void DHT11_Mode(u8 mode)
 {
-    u8 buf[5] = {0};
-    u8 i;
-    
-    if(DHT11_Init() != 0)
-    {
-        return 1; // ³õÊ¼»¯Ê§°Ü
-    }
-    
-    // ¶ÁÈ¡40Î»Êý¾Ý£¨5×Ö½Ú£ºÊª¶ÈÕûÊý¡¢Êª¶ÈÐ¡Êý¡¢ÎÂ¶ÈÕûÊý¡¢ÎÂ¶ÈÐ¡Êý¡¢Ð£ÑéºÍ£©
-    for(i=0; i<5; i++)
-    {
-        buf[i] = DHT11_Read_Byte();
-    }
-    
-    // Ð£Ñé£ºÇ°4×Ö½ÚÖ®ºÍ = µÚ5×Ö½Ú
-    if(buf[0] + buf[1] + buf[2] + buf[3] == buf[4])
-    {
-        *humi = buf[0];  // DHT11Ð¡Êý²¿·ÖºãÎª0£¬Ö»È¡ÕûÊý
-        *temp = buf[2];
-        return 0;
-    }
-    else
-    {
-        return 1; // Ð£ÑéÊ§°Ü£¬Êý¾Ý²»¿ÉÐÅ
-    }
+	GPIO_InitTypeDef GPIO_InitStructure;
+	
+	if(mode == OUT) // è¾“å‡ºæ¨¡å¼
+	{
+		GPIO_InitStructure.Pin = DHT11_GPIO_PIN;
+		GPIO_InitStructure.Mode = GPIO_MODE_OUTPUT_PP;  // æŽ¨æŒ½è¾“å‡º
+		GPIO_InitStructure.Pull = GPIO_PULLUP;          // ä¸Šæ‹‰
+		GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_HIGH;
+	}
+	else // è¾“å…¥æ¨¡å¼
+	{
+		GPIO_InitStructure.Pin = DHT11_GPIO_PIN;
+		GPIO_InitStructure.Mode = GPIO_MODE_INPUT;      // è¾“å…¥
+		GPIO_InitStructure.Pull = GPIO_PULLUP;          // ä¸Šæ‹‰
+	}
+	
+	HAL_GPIO_Init(DHT11_GPIO_PORT, &GPIO_InitStructure);
 }

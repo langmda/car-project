@@ -1,10 +1,15 @@
 #include "uart.h"
 #include "usart.h"
 #include "user.h"
+#include "pid.h"
+#include "main.h"
+#include "stdio.h"
+#include "servo.h"
 
-uint8_t led_counter = 0;    //led计数器
+volatile uint8_t current_cmd = STOP;	//当前有效命令
+volatile uint8_t led_counter = 0;    //led计数器
 
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
     if (huart->Instance == USART2)
     {
@@ -21,34 +26,33 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
             if(led_counter == 0)
             {
                 HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
-                HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
-                HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);
+                HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_SET);
+                HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);;
                 led_counter = 1;
             }
             else if(led_counter == 1)
             {
                 HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
-                HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_SET);
-                HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);
-                led_counter = 2;
-            }
-            else if(led_counter == 2)
-            {
-                HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
-                HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
-                HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);
-                led_counter = 3;
-            }
-			else if(led_counter == 3)
-			{
-				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
                 HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
                 HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);
                 led_counter = 0;
-			}
+            }
             uart_rx_buffer[0] = STOP;
         }	
-        
-        HAL_UART_Receive_IT(&huart2, uart_rx_buffer, sizeof(uart_rx_buffer));
+		else if (uart_rx_buffer[0] == 0x0E) 
+		{
+			PIDParams_t *pid = (PIDParams_t*)uart_rx_buffer;
+			Kp = pid->Kp;
+			Ki = pid->Ki;
+			I_Filtering = pid->I_Fil;
+			I_Limit = pid->I_Lim;
+			PWM_Limit = pid->PWM_Lim;
+		}   
+		else 
+		{
+            current_cmd = uart_rx_buffer[0];	// 普通运动命令，存入变量供主循环使用
+        }
     }
+	HAL_UARTEx_ReceiveToIdle_IT(huart, uart_rx_buffer, sizeof(uart_rx_buffer));
+    __HAL_DMA_DISABLE_IT(&hdma_usart2_rx, DMA_IT_HT);
 }

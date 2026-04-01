@@ -35,3 +35,4 @@ bizhang\echo.o: ../Core/Inc/main.h
 bizhang\echo.o: ../Core/Inc/servo.h
 bizhang\echo.o: ../Core/Inc/motor.h
 bizhang\echo.o: ../Core/Inc/sensor.h
+bizhang\echo.o: ../Core/Inc/delay.h

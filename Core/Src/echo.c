@@ -3,6 +3,7 @@
 #include "servo.h"
 #include "motor.h"
 #include "sensor.h"
+#include "delay.h"
 
 uint32_t echo_start = 0;    // Echo上升沿的计数值（发出超声波）
 uint32_t echo_end = 0;      // Echo下降沿的计数值（超声波返回）
@@ -14,15 +15,7 @@ uint8_t distance_lock = 0;		//对距离操作的状态锁
 float left_distance;		
 float right_distance;
 float front_distance;
-uint16_t encoder_counter = 0;	//用于舵机定时器的更新中断中（20ms），计数来实现1s读取一次编码器数据
-
-// 简易μs延时函数（基于系统时钟72MHz）
-void delay_us(uint32_t us)
-{
-    uint32_t ticks = (HAL_RCC_GetHCLKFreq() / 1000000) * us;
-    ticks /= 5; 
-    while(ticks--);
-}
+uint8_t sensor_counter = 0;	//用于舵机定时器的更新中断中（20ms），计数来实现每隔1s读取并发送传感器数据
 
 //更新中断函数，用于记录测距过程中计数器溢出次数，来计算距离，并实现1s读取一次传感器数据
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
@@ -31,11 +24,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     {
         tim1_overflow++; // 记录测距过程中计数器溢出次数
 
-        encoder_counter++;      //记录更新中断的次数，用于实现1s的更新中断
-        if(encoder_counter >= 50) // 每过1s就读取传感器数据并发送，并计算车速
+        sensor_counter++;      //记录更新中断的次数，用于实现1s的更新中断
+        if(sensor_counter >= 50) // 每过1s就读取传感器数据并发送，并计算车速
         {
             read_and_transmit = 1;
-            encoder_counter = 0;
+            sensor_counter = 0;
         }
     }
 }

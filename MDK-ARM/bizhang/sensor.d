@@ -33,4 +33,7 @@ bizhang\sensor.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
 bizhang\sensor.o: ../Core/Inc/tim.h
 bizhang\sensor.o: ../Core/Inc/main.h
 bizhang\sensor.o: ../Core/Inc/dht11.h
+bizhang\sensor.o: ../Core/Inc/delay.h
 bizhang\sensor.o: ../Core/Inc/usart.h
+bizhang\sensor.o: ../Core/Inc/pid.h
+bizhang\sensor.o: ../Core/Inc/user.h

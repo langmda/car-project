@@ -33,10 +33,8 @@
 #include "echo.h"
 #include "stdio.h"
 #include "motor.h"
-#include "IIC.h"
-#include "inv_mpu.h"
-#include "inv_mpu_dmp_motion_driver.h"
-#include "mpu6050.h"
+#include "pid.h"
+#include "delay.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -119,26 +117,29 @@ int main(void)
   HAL_TIM_Encoder_Start(&htim2, TIM_CHANNEL_ALL);
   HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL);
 
-  HAL_UART_Receive_IT(&huart2,	uart_rx_buffer,	sizeof(uart_rx_buffer));
+  HAL_UARTEx_ReceiveToIdle_DMA(&huart2, uart_rx_buffer, sizeof(uart_rx_buffer));
+  __HAL_DMA_DISABLE_IT(&hdma_usart2_rx, DMA_IT_HT);
 
   HAL_ADC_Start_DMA(&hadc1, (uint32_t*)adc_buf, 2); 
 
-  //DHT11_Init();
+  delay_init();
+  DHT11_Init();
   
-  MPU_Init();
-  mpu_dmp_init();
-	float gx, gy, gz;    // 陀螺仪数据
-	float ax, ay, az;    // 加速度数据
-  
+  char buffer[256];
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    //User_Code();  
-	mpu_dmp_get_data(&gx, &gy, &gz);
-	
+	User_Code();  
+
+	/*
+	float dis = Get_Median_Distance(1);
+	sprintf(buffer, "璺濈%f\r\n", dis);
+	HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
+	HAL_Delay(1000);
+	*/
 	  
     /* USER CODE END WHILE */
 

@@ -1,19 +1,32 @@
 #ifndef __DHT11_H
 #define __DHT11_H
 
-#include "stm32f1xx_hal.h"  // ¸ù¾İÄãµÄĞ¾Æ¬µ÷Õû£¨ÈçF4ÓÃstm32f4xx_hal.h£©
+#include "stm32f1xx_hal.h"  // æ”¹ä¸ºHALåº“å¤´æ–‡ä»¶
+#include "delay.h"
 
-// Ìæ»»±ê×¼¿âµÄu8/u16£¨HAL¿âÎŞÄ¬ÈÏ±ğÃû£©
+/***************æ ¹æ®è‡ªå·±éœ€æ±‚æ›´æ”¹****************/
+// DHT11å¼•è„šå®å®šä¹‰ï¼ˆæ”¹ä¸ºPB15ï¼‰
+#define DHT11_GPIO_PORT  GPIOB
+#define DHT11_GPIO_PIN   GPIO_PIN_15
+#define DHT11_GPIO_CLK_ENABLE()  __HAL_RCC_GPIOB_CLK_ENABLE()
+/*********************END**********************/
+
+// è¾“å‡ºçŠ¶æ€å®šä¹‰
+#define OUT 1
+#define IN  0
+
+// æ§åˆ¶DHT11å¼•è„šè¾“å‡ºé«˜ä½ç”µå¹³ï¼ˆæ”¹ä¸ºHALåº“å‡½æ•°ï¼‰
+#define DHT11_Low  HAL_GPIO_WritePin(DHT11_GPIO_PORT, DHT11_GPIO_PIN, GPIO_PIN_RESET)
+#define DHT11_High HAL_GPIO_WritePin(DHT11_GPIO_PORT, DHT11_GPIO_PIN, GPIO_PIN_SET)
+
 typedef unsigned char u8;
-typedef unsigned short u16;
 
-// -------------------------- ĞèĞŞ¸ÄµÄÒı½ÅÅäÖÃ --------------------------
-#define DHT11_PORT  GPIOB       // DHT11Á¬½ÓµÄGPIO¶Ë¿Ú
-#define DHT11_PIN   GPIO_PIN_15 // DHT11Á¬½ÓµÄGPIOÒı½Å
-// ---------------------------------------------------------------------
-
-// º¯ÊıÉùÃ÷
-u8 DHT11_Init(void);          // DHT11³õÊ¼»¯
-u8 DHT11_Read_Data(u8 *temp, u8 *humi);  // ¶ÁÈ¡ÎÂÊª¶È£¨temp=ÎÂ¶È£¬humi=Êª¶È£©
+u8 DHT11_Init(void);//åˆå§‹åŒ–DHT11
+u8 DHT11_Read_Data(u8 *temp,u8 *humi);//è¯»å–æ¸©æ¹¿åº¦æ•°æ®
+u8 DHT11_Read_Byte(void);//è¯»å–ä¸€ä¸ªå­—èŠ‚çš„æ•°æ®
+u8 DHT11_Read_Bit(void);//è¯»å–ä¸€ä½çš„æ•°æ®
+void DHT11_Mode(u8 mode);//DHT11å¼•è„šè¾“å‡ºæ¨¡å¼æ§åˆ¶
+u8 DHT11_Check(void);//æ£€æµ‹DHT11
+void DHT11_Rst(void);//å¤ä½DHT11   
 
 #endif
