@@ -11,6 +11,7 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QGraphicsView>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
@@ -87,7 +88,7 @@ public:
     QSpacerItem *verticalSpacer_14;
     QSpacerItem *verticalSpacer_20;
     QVBoxLayout *verticalLayout_9;
-    QPushButton *MapButton;
+    QPushButton *TrajectoryButton;
     QLabel *label_5;
     QSpacerItem *verticalSpacer_18;
     QSpacerItem *verticalSpacer_12;
@@ -96,17 +97,17 @@ public:
     QSpacerItem *horizontalSpacer_36;
     QSpacerItem *horizontalSpacer_37;
     QSpacerItem *verticalSpacer_2;
-    QWidget *MapPage;
+    QWidget *TrajectoryPage;
     QVBoxLayout *verticalLayout_22;
     QHBoxLayout *horizontalLayout_25;
     QLabel *label_18;
     QSpacerItem *horizontalSpacer_51;
-    QPushButton *Map_BackHomeButton;
+    QPushButton *Trajectory_BackHomeButton;
     QHBoxLayout *horizontalLayout_26;
-    QLabel *robotPosLabel;
     QSpacerItem *horizontalSpacer_52;
-    QPushButton *MapSwitchButton;
-    QLabel *MapLabel;
+    QPushButton *TrajectoryClearButton;
+    QSpacerItem *horizontalSpacer_53;
+    QGraphicsView *graphicsView;
     QWidget *FaultPage;
     QVBoxLayout *verticalLayout_20;
     QHBoxLayout *horizontalLayout_22;
@@ -677,13 +678,13 @@ public:
 
         verticalLayout_9 = new QVBoxLayout();
         verticalLayout_9->setObjectName("verticalLayout_9");
-        MapButton = new QPushButton(HomePage);
-        MapButton->setObjectName("MapButton");
-        sizePolicy1.setHeightForWidth(MapButton->sizePolicy().hasHeightForWidth());
-        MapButton->setSizePolicy(sizePolicy1);
-        MapButton->setMinimumSize(QSize(100, 100));
-        MapButton->setMaximumSize(QSize(100, 100));
-        MapButton->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+        TrajectoryButton = new QPushButton(HomePage);
+        TrajectoryButton->setObjectName("TrajectoryButton");
+        sizePolicy1.setHeightForWidth(TrajectoryButton->sizePolicy().hasHeightForWidth());
+        TrajectoryButton->setSizePolicy(sizePolicy1);
+        TrajectoryButton->setMinimumSize(QSize(100, 100));
+        TrajectoryButton->setMaximumSize(QSize(100, 100));
+        TrajectoryButton->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "    border-radius: 25px;\n"
 "    min-width: 100px;\n"
 "    max-width: 100px;\n"
@@ -699,7 +700,7 @@ public:
 "    background-color: rgb(30, 129, 195);\n"
 "}"));
 
-        verticalLayout_9->addWidget(MapButton);
+        verticalLayout_9->addWidget(TrajectoryButton);
 
         label_5 = new QLabel(HomePage);
         label_5->setObjectName("label_5");
@@ -744,13 +745,13 @@ public:
         verticalLayout_2->addItem(verticalSpacer_2);
 
         stackedWidget->addWidget(HomePage);
-        MapPage = new QWidget();
-        MapPage->setObjectName("MapPage");
-        verticalLayout_22 = new QVBoxLayout(MapPage);
+        TrajectoryPage = new QWidget();
+        TrajectoryPage->setObjectName("TrajectoryPage");
+        verticalLayout_22 = new QVBoxLayout(TrajectoryPage);
         verticalLayout_22->setObjectName("verticalLayout_22");
         horizontalLayout_25 = new QHBoxLayout();
         horizontalLayout_25->setObjectName("horizontalLayout_25");
-        label_18 = new QLabel(MapPage);
+        label_18 = new QLabel(TrajectoryPage);
         label_18->setObjectName("label_18");
         label_18->setStyleSheet(QString::fromUtf8("font: 18pt \"Microsoft YaHei UI\";\n"
 "color: rgb(0, 0, 0);"));
@@ -761,53 +762,47 @@ public:
 
         horizontalLayout_25->addItem(horizontalSpacer_51);
 
-        Map_BackHomeButton = new QPushButton(MapPage);
-        Map_BackHomeButton->setObjectName("Map_BackHomeButton");
-        Map_BackHomeButton->setMinimumSize(QSize(0, 60));
-        Map_BackHomeButton->setStyleSheet(QString::fromUtf8("font: 18pt \"Microsoft YaHei UI\";\n"
+        Trajectory_BackHomeButton = new QPushButton(TrajectoryPage);
+        Trajectory_BackHomeButton->setObjectName("Trajectory_BackHomeButton");
+        Trajectory_BackHomeButton->setMinimumSize(QSize(0, 60));
+        Trajectory_BackHomeButton->setStyleSheet(QString::fromUtf8("font: 18pt \"Microsoft YaHei UI\";\n"
 "background-color: rgb(37, 161, 244);\n"
 "color: rgb(0, 0, 0);\n"
 ""));
 
-        horizontalLayout_25->addWidget(Map_BackHomeButton);
+        horizontalLayout_25->addWidget(Trajectory_BackHomeButton);
 
 
         verticalLayout_22->addLayout(horizontalLayout_25);
 
         horizontalLayout_26 = new QHBoxLayout();
         horizontalLayout_26->setObjectName("horizontalLayout_26");
-        robotPosLabel = new QLabel(MapPage);
-        robotPosLabel->setObjectName("robotPosLabel");
-        robotPosLabel->setMinimumSize(QSize(300, 0));
-        robotPosLabel->setStyleSheet(QString::fromUtf8("font: 12pt \"Microsoft YaHei UI\";\n"
-"color: rgb(0, 0, 0);"));
-
-        horizontalLayout_26->addWidget(robotPosLabel);
-
         horizontalSpacer_52 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
         horizontalLayout_26->addItem(horizontalSpacer_52);
 
-        MapSwitchButton = new QPushButton(MapPage);
-        MapSwitchButton->setObjectName("MapSwitchButton");
-        MapSwitchButton->setMinimumSize(QSize(0, 60));
-        MapSwitchButton->setStyleSheet(QString::fromUtf8("font: 15pt \"Microsoft YaHei UI\";\n"
+        TrajectoryClearButton = new QPushButton(TrajectoryPage);
+        TrajectoryClearButton->setObjectName("TrajectoryClearButton");
+        TrajectoryClearButton->setMinimumSize(QSize(0, 60));
+        TrajectoryClearButton->setStyleSheet(QString::fromUtf8("font: 15pt \"Microsoft YaHei UI\";\n"
 "color: rgb(0, 0, 0);"));
 
-        horizontalLayout_26->addWidget(MapSwitchButton);
+        horizontalLayout_26->addWidget(TrajectoryClearButton);
+
+        horizontalSpacer_53 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+
+        horizontalLayout_26->addItem(horizontalSpacer_53);
 
 
         verticalLayout_22->addLayout(horizontalLayout_26);
 
-        MapLabel = new QLabel(MapPage);
-        MapLabel->setObjectName("MapLabel");
-        MapLabel->setMinimumSize(QSize(0, 500));
-        MapLabel->setStyleSheet(QString::fromUtf8("font: 18pt \"Microsoft YaHei UI\";\n"
-"color: rgb(0, 0, 0);"));
+        graphicsView = new QGraphicsView(TrajectoryPage);
+        graphicsView->setObjectName("graphicsView");
+        graphicsView->setStyleSheet(QString::fromUtf8(""));
 
-        verticalLayout_22->addWidget(MapLabel);
+        verticalLayout_22->addWidget(graphicsView);
 
-        stackedWidget->addWidget(MapPage);
+        stackedWidget->addWidget(TrajectoryPage);
         FaultPage = new QWidget();
         FaultPage->setObjectName("FaultPage");
         verticalLayout_20 = new QVBoxLayout(FaultPage);
@@ -1952,13 +1947,11 @@ public:
         label_7->setText(QCoreApplication::translate("MainWindow", "\351\237\263\344\271\220\346\222\255\346\224\276", nullptr));
         FaultButton->setText(QString());
         label_13->setText(QCoreApplication::translate("MainWindow", "\346\225\205\351\232\234\350\257\212\346\226\255", nullptr));
-        MapButton->setText(QString());
-        label_5->setText(QCoreApplication::translate("MainWindow", "\345\234\260\345\233\276\346\236\204\345\273\272", nullptr));
-        label_18->setText(QCoreApplication::translate("MainWindow", "\345\234\260\345\233\276\346\236\204\345\273\272", nullptr));
-        Map_BackHomeButton->setText(QCoreApplication::translate("MainWindow", "\350\277\224\345\233\236\344\270\273\351\241\265", nullptr));
-        robotPosLabel->setText(QString());
-        MapSwitchButton->setText(QCoreApplication::translate("MainWindow", "\345\274\200\345\220\257\345\234\260\345\233\276", nullptr));
-        MapLabel->setText(QString());
+        TrajectoryButton->setText(QString());
+        label_5->setText(QCoreApplication::translate("MainWindow", "\345\216\206\345\217\262\350\275\250\350\277\271", nullptr));
+        label_18->setText(QCoreApplication::translate("MainWindow", "\345\216\206\345\217\262\350\275\250\350\277\271", nullptr));
+        Trajectory_BackHomeButton->setText(QCoreApplication::translate("MainWindow", "\350\277\224\345\233\236\344\270\273\351\241\265", nullptr));
+        TrajectoryClearButton->setText(QCoreApplication::translate("MainWindow", "\346\270\205\351\231\244\350\275\250\350\277\271", nullptr));
         label_17->setText(QCoreApplication::translate("MainWindow", "\346\225\205\351\232\234\350\257\212\346\226\255", nullptr));
         Fault_BackHomeButton->setText(QCoreApplication::translate("MainWindow", "\350\277\224\345\233\236\344\270\273\351\241\265", nullptr));
         label_35->setText(QCoreApplication::translate("MainWindow", "\350\257\255\351\237\263\344\272\244\344\272\222", nullptr));

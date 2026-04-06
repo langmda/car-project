@@ -47,6 +47,7 @@ template <> constexpr inline auto MainWindow::qt_create_metaobjectdata<qt_meta_t
         "on_DataRecordButton_clicked",
         "on_CameraButton_clicked",
         "on_FaultButton_clicked",
+        "on_TrajectoryButton_clicked",
         "on_VoiceInteractionButton_clicked",
         "on_Parameter_BackHomeButton_clicked",
         "on_CarControl_BackHomeButton_clicked",
@@ -56,6 +57,7 @@ template <> constexpr inline auto MainWindow::qt_create_metaobjectdata<qt_meta_t
         "on_Camera_BackHomeButton_clicked",
         "on_Fault_BackHomeButton_clicked",
         "on_VoiceInteraction_BackHomeButton_clicked",
+        "on_Trajectory_BackHomeButton_clicked",
         "on_FrontButton_clicked",
         "on_LeftButton_clicked",
         "on_RightButton_clicked",
@@ -77,7 +79,8 @@ template <> constexpr inline auto MainWindow::qt_create_metaobjectdata<qt_meta_t
         "on_captureBtn_clicked",
         "on_recordBtn_clicked",
         "on_selectPhotoDirBtn_clicked",
-        "on_selectVideoDirBtn_clicked"
+        "on_selectVideoDirBtn_clicked",
+        "on_TrajectoryClearButton_clicked"
     };
 
     QtMocHelpers::UintData qt_methods {
@@ -95,66 +98,72 @@ template <> constexpr inline auto MainWindow::qt_create_metaobjectdata<qt_meta_t
         QtMocHelpers::SlotData<void()>(7, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'on_FaultButton_clicked'
         QtMocHelpers::SlotData<void()>(8, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_VoiceInteractionButton_clicked'
+        // Slot 'on_TrajectoryButton_clicked'
         QtMocHelpers::SlotData<void()>(9, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_Parameter_BackHomeButton_clicked'
+        // Slot 'on_VoiceInteractionButton_clicked'
         QtMocHelpers::SlotData<void()>(10, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_CarControl_BackHomeButton_clicked'
+        // Slot 'on_Parameter_BackHomeButton_clicked'
         QtMocHelpers::SlotData<void()>(11, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_SensorData_BackHomeButton_clicked'
+        // Slot 'on_CarControl_BackHomeButton_clicked'
         QtMocHelpers::SlotData<void()>(12, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_Music_BackHomeButton_clicked'
+        // Slot 'on_SensorData_BackHomeButton_clicked'
         QtMocHelpers::SlotData<void()>(13, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_DataRecord_BackHomeButton_clicked'
+        // Slot 'on_Music_BackHomeButton_clicked'
         QtMocHelpers::SlotData<void()>(14, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_Camera_BackHomeButton_clicked'
+        // Slot 'on_DataRecord_BackHomeButton_clicked'
         QtMocHelpers::SlotData<void()>(15, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_Fault_BackHomeButton_clicked'
+        // Slot 'on_Camera_BackHomeButton_clicked'
         QtMocHelpers::SlotData<void()>(16, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_VoiceInteraction_BackHomeButton_clicked'
+        // Slot 'on_Fault_BackHomeButton_clicked'
         QtMocHelpers::SlotData<void()>(17, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_FrontButton_clicked'
+        // Slot 'on_VoiceInteraction_BackHomeButton_clicked'
         QtMocHelpers::SlotData<void()>(18, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_LeftButton_clicked'
+        // Slot 'on_Trajectory_BackHomeButton_clicked'
         QtMocHelpers::SlotData<void()>(19, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_RightButton_clicked'
+        // Slot 'on_FrontButton_clicked'
         QtMocHelpers::SlotData<void()>(20, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_BackButton_clicked'
+        // Slot 'on_LeftButton_clicked'
         QtMocHelpers::SlotData<void()>(21, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_SwitchModeButton_clicked'
+        // Slot 'on_RightButton_clicked'
         QtMocHelpers::SlotData<void()>(22, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_LedButton_clicked'
+        // Slot 'on_BackButton_clicked'
         QtMocHelpers::SlotData<void()>(23, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_SwitchBtn_clicked'
+        // Slot 'on_SwitchModeButton_clicked'
         QtMocHelpers::SlotData<void()>(24, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_PrevBtn_clicked'
+        // Slot 'on_LedButton_clicked'
         QtMocHelpers::SlotData<void()>(25, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_NextBtn_clicked'
+        // Slot 'on_SwitchBtn_clicked'
         QtMocHelpers::SlotData<void()>(26, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_PrevBtn_clicked'
+        QtMocHelpers::SlotData<void()>(27, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_NextBtn_clicked'
+        QtMocHelpers::SlotData<void()>(28, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'on_VolumeSlider_valueChanged'
-        QtMocHelpers::SlotData<void(int)>(27, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::Int, 28 },
+        QtMocHelpers::SlotData<void(int)>(29, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Int, 30 },
         }}),
         // Slot 'on_MusicListWidget_itemClicked'
-        QtMocHelpers::SlotData<void(QListWidgetItem *)>(29, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { 0x80000000 | 30, 31 },
+        QtMocHelpers::SlotData<void(QListWidgetItem *)>(31, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { 0x80000000 | 32, 33 },
         }}),
         // Slot 'on_ProgressSlider_sliderReleased'
-        QtMocHelpers::SlotData<void()>(32, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_MusicModeBtn_released'
-        QtMocHelpers::SlotData<void()>(33, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_UpdataParameterBtn_clicked'
         QtMocHelpers::SlotData<void()>(34, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_DataRecordBtn_clicked'
+        // Slot 'on_MusicModeBtn_released'
         QtMocHelpers::SlotData<void()>(35, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_captureBtn_clicked'
+        // Slot 'on_UpdataParameterBtn_clicked'
         QtMocHelpers::SlotData<void()>(36, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_recordBtn_clicked'
+        // Slot 'on_DataRecordBtn_clicked'
         QtMocHelpers::SlotData<void()>(37, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_selectPhotoDirBtn_clicked'
+        // Slot 'on_captureBtn_clicked'
         QtMocHelpers::SlotData<void()>(38, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_selectVideoDirBtn_clicked'
+        // Slot 'on_recordBtn_clicked'
         QtMocHelpers::SlotData<void()>(39, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_selectPhotoDirBtn_clicked'
+        QtMocHelpers::SlotData<void()>(40, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_selectVideoDirBtn_clicked'
+        QtMocHelpers::SlotData<void()>(41, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_TrajectoryClearButton_clicked'
+        QtMocHelpers::SlotData<void()>(42, 2, QMC::AccessPrivate, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -185,34 +194,37 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 4: _t->on_DataRecordButton_clicked(); break;
         case 5: _t->on_CameraButton_clicked(); break;
         case 6: _t->on_FaultButton_clicked(); break;
-        case 7: _t->on_VoiceInteractionButton_clicked(); break;
-        case 8: _t->on_Parameter_BackHomeButton_clicked(); break;
-        case 9: _t->on_CarControl_BackHomeButton_clicked(); break;
-        case 10: _t->on_SensorData_BackHomeButton_clicked(); break;
-        case 11: _t->on_Music_BackHomeButton_clicked(); break;
-        case 12: _t->on_DataRecord_BackHomeButton_clicked(); break;
-        case 13: _t->on_Camera_BackHomeButton_clicked(); break;
-        case 14: _t->on_Fault_BackHomeButton_clicked(); break;
-        case 15: _t->on_VoiceInteraction_BackHomeButton_clicked(); break;
-        case 16: _t->on_FrontButton_clicked(); break;
-        case 17: _t->on_LeftButton_clicked(); break;
-        case 18: _t->on_RightButton_clicked(); break;
-        case 19: _t->on_BackButton_clicked(); break;
-        case 20: _t->on_SwitchModeButton_clicked(); break;
-        case 21: _t->on_LedButton_clicked(); break;
-        case 22: _t->on_SwitchBtn_clicked(); break;
-        case 23: _t->on_PrevBtn_clicked(); break;
-        case 24: _t->on_NextBtn_clicked(); break;
-        case 25: _t->on_VolumeSlider_valueChanged((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
-        case 26: _t->on_MusicListWidget_itemClicked((*reinterpret_cast<std::add_pointer_t<QListWidgetItem*>>(_a[1]))); break;
-        case 27: _t->on_ProgressSlider_sliderReleased(); break;
-        case 28: _t->on_MusicModeBtn_released(); break;
-        case 29: _t->on_UpdataParameterBtn_clicked(); break;
-        case 30: _t->on_DataRecordBtn_clicked(); break;
-        case 31: _t->on_captureBtn_clicked(); break;
-        case 32: _t->on_recordBtn_clicked(); break;
-        case 33: _t->on_selectPhotoDirBtn_clicked(); break;
-        case 34: _t->on_selectVideoDirBtn_clicked(); break;
+        case 7: _t->on_TrajectoryButton_clicked(); break;
+        case 8: _t->on_VoiceInteractionButton_clicked(); break;
+        case 9: _t->on_Parameter_BackHomeButton_clicked(); break;
+        case 10: _t->on_CarControl_BackHomeButton_clicked(); break;
+        case 11: _t->on_SensorData_BackHomeButton_clicked(); break;
+        case 12: _t->on_Music_BackHomeButton_clicked(); break;
+        case 13: _t->on_DataRecord_BackHomeButton_clicked(); break;
+        case 14: _t->on_Camera_BackHomeButton_clicked(); break;
+        case 15: _t->on_Fault_BackHomeButton_clicked(); break;
+        case 16: _t->on_VoiceInteraction_BackHomeButton_clicked(); break;
+        case 17: _t->on_Trajectory_BackHomeButton_clicked(); break;
+        case 18: _t->on_FrontButton_clicked(); break;
+        case 19: _t->on_LeftButton_clicked(); break;
+        case 20: _t->on_RightButton_clicked(); break;
+        case 21: _t->on_BackButton_clicked(); break;
+        case 22: _t->on_SwitchModeButton_clicked(); break;
+        case 23: _t->on_LedButton_clicked(); break;
+        case 24: _t->on_SwitchBtn_clicked(); break;
+        case 25: _t->on_PrevBtn_clicked(); break;
+        case 26: _t->on_NextBtn_clicked(); break;
+        case 27: _t->on_VolumeSlider_valueChanged((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
+        case 28: _t->on_MusicListWidget_itemClicked((*reinterpret_cast<std::add_pointer_t<QListWidgetItem*>>(_a[1]))); break;
+        case 29: _t->on_ProgressSlider_sliderReleased(); break;
+        case 30: _t->on_MusicModeBtn_released(); break;
+        case 31: _t->on_UpdataParameterBtn_clicked(); break;
+        case 32: _t->on_DataRecordBtn_clicked(); break;
+        case 33: _t->on_captureBtn_clicked(); break;
+        case 34: _t->on_recordBtn_clicked(); break;
+        case 35: _t->on_selectPhotoDirBtn_clicked(); break;
+        case 36: _t->on_selectVideoDirBtn_clicked(); break;
+        case 37: _t->on_TrajectoryClearButton_clicked(); break;
         default: ;
         }
     }
@@ -237,14 +249,14 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 35)
+        if (_id < 38)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 35;
+        _id -= 38;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 35)
+        if (_id < 38)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 35;
+        _id -= 38;
     }
     return _id;
 }

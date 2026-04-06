@@ -1045,6 +1045,7 @@ D:/work/qt/home/build/Qt_6_10_1_for_Android_arm64_v8a-Debug/home_autogen/EWIEGA4
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtGui/qkeysequence.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtGui/qpaintdevice.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtGui/qpalette.h \
+  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtGui/qpen.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtGui/qpixelformat.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtGui/qpixmap.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtGui/qpolygon.h \
@@ -1066,6 +1067,7 @@ D:/work/qt/home/build/Qt_6_10_1_for_Android_arm64_v8a-Debug/home_autogen/EWIEGA4
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtNetwork/qtnetworkexports.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtNetwork/qtnetworkglobal.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/QFileDialog \
+  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/QGraphicsScene \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/QListWidgetItem \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/QMainWindow \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/QMessageBox \
@@ -1078,6 +1080,7 @@ D:/work/qt/home/build/Qt_6_10_1_for_Android_arm64_v8a-Debug/home_autogen/EWIEGA4
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qdialogbuttonbox.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qfiledialog.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qframe.h \
+  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qgraphicsscene.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qlistview.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qlistwidget.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qmainwindow.h \

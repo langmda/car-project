@@ -69,13 +69,13 @@
 			{
 				"command" : 7,
 				"file" : 0,
-				"line" : 808,
+				"line" : 631,
 				"parent" : 6
 			},
 			{
 				"command" : 7,
 				"file" : 0,
-				"line" : 631,
+				"line" : 808,
 				"parent" : 6
 			}
 		]
@@ -88,11 +88,11 @@
 		},
 		{
 			"backtrace" : 8,
-			"id" : "home_copy_apk_dependencies::@6890427a1f51a3e7e1df"
+			"id" : "qt_internal_plugins::@6890427a1f51a3e7e1df"
 		},
 		{
 			"backtrace" : 9,
-			"id" : "qt_internal_plugins::@6890427a1f51a3e7e1df"
+			"id" : "home_copy_apk_dependencies::@6890427a1f51a3e7e1df"
 		}
 	],
 	"id" : "home_prepare_apk_dir::@6890427a1f51a3e7e1df",

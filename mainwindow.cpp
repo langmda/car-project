@@ -102,6 +102,18 @@ MainWindow::MainWindow(QWidget *parent)
     ui->FaultTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->FaultTableWidget->setColumnWidth(0, 120);
     ui->FaultTableWidget->setColumnWidth(1, 120);
+
+    /*
+    trajectoryScene = new QGraphicsScene(this);
+    ui->graphicsView->setScene(trajectoryScene);
+    ui->graphicsView->setRenderHint(QPainter::Antialiasing);
+    // 设置坐标系：原点在中心，x向右，y向上（根据您的需要）
+    trajectoryScene->setSceneRect(-20, -20, 40, 40); // 10x10米范围
+    */
+    trajectoryScene = new QGraphicsScene(this);
+    ui->graphicsView->setScene(trajectoryScene);
+    ui->graphicsView->setSceneRect(-20, -20, 40, 40);
+    ui->graphicsView->centerOn(0, 0);  // 强制视图中心对准原点
 }
 
 MainWindow::~MainWindow()
@@ -230,6 +242,24 @@ void MainWindow::readTcpData()
                 QString displayText = QString("[%1] 识别结果：%2").arg(timeStr).arg(text);
                 ui->voiceResultTextEdit->append(displayText);
             }
+            else if (msgType == "pose_update")
+            {
+                QJsonObject data = obj["data"].toObject();
+                double x = data["x"].toDouble();
+                double y = data["y"].toDouble();
+                double theta = data["theta"].toDouble();
+                robotX = x;
+                robotY = y;
+                robotTheta = theta;
+
+                // 添加轨迹点
+                trajectoryPoints.append(QPointF(x, y));
+                // 限制点数
+                while (trajectoryPoints.size() > 500) trajectoryPoints.removeFirst();
+
+                // 更新显示
+                updateTrajectoryDisplay();
+            }
         }
     }
 }
@@ -285,6 +315,7 @@ void MainWindow::on_DataRecordButton_clicked() { ui->stackedWidget->setCurrentWi
 void MainWindow::on_FaultButton_clicked() { ui->stackedWidget->setCurrentWidget(ui->FaultPage); }
 void MainWindow::on_VoiceInteractionButton_clicked() { ui->stackedWidget->setCurrentWidget(ui->VoiceInteractionPage); }
 void MainWindow::on_CameraButton_clicked() { ui->stackedWidget->setCurrentWidget(ui->CameraPage); }
+void MainWindow::on_TrajectoryButton_clicked(){ ui->stackedWidget->setCurrentWidget(ui->TrajectoryPage );}
 
 void MainWindow::on_CarControl_BackHomeButton_clicked() { ui->stackedWidget->setCurrentWidget(ui->HomePage); }
 void MainWindow::on_SensorData_BackHomeButton_clicked() { ui->stackedWidget->setCurrentWidget(ui->HomePage); }
@@ -294,7 +325,7 @@ void MainWindow::on_DataRecord_BackHomeButton_clicked() { ui->stackedWidget->set
 void MainWindow::on_Fault_BackHomeButton_clicked() { ui->stackedWidget->setCurrentWidget(ui->HomePage); }
 void MainWindow::on_VoiceInteraction_BackHomeButton_clicked() { ui->stackedWidget->setCurrentWidget(ui->HomePage); }
 void MainWindow::on_Camera_BackHomeButton_clicked() { ui->stackedWidget->setCurrentWidget(ui->HomePage); }
-
+void MainWindow::on_Trajectory_BackHomeButton_clicked() { ui->stackedWidget->setCurrentWidget(ui->HomePage); }
 /***********小车控制的函数***********/
 void MainWindow::on_FrontButton_clicked()
 {
@@ -769,3 +800,46 @@ void MainWindow::Sensor_Fault(int temp, int humi, int encoderLeft, int encoderRi
         ui->FaultTableWidget->setItem(row, 1, new QTableWidgetItem("电量读数异常"));
     }
 }
+/*************历史轨迹的函数************/
+void MainWindow::updateTrajectoryDisplay()
+{
+    trajectoryScene->clear();
+
+    // 绘制轨迹折线
+    if (trajectoryPoints.size() >= 2) {
+        QPen pen(Qt::blue, 0.05);
+        for (int i = 0; i < trajectoryPoints.size() - 1; ++i) {
+            QLineF line(trajectoryPoints[i], trajectoryPoints[i+1]);
+            trajectoryScene->addLine(line, pen);
+        }
+    }
+
+    // 绘制小车（圆形+箭头）
+    qreal radius = 0.15; // 车半径0.15米
+    QBrush brush(Qt::red);
+    QPen pen(Qt::black, 0.02);
+    trajectoryScene->addEllipse(robotX - radius, robotY - radius,
+                                radius*2, radius*2, pen, brush);
+    // 绘制箭头（从圆心沿朝向延伸0.3米）
+    qreal arrowLen = 0.3;
+    qreal endX = robotX + arrowLen * cos(robotTheta);
+    qreal endY = robotY + arrowLen * sin(robotTheta);
+    trajectoryScene->addLine(robotX, robotY, endX, endY, QPen(Qt::red, 0.03));
+
+    // 自动缩放视图以显示所有图形
+    if (!trajectoryPoints.isEmpty() || (robotX != 0 || robotY != 0)) {
+        QRectF rect = trajectoryScene->itemsBoundingRect();
+        // 给边界加一点边距
+        rect = rect.adjusted(-0.5, -0.5, 0.5, 0.5);
+        ui->graphicsView->fitInView(rect, Qt::KeepAspectRatio);
+    }
+}
+
+void MainWindow::on_TrajectoryClearButton_clicked()
+{
+    trajectoryPoints.clear();
+    updateTrajectoryDisplay();
+}
+
+
+

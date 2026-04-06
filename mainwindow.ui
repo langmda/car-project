@@ -806,7 +806,7 @@ color: rgb(0, 0, 0);</string>
           <item row="1" column="4">
            <layout class="QVBoxLayout" name="verticalLayout_9">
             <item>
-             <widget class="QPushButton" name="MapButton">
+             <widget class="QPushButton" name="TrajectoryButton">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -854,7 +854,7 @@ QPushButton:pressed {
 color: rgb(0, 0, 0);</string>
               </property>
               <property name="text">
-               <string>地图构建</string>
+               <string>历史轨迹</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -958,7 +958,7 @@ color: rgb(0, 0, 0);</string>
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="MapPage">
+      <widget class="QWidget" name="TrajectoryPage">
        <layout class="QVBoxLayout" name="verticalLayout_22">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -969,7 +969,7 @@ color: rgb(0, 0, 0);</string>
 color: rgb(0, 0, 0);</string>
             </property>
             <property name="text">
-             <string>地图构建</string>
+             <string>历史轨迹</string>
             </property>
            </widget>
           </item>
@@ -987,7 +987,7 @@ color: rgb(0, 0, 0);</string>
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="Map_BackHomeButton">
+           <widget class="QPushButton" name="Trajectory_BackHomeButton">
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -1010,23 +1010,6 @@ color: rgb(0, 0, 0);
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_26">
           <item>
-           <widget class="QLabel" name="robotPosLabel">
-            <property name="minimumSize">
-             <size>
-              <width>300</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">font: 12pt &quot;Microsoft YaHei UI&quot;;
-color: rgb(0, 0, 0);</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item>
            <spacer name="horizontalSpacer_52">
             <property name="orientation">
              <enum>Qt::Orientation::Horizontal</enum>
@@ -1040,7 +1023,7 @@ color: rgb(0, 0, 0);</string>
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="MapSwitchButton">
+           <widget class="QPushButton" name="TrajectoryClearButton">
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -1052,26 +1035,29 @@ color: rgb(0, 0, 0);</string>
 color: rgb(0, 0, 0);</string>
             </property>
             <property name="text">
-             <string>开启地图</string>
+             <string>清除轨迹</string>
             </property>
            </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_53">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </item>
         <item>
-         <widget class="QLabel" name="MapLabel">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>500</height>
-           </size>
-          </property>
+         <widget class="QGraphicsView" name="graphicsView">
           <property name="styleSheet">
-           <string notr="true">font: 18pt &quot;Microsoft YaHei UI&quot;;
-color: rgb(0, 0, 0);</string>
-          </property>
-          <property name="text">
-           <string/>
+           <string notr="true"/>
           </property>
          </widget>
         </item>
