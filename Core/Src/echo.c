@@ -17,7 +17,7 @@ float right_distance;
 float front_distance;
 uint8_t sensor_counter = 0;	//用于舵机定时器的更新中断中（20ms），计数来实现每隔1s读取并发送传感器数据
 
-//更新中断函数，用于记录测距过程中计数器溢出次数，来计算距离，并实现0.1s读取一次传感器数据
+//更新中断函数，用于记录测距过程中计数器溢出次数，来计算距离，并实现1s读取一次传感器数据
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
     if (htim->Instance == TIM1)
@@ -25,7 +25,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         tim1_overflow++; // 记录测距过程中计数器溢出次数
 
         sensor_counter++;      //记录更新中断的次数，用于实现1s的更新中断
-        if(sensor_counter >= 5) // 每过0.1s就读取传感器数据并发送，并计算车速
+        if(sensor_counter >= 50) // 每过1s就读取传感器数据并发送，并计算车速
         {
             read_and_transmit = 1;
             sensor_counter = 0;
