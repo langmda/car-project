@@ -27,16 +27,6 @@ Project File Date:  03/13/2026
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 5 (build 528)', folder: 'D:\tool\Keil\ARM\ARMCC\Bin'
 Build target 'bizhang'
-compiling sensor.c...
-../Core/Inc/sensor.h(26): warning:  #1-D: last line of file ends without a newline
-  #endif
-../Core/Inc/delay.h(9): warning:  #1-D: last line of file ends without a newline
-  #endif
-../Core/Inc/dht11.h(32): warning:  #1-D: last line of file ends without a newline
-  #endif
-..\Core\Src\sensor.c(26): warning:  #1-D: last line of file ends without a newline
-  }
-..\Core\Src\sensor.c: 4 warnings, 0 errors
 compiling user.c...
 ../Core/Inc/echo.h(14): warning:  #1295-D: Deprecated declaration Get_Left_Right_Distance - give arg types
   void Get_Left_Right_Distance();
@@ -45,46 +35,10 @@ compiling user.c...
 ..\Core\Src\user.c(105): warning:  #1-D: last line of file ends without a newline
   }
 ..\Core\Src\user.c: 3 warnings, 0 errors
-compiling main.c...
-../Core/Inc/delay.h(9): warning:  #1-D: last line of file ends without a newline
-  #endif
-../Core/Inc/Dht11.h(32): warning:  #1-D: last line of file ends without a newline
-  #endif
-../Core/Inc/sensor.h(26): warning:  #1-D: last line of file ends without a newline
-  #endif
-../Core/Inc/echo.h(14): warning:  #1295-D: Deprecated declaration Get_Left_Right_Distance - give arg types
-  void Get_Left_Right_Distance();
-../Core/Src/main.c(120): warning:  #167-D: argument of type "volatile uint8_t *" is incompatible with parameter of type "uint8_t *"
-    HAL_UARTEx_ReceiveToIdle_DMA(&huart2, uart_rx_buffer, sizeof(uart_rx_buffer));
-../Core/Src/main.c(128): warning:  #177-D: variable "buffer"  was declared but never referenced
-    char buffer[256];
-../Core/Src/main.c: 6 warnings, 0 errors
-compiling uart.c...
-..\Core\Src\uart.c(56): warning:  #167-D: argument of type "volatile uint8_t *" is incompatible with parameter of type "uint8_t *"
-  	HAL_UARTEx_ReceiveToIdle_IT(huart, uart_rx_buffer, sizeof(uart_rx_buffer));
-..\Core\Src\uart.c(58): warning:  #1-D: last line of file ends without a newline
-  }
-..\Core\Src\uart.c: 2 warnings, 0 errors
-compiling echo.c...
-../Core/Inc/echo.h(14): warning:  #1295-D: Deprecated declaration Get_Left_Right_Distance - give arg types
-  void Get_Left_Right_Distance();
-../Core/Inc/sensor.h(26): warning:  #1-D: last line of file ends without a newline
-  #endif
-../Core/Inc/delay.h(9): warning:  #1-D: last line of file ends without a newline
-  #endif
-..\Core\Src\echo.c(173): warning:  #1-D: last line of file ends without a newline
-  }
-..\Core\Src\echo.c: 4 warnings, 0 errors
-compiling pid.c...
-..\Core\Src\pid.c(84): warning:  #223-D: function "abs" declared implicitly
-      if(abs(pid_base_pwm) < 2160)		//0-30%
-..\Core\Src\pid.c(128): warning:  #1-D: last line of file ends without a newline
-  }
-..\Core\Src\pid.c: 2 warnings, 0 errors
 linking...
 Program Size: Code=20894 RO-data=310 RW-data=120 ZI-data=2320  
 FromELF: creating hex file...
-"bizhang\bizhang.axf" - 0 Error(s), 21 Warning(s).
+"bizhang\bizhang.axf" - 0 Error(s), 3 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -107,7 +61,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.0.1
-Build Time Elapsed:  00:00:04
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>

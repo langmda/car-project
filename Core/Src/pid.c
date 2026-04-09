@@ -69,7 +69,7 @@ float PID_Calculate(void)
     
     pid_output = (pid_error * Kp) + pid_integral;
 	
-	//Print_Debug();
+	Print_Debug();
 	
     return pid_output;
 }

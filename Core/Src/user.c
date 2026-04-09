@@ -65,31 +65,31 @@ void User_Code()
 			if(left_distance > (right_distance + 10))   //左侧障碍物距离较远，向左转
 			{
 				//后退
-				Set_Motor(-30, -30);
+				Set_Motor(-2000, -2000);
 				HAL_Delay(200);
 				//停下
 				Set_Motor(0, 0);
-				HAL_Delay(200);
-				//左转
-				Set_Motor(-30, 30);
 				HAL_Delay(100);
+				//左转
+				Set_Motor(-2000, 2000);
+				HAL_Delay(200);
 			}
 			else                                //右侧障碍物距离较远，向右转
 			{
 				//后退
-				Set_Motor(-30, -30);
+				Set_Motor(-2000, -2000);
 				HAL_Delay(200);
 				//停下
 				Set_Motor(0, 0);
-				HAL_Delay(200);
-				//右转
-				Set_Motor(30, -30);
 				HAL_Delay(100);
+				//右转
+				Set_Motor(2000, -2000);
+				HAL_Delay(200);
 			}
 		}else       //前方障碍物距离较远
 		{
 			//前进
-			Set_Motor(30, 30);
+			Set_Motor(2000, 2000);
 		}
 	}
 	if(read_and_transmit == 1)
