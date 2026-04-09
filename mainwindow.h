@@ -17,7 +17,6 @@
 #include <QDateTime>
 #include <QFile>
 #include <QTimer>
-#include <QGraphicsScene>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -83,8 +82,16 @@ private slots:
     void on_selectPhotoDirBtn_clicked();
     void on_selectVideoDirBtn_clicked();
 
-    //历史轨迹页面的槽函数
-    void on_TrajectoryClearButton_clicked();
+    //轨迹行走页面的槽函数
+
+    void on_Trajectory_Square_Button_clicked();
+    void on_Trajectory_Eight_Button_clicked();
+    void on_Trajectory_Triangle_Button_clicked();
+    void on_Trajectory_Star_Button_clicked();
+    void on_Trajectory_Circle_Button_clicked();
+
+signals:
+    void newFrameReceived(const QByteArray &imageData, const QJsonArray &boxes, double timestamp);
 
 private:
     void readTcpData();
@@ -124,24 +131,17 @@ private:
     bool isManualMusicSwitch = false;
     QTimer *musicSwitchTimer;
 
-    // PID参数结构体
-    #pragma pack(1)
-        struct PIDParams
-        {
-            uint8_t cmd;
-            float Kp;
-            float Ki;
-            float I_Fil;
-            int32_t I_Lim;
-            int32_t PWM_Lim;
-        };
-    #pragma pack()
-
-    // 地图构建相关
-    QGraphicsScene *trajectoryScene;
-    QList<QPointF> trajectoryPoints;   // 存储轨迹点
-    double robotX, robotY, robotTheta; // 当前位姿
-
-    void updateTrajectoryDisplay();    // 更新绘图
+// PID参数结构体
+#pragma pack(1)
+    struct PIDParams {
+        uint8_t cmd;
+        float Kp;
+        float Ki;
+        float I_Fil;
+        int32_t I_Lim;
+        int32_t PWM_Lim;
+    };
+#pragma pack()
 };
+
 #endif // MAINWINDOW_H

@@ -70,10 +70,10 @@
 	"dependencies" : 
 	[
 		{
-			"id" : "home_prepare_apk_dir::@6890427a1f51a3e7e1df"
+			"id" : "home::@6890427a1f51a3e7e1df"
 		},
 		{
-			"id" : "home::@6890427a1f51a3e7e1df"
+			"id" : "home_prepare_apk_dir::@6890427a1f51a3e7e1df"
 		},
 		{
 			"id" : "qt_internal_plugins::@6890427a1f51a3e7e1df"

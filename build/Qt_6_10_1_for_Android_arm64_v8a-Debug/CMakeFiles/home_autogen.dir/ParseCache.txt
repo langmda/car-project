@@ -1046,7 +1046,6 @@ D:/work/qt/home/mainwindow.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtGui/qkeysequence.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtGui/qpaintdevice.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtGui/qpalette.h
- mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtGui/qpen.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtGui/qpixelformat.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtGui/qpixmap.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtGui/qpolygon.h
@@ -1068,7 +1067,6 @@ D:/work/qt/home/mainwindow.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtNetwork/qtnetworkexports.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtNetwork/qtnetworkglobal.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/QFileDialog
- mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/QGraphicsScene
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/QListWidgetItem
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/QMainWindow
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/QMessageBox
@@ -1081,7 +1079,6 @@ D:/work/qt/home/mainwindow.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qdialogbuttonbox.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qfiledialog.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qframe.h
- mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qgraphicsscene.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qlistview.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qlistwidget.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qmainwindow.h

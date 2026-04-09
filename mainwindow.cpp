@@ -15,6 +15,7 @@
 #include <QMessageBox>
 #include <QTableWidgetItem>
 #include <QMouseEvent>
+#include <QPainter>
 
 //手机发给树莓派的命令
 #define MOVE_FORWARD 0X01
@@ -68,17 +69,20 @@ MainWindow::MainWindow(QWidget *parent)
     ui->labelPhotoDir->setText("照片目录：" + photoSaveDir);
     ui->labelVideoDir->setText("视频目录：" + videoSaveDir);
 
+    // 连接TCP
     tcpSocket = new QTcpSocket(this);
     tcpSocket->abort();
     tcpSocket->connectToHost(QHostAddress(RASPI_IP), RASPI_PORT);
+    connect(tcpSocket, &QTcpSocket::readyRead, this, &MainWindow::readTcpData);
 
+    // 连接摄像头的TCP
     cameraSocket = new QTcpSocket(this);
     cameraSocket->abort();
     cameraSocket->setSocketOption(QTcpSocket::LowDelayOption, 1);
     cameraSocket->connectToHost(QHostAddress(RASPI_IP), 8889);
-    connect(tcpSocket, &QTcpSocket::readyRead, this, &MainWindow::readTcpData);
     connect(cameraSocket, &QTcpSocket::readyRead, this, &MainWindow::receiveCameraData);
 
+    // 初始化音乐播放页面的定时器
     musicSwitchTimer = new QTimer(this);
     musicSwitchTimer->setSingleShot(true);
     musicSwitchTimer->setInterval(1000);
@@ -86,6 +90,7 @@ MainWindow::MainWindow(QWidget *parent)
         isManualMusicSwitch = false;
     });
 
+    // 初始化数据记录页面的TableWidget
     ui->DataRecordTableWidget->setColumnCount(3);
     QStringList headers;
     headers << "时间戳" << "左编码器值" << "右编码器值";
@@ -95,6 +100,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->DataRecordTableWidget->setColumnWidth(1, 120);
     ui->DataRecordTableWidget->setColumnWidth(2, 120);
 
+    // 初始化故障时间页面的TableWidget
     ui->FaultTableWidget->setColumnCount(2);
     QStringList faultHeaders;
     faultHeaders << "时间戳" << "故障事件";
@@ -102,18 +108,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->FaultTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->FaultTableWidget->setColumnWidth(0, 120);
     ui->FaultTableWidget->setColumnWidth(1, 120);
-
-    /*
-    trajectoryScene = new QGraphicsScene(this);
-    ui->graphicsView->setScene(trajectoryScene);
-    ui->graphicsView->setRenderHint(QPainter::Antialiasing);
-    // 设置坐标系：原点在中心，x向右，y向上（根据您的需要）
-    trajectoryScene->setSceneRect(-20, -20, 40, 40); // 10x10米范围
-    */
-    trajectoryScene = new QGraphicsScene(this);
-    ui->graphicsView->setScene(trajectoryScene);
-    ui->graphicsView->setSceneRect(-20, -20, 40, 40);
-    ui->graphicsView->centerOn(0, 0);  // 强制视图中心对准原点
 }
 
 MainWindow::~MainWindow()
@@ -175,47 +169,54 @@ void MainWindow::camera_connect_error()
 
 void MainWindow::readTcpData()
 {
-    while (tcpSocket->bytesAvailable() > 0)
+    while (tcpSocket->bytesAvailable() > 0) // 持续读取所有可用数据
     {
         char peekCmd;
-        tcpSocket->peek(&peekCmd, 1);
-        if (static_cast<quint8>(peekCmd) == 0x0F)
+        tcpSocket->peek(&peekCmd, 1);  // 偷看第一个字节，不取走
+        //单字节命令
+        if (static_cast<quint8>(peekCmd) == 0x0F)   // 如果是拍照命令 (0x0F)
         {
             char cmd;
-            tcpSocket->read(&cmd, 1);
+            tcpSocket->read(&cmd, 1);  // 正式读取命令
             qDebug() << "📸 收到拍照命令";
             on_captureBtn_clicked();
-            continue;
+            continue;  // 继续循环，处理下一个数据
         }
-        else if (static_cast<quint8>(peekCmd) == 0x10)
+        else if (static_cast<quint8>(peekCmd) == 0x10)  // 如果是录像切换命令 (0x10)
         {
             char cmd;
-            tcpSocket->read(&cmd, 1);
+            tcpSocket->read(&cmd, 1);  // 正式读取命令
             qDebug() << "🎥 收到录像切换命令";
             on_recordBtn_clicked();
-            continue;
+            continue;  // 继续循环，处理下一个数据
         }
+        //JSON数据
+        // 1. 读取树莓派发送的数据（按行读取，每行是一份JSON数据）
         if (tcpSocket->canReadLine())
         {
-            QByteArray line = tcpSocket->readLine().trimmed();
+            QByteArray line = tcpSocket->readLine().trimmed();  // 读取一行并去掉换行/空格
             if (line.isEmpty()) continue;
 
+            // 2. 解析JSON数据
             QJsonParseError jsonError;
             QJsonDocument doc = QJsonDocument::fromJson(line, &jsonError);
-            if (jsonError.error != QJsonParseError::NoError) {
+            if (jsonError.error != QJsonParseError::NoError) {      // JSON解析失败
                 QMessageBox::warning(this, "提示", "❌ JSON解析失败");
                 continue;
             }
             QJsonObject obj = doc.object();
-            QString msgType = obj["type"].toString();
+            QString msgType = obj["type"].toString();   //获取JSON数据类型
 
-            if (msgType == "music_list")
+            // 3. 根据数据类型进行对应的处理
+            if (msgType == "music_list")    //音乐文件列表
             {
+                //获取数据
                 QJsonArray musicArray = obj["data"].toArray();
                 musicListCache.clear();
                 for (int i=0; i<musicArray.size(); i++)
                 {musicListCache.append(musicArray[i].toString());}
-                if (musicListCache.isEmpty())
+                //更新音乐列表和当前播放音乐标签
+                if (musicListCache.isEmpty())   //没有检测到音乐文件信息缓存，报错
                 {
                     QMessageBox::warning(this, "提示", "未检测到音乐文件缓存");
                     return;
@@ -224,41 +225,28 @@ void MainWindow::readTcpData()
                 updateMusicLabel();
                 updateMusicHighlight ();
             }
-            else if (msgType == "status_update")
+            else if (msgType == "status_update")   //状态更新，包括传感器数据、音乐播放状态
             {
                 QJsonObject dataObj = obj["data"].toObject();
+
                 QJsonObject sensorObj = dataObj["sensor"].toObject();
                 QJsonObject musicObj = dataObj["music"].toObject();
+
                 sensorUpdata(sensorObj);
                 musicUpdata(musicObj);
             }
-            else if (msgType == "voice_result")
+            else if (msgType == "voice_result")     //语音识别结果
             {
                 QJsonObject dataObj = obj["data"].toObject();
                 QString text = dataObj["text"].toString();
                 double timestamp = dataObj["timestamp"].toDouble();
+
+                // 转换为本地时间显示
                 QDateTime time = QDateTime::fromSecsSinceEpoch(timestamp);
                 QString timeStr = time.toString("hh:mm:ss");
+
                 QString displayText = QString("[%1] 识别结果：%2").arg(timeStr).arg(text);
-                ui->voiceResultTextEdit->append(displayText);
-            }
-            else if (msgType == "pose_update")
-            {
-                QJsonObject data = obj["data"].toObject();
-                double x = data["x"].toDouble();
-                double y = data["y"].toDouble();
-                double theta = data["theta"].toDouble();
-                robotX = x;
-                robotY = y;
-                robotTheta = theta;
-
-                // 添加轨迹点
-                trajectoryPoints.append(QPointF(x, y));
-                // 限制点数
-                while (trajectoryPoints.size() > 500) trajectoryPoints.removeFirst();
-
-                // 更新显示
-                updateTrajectoryDisplay();
+                ui->voiceResultTextEdit->append(displayText);  // 需要先在UI中添加一个QTextEdit
             }
         }
     }
@@ -315,7 +303,8 @@ void MainWindow::on_DataRecordButton_clicked() { ui->stackedWidget->setCurrentWi
 void MainWindow::on_FaultButton_clicked() { ui->stackedWidget->setCurrentWidget(ui->FaultPage); }
 void MainWindow::on_VoiceInteractionButton_clicked() { ui->stackedWidget->setCurrentWidget(ui->VoiceInteractionPage); }
 void MainWindow::on_CameraButton_clicked() { ui->stackedWidget->setCurrentWidget(ui->CameraPage); }
-void MainWindow::on_TrajectoryButton_clicked(){ ui->stackedWidget->setCurrentWidget(ui->TrajectoryPage );}
+void MainWindow::on_TrajectoryButton_clicked(){ ui->stackedWidget->setCurrentWidget(ui->TrajectoryPage); }
+
 
 void MainWindow::on_CarControl_BackHomeButton_clicked() { ui->stackedWidget->setCurrentWidget(ui->HomePage); }
 void MainWindow::on_SensorData_BackHomeButton_clicked() { ui->stackedWidget->setCurrentWidget(ui->HomePage); }
@@ -325,7 +314,10 @@ void MainWindow::on_DataRecord_BackHomeButton_clicked() { ui->stackedWidget->set
 void MainWindow::on_Fault_BackHomeButton_clicked() { ui->stackedWidget->setCurrentWidget(ui->HomePage); }
 void MainWindow::on_VoiceInteraction_BackHomeButton_clicked() { ui->stackedWidget->setCurrentWidget(ui->HomePage); }
 void MainWindow::on_Camera_BackHomeButton_clicked() { ui->stackedWidget->setCurrentWidget(ui->HomePage); }
-void MainWindow::on_Trajectory_BackHomeButton_clicked() { ui->stackedWidget->setCurrentWidget(ui->HomePage); }
+void MainWindow::on_Trajectory_BackHomeButton_clicked() { ui->stackedWidget->setCurrentWidget(ui->HomePage);  }
+/***********功能页面切换按钮的函数***********/
+
+
 /***********小车控制的函数***********/
 void MainWindow::on_FrontButton_clicked()
 {
@@ -367,6 +359,8 @@ void MainWindow::on_LedButton_clicked()
     quint8 cmd = LED_SWITCH;
     tcpSocket->write((char*)&cmd, 1);
 }
+/***********小车控制的函数***********/
+
 
 /***********音乐播放器的函数***********/
 void MainWindow::on_SwitchBtn_clicked()
@@ -539,6 +533,8 @@ void MainWindow::musicUpdata(QJsonObject musicObj)
         updateMusicHighlight();
     }
 }
+/***********音乐播放器的函数***********/
+
 
 /*************传感器的函数************/
 void MainWindow::sensorUpdata(QJsonObject sensorObj)
@@ -572,6 +568,9 @@ void MainWindow::sensorUpdata(QJsonObject sensorObj)
     ui->piBatLabel->setText(QString("树莓派电池电量：%1%").arg(piBatPercent, 0, 'f', 1));
     ui->MotorBatLabel->setText(QString("电机电池电量：%1%").arg(motorBatPercent, 0, 'f', 1));
 }
+/*************传感器的函数************/
+
+
 /*************参数调试的函数************/
 void MainWindow::on_UpdataParameterBtn_clicked()
 {
@@ -610,6 +609,9 @@ void MainWindow::on_UpdataParameterBtn_clicked()
     ui->IlimLabel->setText(QString("I_lim : %1").arg(params.I_Lim));
     ui->PWMlimLabel->setText(QString("PWM_lim : %1").arg(params.PWM_Lim));
 }
+/*************参数调试的函数************/
+
+
 /*************数据记录的函数************/
 void MainWindow::on_DataRecordBtn_clicked()
 {
@@ -657,6 +659,9 @@ void MainWindow::addEncoderData(int left, int right)
     ui->DataRecordTableWidget->setItem(row, 1, new QTableWidgetItem(QString::number(left)));
     ui->DataRecordTableWidget->setItem(row, 2, new QTableWidgetItem(QString::number(right)));
 }
+/*************数据记录的函数************/
+
+
 /*************实时画面的函数************/
 void MainWindow::on_captureBtn_clicked()
 {
@@ -737,6 +742,9 @@ void MainWindow::on_selectVideoDirBtn_clicked()
         QMessageBox::information(this, "提示", "视频保存目录已设置为：" + dir);
     }
 }
+/*************实时画面的函数************/
+
+
 /*************故障诊断的函数************/
 void MainWindow::Sensor_Fault(int temp, int humi, int encoderLeft, int encoderRight, int piAdc, int motorAdc)
 {
@@ -800,46 +808,27 @@ void MainWindow::Sensor_Fault(int temp, int humi, int encoderLeft, int encoderRi
         ui->FaultTableWidget->setItem(row, 1, new QTableWidgetItem("电量读数异常"));
     }
 }
-/*************历史轨迹的函数************/
-void MainWindow::updateTrajectoryDisplay()
+/*************故障诊断的函数************/
+
+/*************轨迹行走的函数************/
+void MainWindow::on_Trajectory_Square_Button_clicked()
 {
-    trajectoryScene->clear();
 
-    // 绘制轨迹折线
-    if (trajectoryPoints.size() >= 2) {
-        QPen pen(Qt::blue, 0.05);
-        for (int i = 0; i < trajectoryPoints.size() - 1; ++i) {
-            QLineF line(trajectoryPoints[i], trajectoryPoints[i+1]);
-            trajectoryScene->addLine(line, pen);
-        }
-    }
-
-    // 绘制小车（圆形+箭头）
-    qreal radius = 0.15; // 车半径0.15米
-    QBrush brush(Qt::red);
-    QPen pen(Qt::black, 0.02);
-    trajectoryScene->addEllipse(robotX - radius, robotY - radius,
-                                radius*2, radius*2, pen, brush);
-    // 绘制箭头（从圆心沿朝向延伸0.3米）
-    qreal arrowLen = 0.3;
-    qreal endX = robotX + arrowLen * cos(robotTheta);
-    qreal endY = robotY + arrowLen * sin(robotTheta);
-    trajectoryScene->addLine(robotX, robotY, endX, endY, QPen(Qt::red, 0.03));
-
-    // 自动缩放视图以显示所有图形
-    if (!trajectoryPoints.isEmpty() || (robotX != 0 || robotY != 0)) {
-        QRectF rect = trajectoryScene->itemsBoundingRect();
-        // 给边界加一点边距
-        rect = rect.adjusted(-0.5, -0.5, 0.5, 0.5);
-        ui->graphicsView->fitInView(rect, Qt::KeepAspectRatio);
-    }
 }
-
-void MainWindow::on_TrajectoryClearButton_clicked()
+void MainWindow::on_Trajectory_Eight_Button_clicked()
 {
-    trajectoryPoints.clear();
-    updateTrajectoryDisplay();
+
 }
+void MainWindow::on_Trajectory_Triangle_Button_clicked()
+{
 
+}
+void MainWindow::on_Trajectory_Star_Button_clicked()
+{
 
+}
+void MainWindow::on_Trajectory_Circle_Button_clicked()
+{
 
+}
+/*************轨迹行走的函数************/

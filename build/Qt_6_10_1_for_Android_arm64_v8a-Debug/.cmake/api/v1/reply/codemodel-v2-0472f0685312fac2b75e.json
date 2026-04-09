@@ -101,7 +101,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "home::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-home-Debug-64a05d797d2b5faf5e42.json",
+					"jsonFile" : "target-home-Debug-5757f39af482e44df8be.json",
 					"name" : "home",
 					"projectIndex" : 0
 				},
@@ -136,21 +136,21 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "home_make_aar::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-home_make_aar-Debug-f9cafbceb19a43d9fcea.json",
+					"jsonFile" : "target-home_make_aar-Debug-c5073306689fd2027c63.json",
 					"name" : "home_make_aar",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "home_make_apk::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-home_make_apk-Debug-3de3adaa7e16e5746650.json",
+					"jsonFile" : "target-home_make_apk-Debug-8578aaa3d4f11629bbbb.json",
 					"name" : "home_make_apk",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "home_prepare_apk_dir::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-home_prepare_apk_dir-Debug-e38868f784ca82895e35.json",
+					"jsonFile" : "target-home_prepare_apk_dir-Debug-85ad94dbce86eadc570b.json",
 					"name" : "home_prepare_apk_dir",
 					"projectIndex" : 0
 				},

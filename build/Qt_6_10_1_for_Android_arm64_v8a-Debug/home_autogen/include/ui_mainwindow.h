@@ -11,7 +11,6 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QGraphicsView>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
@@ -103,11 +102,19 @@ public:
     QLabel *label_18;
     QSpacerItem *horizontalSpacer_51;
     QPushButton *Trajectory_BackHomeButton;
-    QHBoxLayout *horizontalLayout_26;
+    QSpacerItem *verticalSpacer_23;
+    QGridLayout *gridLayout_4;
+    QSpacerItem *horizontalSpacer_55;
+    QPushButton *Trajectory_Square_Button;
+    QPushButton *Trajectory_Eight_Button;
+    QPushButton *Trajectory_Circle_Button;
+    QSpacerItem *horizontalSpacer_54;
+    QPushButton *Trajectory_Star_Button;
+    QPushButton *Trajectory_Triangle_Button;
     QSpacerItem *horizontalSpacer_52;
-    QPushButton *TrajectoryClearButton;
     QSpacerItem *horizontalSpacer_53;
-    QGraphicsView *graphicsView;
+    QSpacerItem *horizontalSpacer_56;
+    QSpacerItem *verticalSpacer_24;
     QWidget *FaultPage;
     QVBoxLayout *verticalLayout_20;
     QHBoxLayout *horizontalLayout_22;
@@ -265,7 +272,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName("MainWindow");
-        MainWindow->resize(810, 754);
+        MainWindow->resize(758, 639);
         QSizePolicy sizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -692,7 +699,7 @@ public:
 "    max-height: 100px;\n"
 "    border: none;\n"
 "    background-color: rgb(37, 161, 244);\n"
-"    qproperty-icon: url(:/image/\345\234\260\345\233\276\346\236\204\345\273\272.png);\n"
+"    qproperty-icon: url(:/image/\350\275\250\350\277\271\350\241\214\350\265\260.png);\n"
 "    qproperty-iconSize: 90px 90px;  /* \346\216\247\345\210\266\345\233\276\346\240\207\345\244\247\345\260\217 */\n"
 "}\n"
 "\n"
@@ -775,32 +782,138 @@ public:
 
         verticalLayout_22->addLayout(horizontalLayout_25);
 
-        horizontalLayout_26 = new QHBoxLayout();
-        horizontalLayout_26->setObjectName("horizontalLayout_26");
+        verticalSpacer_23 = new QSpacerItem(20, 40, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
+
+        verticalLayout_22->addItem(verticalSpacer_23);
+
+        gridLayout_4 = new QGridLayout();
+        gridLayout_4->setObjectName("gridLayout_4");
+        horizontalSpacer_55 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+
+        gridLayout_4->addItem(horizontalSpacer_55, 0, 3, 1, 1);
+
+        Trajectory_Square_Button = new QPushButton(TrajectoryPage);
+        Trajectory_Square_Button->setObjectName("Trajectory_Square_Button");
+        Trajectory_Square_Button->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+"    border-radius: 25px;\n"
+"    min-width: 80px;\n"
+"    max-width: 80px;\n"
+"    min-height: 80px;\n"
+"    max-height: 80px;\n"
+"    border: none;\n"
+"    background-color: rgb(37, 161, 244);\n"
+"    qproperty-icon: url(:/image/\346\255\243\346\226\271\345\275\242.png);\n"
+"    qproperty-iconSize: 60px 60px;  /* \346\216\247\345\210\266\345\233\276\346\240\207\345\244\247\345\260\217 */\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color: rgb(30, 129, 195);\n"
+"}"));
+
+        gridLayout_4->addWidget(Trajectory_Square_Button, 0, 0, 1, 1);
+
+        Trajectory_Eight_Button = new QPushButton(TrajectoryPage);
+        Trajectory_Eight_Button->setObjectName("Trajectory_Eight_Button");
+        Trajectory_Eight_Button->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+"    border-radius: 25px;\n"
+"    min-width: 80px;\n"
+"    max-width: 80px;\n"
+"    min-height: 80px;\n"
+"    max-height: 80px;\n"
+"    border: none;\n"
+"    background-color: rgb(37, 161, 244);\n"
+"    qproperty-icon: url(:/image/8\345\255\227\345\275\242.png);\n"
+"    qproperty-iconSize: 70px 70px;  /* \346\216\247\345\210\266\345\233\276\346\240\207\345\244\247\345\260\217 */\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color: rgb(30, 129, 195);\n"
+"}"));
+
+        gridLayout_4->addWidget(Trajectory_Eight_Button, 1, 1, 1, 1);
+
+        Trajectory_Circle_Button = new QPushButton(TrajectoryPage);
+        Trajectory_Circle_Button->setObjectName("Trajectory_Circle_Button");
+        Trajectory_Circle_Button->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+"    border-radius: 25px;\n"
+"    min-width: 80px;\n"
+"    max-width: 80px;\n"
+"    min-height: 80px;\n"
+"    max-height: 80px;\n"
+"    border: none;\n"
+"    background-color: rgb(37, 161, 244);\n"
+"    qproperty-icon: url(:/image/\345\234\206\345\275\242.png);\n"
+"    qproperty-iconSize: 75px 75px;  /* \346\216\247\345\210\266\345\233\276\346\240\207\345\244\247\345\260\217 */\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color: rgb(30, 129, 195);\n"
+"}"));
+
+        gridLayout_4->addWidget(Trajectory_Circle_Button, 0, 4, 1, 1);
+
+        horizontalSpacer_54 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+
+        gridLayout_4->addItem(horizontalSpacer_54, 0, 1, 1, 1);
+
+        Trajectory_Star_Button = new QPushButton(TrajectoryPage);
+        Trajectory_Star_Button->setObjectName("Trajectory_Star_Button");
+        Trajectory_Star_Button->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+"    border-radius: 25px;\n"
+"    min-width: 80px;\n"
+"    max-width: 80px;\n"
+"    min-height: 80px;\n"
+"    max-height: 80px;\n"
+"    border: none;\n"
+"    background-color: rgb(37, 161, 244);\n"
+"    qproperty-icon: url(:/image/\346\230\237\345\275\242.png);\n"
+"    qproperty-iconSize: 65px 65px;  /* \346\216\247\345\210\266\345\233\276\346\240\207\345\244\247\345\260\217 */\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color: rgb(30, 129, 195);\n"
+"}"));
+
+        gridLayout_4->addWidget(Trajectory_Star_Button, 1, 3, 1, 1);
+
+        Trajectory_Triangle_Button = new QPushButton(TrajectoryPage);
+        Trajectory_Triangle_Button->setObjectName("Trajectory_Triangle_Button");
+        Trajectory_Triangle_Button->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+"    border-radius: 25px;\n"
+"    min-width: 80px;\n"
+"    max-width: 80px;\n"
+"    min-height: 80px;\n"
+"    max-height: 80px;\n"
+"    border: none;\n"
+"    background-color: rgb(37, 161, 244);\n"
+"    qproperty-icon: url(:/image/\344\270\211\350\247\222\345\275\242.png);\n"
+"    qproperty-iconSize: 80px 80px;  /* \346\216\247\345\210\266\345\233\276\346\240\207\345\244\247\345\260\217 */\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color: rgb(30, 129, 195);\n"
+"}"));
+
+        gridLayout_4->addWidget(Trajectory_Triangle_Button, 0, 2, 1, 1);
+
         horizontalSpacer_52 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
-        horizontalLayout_26->addItem(horizontalSpacer_52);
-
-        TrajectoryClearButton = new QPushButton(TrajectoryPage);
-        TrajectoryClearButton->setObjectName("TrajectoryClearButton");
-        TrajectoryClearButton->setMinimumSize(QSize(0, 60));
-        TrajectoryClearButton->setStyleSheet(QString::fromUtf8("font: 15pt \"Microsoft YaHei UI\";\n"
-"color: rgb(0, 0, 0);"));
-
-        horizontalLayout_26->addWidget(TrajectoryClearButton);
+        gridLayout_4->addItem(horizontalSpacer_52, 1, 0, 1, 1);
 
         horizontalSpacer_53 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
-        horizontalLayout_26->addItem(horizontalSpacer_53);
+        gridLayout_4->addItem(horizontalSpacer_53, 1, 2, 1, 1);
+
+        horizontalSpacer_56 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+
+        gridLayout_4->addItem(horizontalSpacer_56, 1, 4, 1, 1);
 
 
-        verticalLayout_22->addLayout(horizontalLayout_26);
+        verticalLayout_22->addLayout(gridLayout_4);
 
-        graphicsView = new QGraphicsView(TrajectoryPage);
-        graphicsView->setObjectName("graphicsView");
-        graphicsView->setStyleSheet(QString::fromUtf8(""));
+        verticalSpacer_24 = new QSpacerItem(20, 40, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
 
-        verticalLayout_22->addWidget(graphicsView);
+        verticalLayout_22->addItem(verticalSpacer_24);
 
         stackedWidget->addWidget(TrajectoryPage);
         FaultPage = new QWidget();
@@ -1913,7 +2026,7 @@ public:
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName("menubar");
-        menubar->setGeometry(QRect(0, 0, 810, 25));
+        menubar->setGeometry(QRect(0, 0, 758, 25));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName("statusbar");
@@ -1948,10 +2061,14 @@ public:
         FaultButton->setText(QString());
         label_13->setText(QCoreApplication::translate("MainWindow", "\346\225\205\351\232\234\350\257\212\346\226\255", nullptr));
         TrajectoryButton->setText(QString());
-        label_5->setText(QCoreApplication::translate("MainWindow", "\345\216\206\345\217\262\350\275\250\350\277\271", nullptr));
-        label_18->setText(QCoreApplication::translate("MainWindow", "\345\216\206\345\217\262\350\275\250\350\277\271", nullptr));
+        label_5->setText(QCoreApplication::translate("MainWindow", "\350\275\250\350\277\271\350\241\214\350\265\260", nullptr));
+        label_18->setText(QCoreApplication::translate("MainWindow", "\350\275\250\350\277\271\350\241\214\350\265\260", nullptr));
         Trajectory_BackHomeButton->setText(QCoreApplication::translate("MainWindow", "\350\277\224\345\233\236\344\270\273\351\241\265", nullptr));
-        TrajectoryClearButton->setText(QCoreApplication::translate("MainWindow", "\346\270\205\351\231\244\350\275\250\350\277\271", nullptr));
+        Trajectory_Square_Button->setText(QString());
+        Trajectory_Eight_Button->setText(QString());
+        Trajectory_Circle_Button->setText(QString());
+        Trajectory_Star_Button->setText(QString());
+        Trajectory_Triangle_Button->setText(QString());
         label_17->setText(QCoreApplication::translate("MainWindow", "\346\225\205\351\232\234\350\257\212\346\226\255", nullptr));
         Fault_BackHomeButton->setText(QCoreApplication::translate("MainWindow", "\350\277\224\345\233\236\344\270\273\351\241\265", nullptr));
         label_35->setText(QCoreApplication::translate("MainWindow", "\350\257\255\351\237\263\344\272\244\344\272\222", nullptr));
