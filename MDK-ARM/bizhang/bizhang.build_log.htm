@@ -27,18 +27,22 @@ Project File Date:  03/13/2026
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 5 (build 528)', folder: 'D:\tool\Keil\ARM\ARMCC\Bin'
 Build target 'bizhang'
-compiling user.c...
-../Core/Inc/echo.h(14): warning:  #1295-D: Deprecated declaration Get_Left_Right_Distance - give arg types
-  void Get_Left_Right_Distance();
-../Core/Inc/sensor.h(26): warning:  #1-D: last line of file ends without a newline
-  #endif
-..\Core\Src\user.c(105): warning:  #1-D: last line of file ends without a newline
+compiling pid.c...
+..\Core\Src\pid.c(44): warning:  #223-D: function "abs" declared implicitly
+  	if (abs(left - last_left) > 200) left = last_left;
+..\Core\Src\pid.c(45): warning:  #223-D: function "abs" declared implicitly
+  	if (abs(right - last_right) > 200) right = last_right;
+..\Core\Src\pid.c(71): warning:  #223-D: function "abs" declared implicitly
+  	if (abs(pid_base_pwm) > 100) is_moving = 1;
+..\Core\Src\pid.c(75): warning:  #223-D: function "abs" declared implicitly
+  	if (abs(pid_error) < 50 && is_moving) 
+..\Core\Src\pid.c(140): warning:  #1-D: last line of file ends without a newline
   }
-..\Core\Src\user.c: 3 warnings, 0 errors
+..\Core\Src\pid.c: 5 warnings, 0 errors
 linking...
-Program Size: Code=20894 RO-data=310 RW-data=120 ZI-data=2320  
+Program Size: Code=27766 RO-data=862 RW-data=124 ZI-data=2324  
 FromELF: creating hex file...
-"bizhang\bizhang.axf" - 0 Error(s), 3 Warning(s).
+"bizhang\bizhang.axf" - 0 Error(s), 5 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -61,7 +65,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.0.1
-Build Time Elapsed:  00:00:02
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>

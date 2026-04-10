@@ -14,6 +14,7 @@ uint8_t read_and_transmit = 0;		//读取并发送的标志位
 void Read_And_Transmit(void) 
 {
 	raw_data.cmd = SENSOR_DATA; 
+	
 	raw_data.encoder_left = encoder_left;
 	raw_data.encoder_right = encoder_right;
 	

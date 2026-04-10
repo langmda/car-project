@@ -8,7 +8,6 @@ typedef struct {
     uint8_t cmd;
     float Kp;
     float Ki;
-    float I_Fil;
     int32_t I_Lim;
     int32_t PWM_Lim;
 } PIDParams_t;
@@ -25,7 +24,6 @@ extern volatile int16_t encoder_left, encoder_right;
 
 extern float Kp;
 extern float Ki;
-extern float I_Filtering;	
 extern uint16_t I_Limit;		
 extern uint16_t PWM_Limit; 
 #endif

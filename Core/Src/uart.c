@@ -44,7 +44,6 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 			PIDParams_t *pid = (PIDParams_t*)uart_rx_buffer;
 			Kp = pid->Kp;
 			Ki = pid->Ki;
-			I_Filtering = pid->I_Fil;
 			I_Limit = pid->I_Lim;
 			PWM_Limit = pid->PWM_Lim;
 		}   
