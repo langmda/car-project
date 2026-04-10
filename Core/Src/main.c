@@ -55,7 +55,8 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+  char buffer[256];
+  float pitch, roll, yaw;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -121,19 +122,32 @@ int main(void)
   __HAL_DMA_DISABLE_IT(&hdma_usart2_rx, DMA_IT_HT);
 
   HAL_ADC_Start_DMA(&hadc1, (uint32_t*)adc_buf, 2); 
-
+  
   delay_init();
   DHT11_Init();
   
-  char buffer[256];
+  int res = mpu_dmp_init();
+  sprintf(buffer, "mpu_dmp_init result: %d\r\n", res);
+  HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
+  
+  uint8_t whoami = MPU_Read_Byte(0x75);
+  sprintf(buffer, "WHO_AM_I = 0x%02X\r\n", whoami);
+  HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	User_Code();  
-
+	//User_Code();  
+	  
+	if (mpu_dmp_get_data(&pitch, &roll, &yaw) == 0) 
+	{
+			sprintf(buffer, "pitch=%.2f, roll=%.2f, yaw=%.2f\r\n", pitch, roll, yaw);
+			HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
+    }
+    HAL_Delay(10);   // 不必太快，DMP 输出频率默认 100Hz
+	
 	/*
 	float dis = Get_Median_Distance(1);
 	sprintf(buffer, "距离%f\r\n", dis);

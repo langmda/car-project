@@ -22,27 +22,26 @@ Dialog DLL:      TCM.DLL V1.32.0.0
  
 <h2>Project:</h2>
 D:\work\stm32cubemx\bizhang\MDK-ARM\bizhang.uvprojx
-Project File Date:  03/13/2026
+Project File Date:  04/10/2026
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 5 (build 528)', folder: 'D:\tool\Keil\ARM\ARMCC\Bin'
 Build target 'bizhang'
-compiling pid.c...
-..\Core\Src\pid.c(44): warning:  #223-D: function "abs" declared implicitly
-  	if (abs(left - last_left) > 200) left = last_left;
-..\Core\Src\pid.c(45): warning:  #223-D: function "abs" declared implicitly
-  	if (abs(right - last_right) > 200) right = last_right;
-..\Core\Src\pid.c(71): warning:  #223-D: function "abs" declared implicitly
-  	if (abs(pid_base_pwm) > 100) is_moving = 1;
-..\Core\Src\pid.c(75): warning:  #223-D: function "abs" declared implicitly
-  	if (abs(pid_error) < 50 && is_moving) 
-..\Core\Src\pid.c(140): warning:  #1-D: last line of file ends without a newline
-  }
-..\Core\Src\pid.c: 5 warnings, 0 errors
-linking...
-Program Size: Code=27766 RO-data=862 RW-data=124 ZI-data=2324  
-FromELF: creating hex file...
-"bizhang\bizhang.axf" - 0 Error(s), 5 Warning(s).
+compiling inv_mpu.c...
+..\Core\MPU6050\MyCode\inv_mpu.c(599): error:  #136: struct "gyro_reg_s"  has no field "accel_cfg2"
+      .accel_cfg2     = 0x1D,
+..\Core\MPU6050\MyCode\inv_mpu.c(822): error:  #136: struct "gyro_reg_s"  has no field "accel_cfg2"
+      if (
+..\Core\MPU6050\MyCode\inv_mpu.c(956): error:  #136: struct "gyro_reg_s"  has no field "lp_accel_odr"
+      if (
+..\Core\MPU6050\MyCode\inv_mpu.c(2792): error:  #136: struct "gyro_reg_s"  has no field "lp_accel_odr"
+          if (
+..\Core\MPU6050\MyCode\inv_mpu.c(2797): error:  #136: struct "gyro_reg_s"  has no field "accel_intel"
+          if (
+..\Core\MPU6050\MyCode\inv_mpu.c(2846): error:  #136: struct "gyro_reg_s"  has no field "accel_intel"
+      if (
+..\Core\MPU6050\MyCode\inv_mpu.c: 0 warnings, 6 errors
+"bizhang\bizhang.axf" - 6 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -65,6 +64,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.0.1
+Target not created.
 Build Time Elapsed:  00:00:01
 </pre>
 </body>

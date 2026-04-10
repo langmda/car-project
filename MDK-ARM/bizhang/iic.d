@@ -1,4 +1,4 @@
-bizhang\iic.o: ..\Core\MPU6050\IIC.c
+bizhang\iic.o: ..\Core\MPU6050\MyCode\IIC.c
 bizhang\iic.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h
 bizhang\iic.o: ../Core/Inc/stm32f1xx_hal_conf.h
 bizhang\iic.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h
@@ -29,5 +29,5 @@ bizhang\iic.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h
 bizhang\iic.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h
 bizhang\iic.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h
 bizhang\iic.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
-bizhang\iic.o: ..\Core\MPU6050\IIC.h
+bizhang\iic.o: ..\Core\MPU6050\MyCode\IIC.h
 bizhang\iic.o: D:\tool\Keil\ARM\ARMCC\Bin\..\include\inttypes.h

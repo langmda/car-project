@@ -1,10 +1,10 @@
-bizhang\inv_mpu_dmp_motion_driver.o: ..\Core\MPU6050\inv_mpu_dmp_motion_driver.c
+bizhang\inv_mpu_dmp_motion_driver.o: ..\Core\MPU6050\MyCode\inv_mpu_dmp_motion_driver.c
 bizhang\inv_mpu_dmp_motion_driver.o: D:\tool\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 bizhang\inv_mpu_dmp_motion_driver.o: D:\tool\Keil\ARM\ARMCC\Bin\..\include\stdint.h
 bizhang\inv_mpu_dmp_motion_driver.o: D:\tool\Keil\ARM\ARMCC\Bin\..\include\stdlib.h
 bizhang\inv_mpu_dmp_motion_driver.o: D:\tool\Keil\ARM\ARMCC\Bin\..\include\string.h
 bizhang\inv_mpu_dmp_motion_driver.o: D:\tool\Keil\ARM\ARMCC\Bin\..\include\math.h
-bizhang\inv_mpu_dmp_motion_driver.o: ..\Core\MPU6050\inv_mpu.h
+bizhang\inv_mpu_dmp_motion_driver.o: ..\Core\MPU6050\MyCode\inv_mpu.h
 bizhang\inv_mpu_dmp_motion_driver.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h
 bizhang\inv_mpu_dmp_motion_driver.o: ../Core/Inc/stm32f1xx_hal_conf.h
 bizhang\inv_mpu_dmp_motion_driver.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h
@@ -34,6 +34,6 @@ bizhang\inv_mpu_dmp_motion_driver.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1
 bizhang\inv_mpu_dmp_motion_driver.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h
 bizhang\inv_mpu_dmp_motion_driver.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h
 bizhang\inv_mpu_dmp_motion_driver.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
-bizhang\inv_mpu_dmp_motion_driver.o: ..\Core\MPU6050\inv_mpu_dmp_motion_driver.h
-bizhang\inv_mpu_dmp_motion_driver.o: ..\Core\MPU6050\dmpKey.h
-bizhang\inv_mpu_dmp_motion_driver.o: ..\Core\MPU6050\dmpmap.h
+bizhang\inv_mpu_dmp_motion_driver.o: ..\Core\MPU6050\MyCode\inv_mpu_dmp_motion_driver.h
+bizhang\inv_mpu_dmp_motion_driver.o: ..\Core\MPU6050\MyCode\dmpKey.h
+bizhang\inv_mpu_dmp_motion_driver.o: ..\Core\MPU6050\MyCode\dmpmap.h

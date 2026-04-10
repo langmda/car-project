@@ -1,4 +1,4 @@
-bizhang\mpu6050.o: ..\Core\MPU6050\mpu6050.c
+bizhang\mpu6050.o: ..\Core\MPU6050\MyCode\mpu6050.c
 bizhang\mpu6050.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h
 bizhang\mpu6050.o: ../Core/Inc/stm32f1xx_hal_conf.h
 bizhang\mpu6050.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h
@@ -29,6 +29,6 @@ bizhang\mpu6050.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h
 bizhang\mpu6050.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h
 bizhang\mpu6050.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h
 bizhang\mpu6050.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
-bizhang\mpu6050.o: ..\Core\MPU6050\mpu6050.h
-bizhang\mpu6050.o: ..\Core\MPU6050\IIC.h
+bizhang\mpu6050.o: ..\Core\MPU6050\MyCode\mpu6050.h
+bizhang\mpu6050.o: ..\Core\MPU6050\MyCode\IIC.h
 bizhang\mpu6050.o: D:\tool\Keil\ARM\ARMCC\Bin\..\include\inttypes.h
