@@ -4,6 +4,7 @@
 #include "motor.h"
 #include "sensor.h"
 #include "delay.h"
+#include "user.h"
 
 uint32_t echo_start = 0;    // Echo上升沿的计数值（发出超声波）
 uint32_t echo_end = 0;      // Echo下降沿的计数值（超声波返回）

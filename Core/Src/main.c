@@ -20,6 +20,7 @@
 #include "main.h"
 #include "adc.h"
 #include "dma.h"
+#include "i2c.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -35,6 +36,9 @@
 #include "motor.h"
 #include "pid.h"
 #include "delay.h"
+#include "inv_mpu.h"
+#include "servo.h"
+#include "infrared.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -56,7 +60,6 @@
 
 /* USER CODE BEGIN PV */
   char buffer[256];
-  float pitch, roll, yaw;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -106,6 +109,7 @@ int main(void)
   MX_TIM4_Init();
   MX_USART2_UART_Init();
   MX_TIM1_Init();
+  MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
@@ -126,33 +130,32 @@ int main(void)
   delay_init();
   DHT11_Init();
   
-  int res = mpu_dmp_init();
-  sprintf(buffer, "mpu_dmp_init result: %d\r\n", res);
-  HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
+  mpu_dmp_init();
   
-  uint8_t whoami = MPU_Read_Byte(0x75);
-  sprintf(buffer, "WHO_AM_I = 0x%02X\r\n", whoami);
-  HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
+  Set_Angle(90);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	//User_Code();  
-	  
+	User_Code();  
+	
+	/*
+	uint8_t infrared_data[5] = {0};
+	Read_IR_Sensor(infrared_data);
+	sprintf(buffer, "读取成功：%d %d %d %d %d\r\n", infrared_data[0], infrared_data[1], infrared_data[2], infrared_data[3], infrared_data[4]);
+	HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
+	HAL_Delay(1000); 
+	*/
+	
+	/*
 	if (mpu_dmp_get_data(&pitch, &roll, &yaw) == 0) 
 	{
 			sprintf(buffer, "pitch=%.2f, roll=%.2f, yaw=%.2f\r\n", pitch, roll, yaw);
 			HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
     }
-    HAL_Delay(10);   // 不必太快，DMP 输出频率默认 100Hz
-	
-	/*
-	float dis = Get_Median_Distance(1);
-	sprintf(buffer, "距离%f\r\n", dis);
-	HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
-	HAL_Delay(1000);
+    HAL_Delay(500);   // 不必太快，DMP 输出频率默认 100Hz
 	*/
 	  
     /* USER CODE END WHILE */

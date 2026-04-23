@@ -166,8 +166,8 @@ struct gyro_reg_s {
     unsigned char fifo_en;
     unsigned char gyro_cfg;
     unsigned char accel_cfg;
-//    unsigned char accel_cfg2;
-//    unsigned char lp_accel_odr;
+    unsigned char accel_cfg2;        // 补全缺失的行
+    unsigned char lp_accel_odr;       // 补全缺失的行
     unsigned char motion_thr;
     unsigned char motion_dur;
     unsigned char fifo_count_h;
@@ -178,7 +178,7 @@ struct gyro_reg_s {
     unsigned char int_enable;
     unsigned char dmp_int_status;
     unsigned char int_status;
-//    unsigned char accel_intel;
+    unsigned char accel_intel;        // 补全缺失的行
     unsigned char pwr_mgmt_1;
     unsigned char pwr_mgmt_2;
     unsigned char int_pin_cfg;
@@ -773,6 +773,7 @@ int mpu_init(void)
     if (i2c_write(st.hw->addr, st.reg->pwr_mgmt_1, 1, data))
         return -1;
 
+#if 0
 #if defined MPU6050
     /* Check product revision. */
     if (i2c_read(st.hw->addr, st.reg->accel_offs, 6, data))
@@ -821,6 +822,7 @@ int mpu_init(void)
     data[0] = BIT_FIFO_SIZE_1024 | 0x8;
     if (i2c_write(st.hw->addr, st.reg->accel_cfg2, 1, data))
         return -1;
+#endif
 #endif
 
     /* Set to invalid values to ensure no I2C writes are skipped. */
@@ -2961,8 +2963,8 @@ uint8_t mpu_dmp_init(void)
         if(res)return 6;
         res=dmp_set_fifo_rate(DEFAULT_MPU_HZ);	//设置DMP输出速率(最大不超过200Hz)
         if(res)return 7;
-        res=run_self_test();		//自检
-        if(res)return 8;
+        //res=run_self_test();		//自检
+        //if(res)return 8;
         res=mpu_set_dmp_state(1);	//使能DMP
         if(res)return 9;
     } else return 10;

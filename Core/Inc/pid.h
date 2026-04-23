@@ -21,9 +21,12 @@ void Debug_Print(const char* format, ...);
 void Print_Debug(void); 
 
 extern volatile int16_t encoder_left, encoder_right;
+extern volatile int32_t total_encoder_left;
+extern volatile int32_t total_encoder_right;
 
 extern float Kp;
 extern float Ki;
 extern uint16_t I_Limit;		
 extern uint16_t PWM_Limit; 
+extern int16_t last_left, last_right;
 #endif

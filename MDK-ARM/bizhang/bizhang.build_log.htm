@@ -22,26 +22,29 @@ Dialog DLL:      TCM.DLL V1.32.0.0
  
 <h2>Project:</h2>
 D:\work\stm32cubemx\bizhang\MDK-ARM\bizhang.uvprojx
-Project File Date:  04/10/2026
+Project File Date:  04/17/2026
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 5 (build 528)', folder: 'D:\tool\Keil\ARM\ARMCC\Bin'
 Build target 'bizhang'
-compiling inv_mpu.c...
-..\Core\MPU6050\MyCode\inv_mpu.c(599): error:  #136: struct "gyro_reg_s"  has no field "accel_cfg2"
-      .accel_cfg2     = 0x1D,
-..\Core\MPU6050\MyCode\inv_mpu.c(822): error:  #136: struct "gyro_reg_s"  has no field "accel_cfg2"
-      if (
-..\Core\MPU6050\MyCode\inv_mpu.c(956): error:  #136: struct "gyro_reg_s"  has no field "lp_accel_odr"
-      if (
-..\Core\MPU6050\MyCode\inv_mpu.c(2792): error:  #136: struct "gyro_reg_s"  has no field "lp_accel_odr"
-          if (
-..\Core\MPU6050\MyCode\inv_mpu.c(2797): error:  #136: struct "gyro_reg_s"  has no field "accel_intel"
-          if (
-..\Core\MPU6050\MyCode\inv_mpu.c(2846): error:  #136: struct "gyro_reg_s"  has no field "accel_intel"
-      if (
-..\Core\MPU6050\MyCode\inv_mpu.c: 0 warnings, 6 errors
-"bizhang\bizhang.axf" - 6 Error(s), 0 Warning(s).
+compiling Infrared.c...
+../Core/Inc/infrared.h(11): warning:  #1-D: last line of file ends without a newline
+  #endif
+../Core/Inc/delay.h(9): warning:  #1-D: last line of file ends without a newline
+  #endif
+..\Core\Src\Infrared.c(185): warning:  #223-D: function "strlen" declared implicitly
+              HAL_UART_Transmit(&huart2, (uint8_t*)buf, strlen(buf), 100);
+..\Core\Src\Infrared.c(295): warning:  #223-D: function "strlen" declared implicitly
+          HAL_UART_Transmit(&huart2, (uint8_t*)buf, strlen(buf), 100);
+..\Core\Src\Infrared.c(306): warning:  #1-D: last line of file ends without a newline
+  }
+..\Core\Src\Infrared.c(22): warning:  #177-D: variable "last_turn_direction"  was declared but never referenced
+  static int8_t last_turn_direction = 0;
+..\Core\Src\Infrared.c: 6 warnings, 0 errors
+linking...
+Program Size: Code=48320 RO-data=4256 RW-data=236 ZI-data=2548  
+FromELF: creating hex file...
+"bizhang\bizhang.axf" - 0 Error(s), 6 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -64,7 +67,6 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.0.1
-Target not created.
 Build Time Elapsed:  00:00:01
 </pre>
 </body>

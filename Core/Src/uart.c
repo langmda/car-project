@@ -39,13 +39,28 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
             }
             uart_rx_buffer[0] = STOP;
         }	
-		else if (uart_rx_buffer[0] == 0x0E) 
+		else if (uart_rx_buffer[0] == PID_PARAM) 
 		{
 			PIDParams_t *pid = (PIDParams_t*)uart_rx_buffer;
 			Kp = pid->Kp;
 			Ki = pid->Ki;
 			I_Limit = pid->I_Lim;
 			PWM_Limit = pid->PWM_Lim;
+		}   
+		else if (uart_rx_buffer[0] == LINE_FOLLOW_MODE_SWITCH) 
+		{
+			if (mode == LINE_FOLLOW)
+			{
+				mode = MANUAL;
+				PI_Param_Clear();
+				uart_rx_buffer[0] = STOP;
+			}
+			else
+			{
+				mode = LINE_FOLLOW;
+				PI_Param_Clear();
+				uart_rx_buffer[0] = STOP;
+			}
 		}   
 		else 
 		{

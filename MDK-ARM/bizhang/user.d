@@ -26,6 +26,7 @@ bizhang\user.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_adc.h
 bizhang\user.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_adc_ex.h
 bizhang\user.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h
 bizhang\user.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h
+bizhang\user.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_i2c.h
 bizhang\user.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h
 bizhang\user.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h
 bizhang\user.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h
@@ -39,3 +40,5 @@ bizhang\user.o: ../Core/Inc/main.h
 bizhang\user.o: ../Core/Inc/sensor.h
 bizhang\user.o: ../Core/Inc/pid.h
 bizhang\user.o: D:\tool\Keil\ARM\ARMCC\Bin\..\include\stdio.h
+bizhang\user.o: ../Core/Inc/trajectory.h
+bizhang\user.o: ../Core/Inc/infrared.h

@@ -26,12 +26,14 @@ bizhang\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_adc.h
 bizhang\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_adc_ex.h
 bizhang\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h
 bizhang\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h
+bizhang\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_i2c.h
 bizhang\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h
 bizhang\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h
 bizhang\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h
 bizhang\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
 bizhang\main.o: ../Core/Inc/adc.h
 bizhang\main.o: ../Core/Inc/dma.h
+bizhang\main.o: ../Core/Inc/i2c.h
 bizhang\main.o: ../Core/Inc/tim.h
 bizhang\main.o: ../Core/Inc/usart.h
 bizhang\main.o: ../Core/Inc/gpio.h
@@ -44,3 +46,6 @@ bizhang\main.o: ../Core/Inc/echo.h
 bizhang\main.o: D:\tool\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 bizhang\main.o: ../Core/Inc/motor.h
 bizhang\main.o: ../Core/Inc/pid.h
+bizhang\main.o: ../Core/MPU6050/MyCode/inv_mpu.h
+bizhang\main.o: ../Core/Inc/servo.h
+bizhang\main.o: ../Core/Inc/infrared.h

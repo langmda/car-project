@@ -26,6 +26,7 @@ bizhang\sensor.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_adc.h
 bizhang\sensor.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_adc_ex.h
 bizhang\sensor.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h
 bizhang\sensor.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h
+bizhang\sensor.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_i2c.h
 bizhang\sensor.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h
 bizhang\sensor.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h
 bizhang\sensor.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h
@@ -37,3 +38,4 @@ bizhang\sensor.o: ../Core/Inc/delay.h
 bizhang\sensor.o: ../Core/Inc/usart.h
 bizhang\sensor.o: ../Core/Inc/pid.h
 bizhang\sensor.o: ../Core/Inc/user.h
+bizhang\sensor.o: ../Core/MPU6050/MyCode/inv_mpu.h

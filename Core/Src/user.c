@@ -7,12 +7,17 @@
 #include "sensor.h"
 #include "pid.h"
 #include "stdio.h"
+#include "trajectory.h"
+#include "infrared.h"
 
 #define CMD_TIMEOUT 300		 //指令超时时间，如果距离上一次收到指令超过该事件，就会将命令切换为停止
 volatile uint32_t last_cmd_time = 0;  //上一次收到指令的时间
 uint8_t last_cmd  = 0xFF;	 //上一次收到的指令 
 uint8_t mode = MANUAL;		 //默认模式为手动操作
 volatile uint8_t uart_rx_buffer[128];
+
+uint8_t read_and_transmit = 0;		//读取并发送传感器数据的标志位
+uint8_t read_angle = 0;				//读取mpu6050的角度数据
 
 void User_Code()
 {	
@@ -37,7 +42,7 @@ void User_Code()
 				Set_Motor(0, 0);
 				break;
 			case MOVE_FORWARD:
-				PID_Go_Straight(2000);
+				Set_Motor(2000, 2000);
 				break;
 			case BACK_OFF:
 				Set_Motor(-2000, -2000);
@@ -47,6 +52,15 @@ void User_Code()
 				break;
 			case TURN_RIGHT:
 				Set_Motor(1500, -1500);
+				break;
+			case TRAJECTORY_Z:
+				trajectory_Z();
+				break;
+			case TRAJECTORY_J:
+				trajectory_J();
+				break;
+			case TRAJECTORY_U:
+				trajectory_U();
 				break;
 			default:
 				Set_Motor(0, 0);
@@ -92,6 +106,11 @@ void User_Code()
 			Set_Motor(2000, 2000);
 		}
 	}
+	else if (mode == LINE_FOLLOW)
+	{
+		Line_Follow_Task();   // 巡线主函数
+	}
+	
 	if(read_and_transmit == 1)
 	{
 		Read_And_Transmit(); //读取传感器数据并发送

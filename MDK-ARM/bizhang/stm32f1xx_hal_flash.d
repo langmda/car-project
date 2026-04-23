@@ -25,6 +25,7 @@ bizhang\stm32f1xx_hal_flash.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal
 bizhang\stm32f1xx_hal_flash.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_adc_ex.h
 bizhang\stm32f1xx_hal_flash.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h
 bizhang\stm32f1xx_hal_flash.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h
+bizhang\stm32f1xx_hal_flash.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_i2c.h
 bizhang\stm32f1xx_hal_flash.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h
 bizhang\stm32f1xx_hal_flash.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h
 bizhang\stm32f1xx_hal_flash.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h

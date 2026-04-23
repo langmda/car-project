@@ -14,13 +14,12 @@ typedef struct {
     int16_t encoder_right; // 右编码器（2字节）
     uint16_t pi_adc;   // 树莓派电压（2字节）
     uint16_t motor_adc;// 电机电压（2字节）
-    uint16_t reserved;     // 保留字段（2字节）
+	float yaw; 
 } RawData_t;
 #pragma pack()  // 恢复默认对齐
 
 void Encoder_Read(void);
 void Read_And_Transmit(void);
 
-extern uint8_t read_and_transmit;
 
 #endif

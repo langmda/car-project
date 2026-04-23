@@ -12,7 +12,11 @@ uint16_t I_Limit = 500;
 uint16_t PWM_Limit = 4320; 
 
 volatile int16_t encoder_left = 0, encoder_right = 0;
+volatile int32_t total_encoder_left = 0;
+volatile int32_t total_encoder_right = 0;
+
 uint32_t last_pid_time = 0;		
+int16_t last_left=0, last_right=0;
 
 float pid_error = 0.0f;             
 float pid_integral = 0.0f;          
@@ -39,14 +43,18 @@ void Read_Encoder(void)
 		int16_t left = __HAL_TIM_GET_COUNTER(&htim4);
         int16_t right = __HAL_TIM_GET_COUNTER(&htim2);
         
-        // 过滤异常跳变（超过 300 认为是干扰）
-	static int16_t last_left=0, last_right=0;
-	if (abs(left - last_left) > 200) left = last_left;
-	if (abs(right - last_right) > 200) right = last_right;
-	last_left = left; last_right = right;
+		// 过滤异常跳变（超过 300 认为是干扰）
+		if (abs(left - last_left) > 200) left = last_left;
+		if (abs(right - last_right) > 200) right = last_right;
+		last_left = left; 
+		last_right = right;
         
         encoder_left = left;
         encoder_right = right;
+		
+		// 累加到全局累计变量
+        total_encoder_left += left;
+        total_encoder_right += right;
         
         __HAL_TIM_SET_COUNTER(&htim2, 0);
         __HAL_TIM_SET_COUNTER(&htim4, 0);
@@ -100,8 +108,16 @@ void PID_Go_Straight(int16_t base_pwm)
     
     float compensation = PID_Calculate();
 	
-    int16_t left_pwm = pid_base_pwm + compensation;
-    int16_t right_pwm = pid_base_pwm - compensation;
+	int16_t left_pwm, right_pwm;
+    if (base_pwm >= 0) 
+	{
+        left_pwm = pid_base_pwm + compensation;
+        right_pwm = pid_base_pwm - compensation;
+    } else 
+	{
+        left_pwm = pid_base_pwm - compensation;   // 后退时补偿符号取反
+        right_pwm = pid_base_pwm + compensation;
+    }
 
     left_pwm = (left_pwm > PWM_Limit) ? PWM_Limit : (left_pwm < -PWM_Limit ? -PWM_Limit : left_pwm);
     right_pwm = (right_pwm > PWM_Limit) ? PWM_Limit : (right_pwm < -PWM_Limit ? -PWM_Limit : right_pwm);

@@ -30,6 +30,7 @@ bizhang\inv_mpu_dmp_motion_driver.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1
 bizhang\inv_mpu_dmp_motion_driver.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_adc_ex.h
 bizhang\inv_mpu_dmp_motion_driver.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h
 bizhang\inv_mpu_dmp_motion_driver.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h
+bizhang\inv_mpu_dmp_motion_driver.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_i2c.h
 bizhang\inv_mpu_dmp_motion_driver.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h
 bizhang\inv_mpu_dmp_motion_driver.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h
 bizhang\inv_mpu_dmp_motion_driver.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h
