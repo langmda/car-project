@@ -32,17 +32,17 @@ compiling Infrared.c...
   #endif
 ../Core/Inc/delay.h(9): warning:  #1-D: last line of file ends without a newline
   #endif
-..\Core\Src\Infrared.c(185): warning:  #223-D: function "strlen" declared implicitly
+..\Core\Src\Infrared.c(191): warning:  #223-D: function "strlen" declared implicitly
               HAL_UART_Transmit(&huart2, (uint8_t*)buf, strlen(buf), 100);
-..\Core\Src\Infrared.c(295): warning:  #223-D: function "strlen" declared implicitly
+..\Core\Src\Infrared.c(235): warning:  #223-D: function "strlen" declared implicitly
+              HAL_UART_Transmit(&huart2, (uint8_t*)buf, strlen(buf), 100);
+..\Core\Src\Infrared.c(306): warning:  #223-D: function "strlen" declared implicitly
           HAL_UART_Transmit(&huart2, (uint8_t*)buf, strlen(buf), 100);
-..\Core\Src\Infrared.c(306): warning:  #1-D: last line of file ends without a newline
+..\Core\Src\Infrared.c(317): warning:  #1-D: last line of file ends without a newline
   }
-..\Core\Src\Infrared.c(22): warning:  #177-D: variable "last_turn_direction"  was declared but never referenced
-  static int8_t last_turn_direction = 0;
 ..\Core\Src\Infrared.c: 6 warnings, 0 errors
 linking...
-Program Size: Code=48320 RO-data=4256 RW-data=236 ZI-data=2548  
+Program Size: Code=48992 RO-data=4256 RW-data=232 ZI-data=2552  
 FromELF: creating hex file...
 "bizhang\bizhang.axf" - 0 Error(s), 6 Warning(s).
 
@@ -67,7 +67,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.0.1
-Build Time Elapsed:  00:00:01
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>
