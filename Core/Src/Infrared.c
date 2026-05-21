@@ -5,22 +5,16 @@
 #include "usart.h"
 #include "stdio.h"
 #include <math.h>
+#include <string.h>
 
 #define SENSOR_ADDR (0x18 << 1)
 #define REG_ADDR    0x05
 
-// 基础速度（可根据需要调整）
 #define BASE_SPEED    800
-
-// 正常巡线时的最大转向量（防止直行震荡）
 #define STEERING_LIMIT_NORMAL  300
-// 弯道/丢线时的最大转向量
 #define STEERING_LIMIT_TURN    800
-
-// 丢线搜索速度比例
 #define LOST_LINE_FWD_RATIO 0.7f
 
-// PID 参数（基础值，直行时自动降比例）
 static float Kp_base = 60.0f;
 static float Ki = 0.1f;
 static float Kd = 12.0f;
@@ -28,10 +22,19 @@ static float integral = 0;
 static float last_error = 0;
 static const float INTEGRAL_LIMIT = 80;
 
-// 方向记忆（仅用于弯道）
-static int8_t persistent_dir = 0;
-static uint8_t persistent_cnt = 0;
-static const uint8_t PERSISTENT_THRESHOLD = 3;
+static int8_t last_valid_dir = 0;
+
+// 误差符号历史 (投票后备)
+#define ERR_HIST_LEN 5
+static int8_t err_sign_history[ERR_HIST_LEN] = {0};
+static uint8_t err_hist_index = 0;
+
+// 单边方向锁定
+static int8_t pending_turn_dir = 0;
+static uint8_t straight_cnt = 0;
+#define STRAIGHT_THRESHOLD 20
+static uint8_t unlock_delay = 0;
+#define UNLOCK_DELAY_FRAMES 15
 
 static void Read_Sensors(uint8_t *sensor)
 {
@@ -47,7 +50,6 @@ static void Read_Sensors(uint8_t *sensor)
     raw[3] = (raw_data >> 1) & 0x01;
     raw[4] = (raw_data >> 0) & 0x01;
 
-    // 交换左右，使 sensor[0] 对应逻辑左侧（物理最右）
     sensor[0] = raw[4];
     sensor[1] = raw[3];
     sensor[2] = raw[2];
@@ -69,7 +71,6 @@ static float Get_Position_Error(uint8_t *sensor)
     return (float)numerator / denominator;
 }
 
-// 极端情况：只有最左或最右 -> 原地转弯
 static uint8_t Handle_Extreme_Turn(uint8_t *sensor)
 {
     if (sensor[0] && !sensor[1] && !sensor[2] && !sensor[3] && !sensor[4]) {
@@ -83,6 +84,7 @@ static uint8_t Handle_Extreme_Turn(uint8_t *sensor)
         }
         Set_Motor(0,0);
         delay_ms(30);
+        last_valid_dir = -1;
         return 1;
     }
     if (!sensor[0] && !sensor[1] && !sensor[2] && !sensor[3] && sensor[4]) {
@@ -96,15 +98,14 @@ static uint8_t Handle_Extreme_Turn(uint8_t *sensor)
         }
         Set_Motor(0,0);
         delay_ms(30);
+        last_valid_dir = 1;
         return 1;
     }
     return 0;
 }
 
-// 弯道处理（组合传感器、边缘）
 static uint8_t Handle_Curve_Turn(uint8_t *sensor)
 {
-    // 左侧两个传感器黑线（S1+S2）
     if (sensor[0] && sensor[1] && !sensor[2] && !sensor[3] && !sensor[4]) {
         int16_t turn_pwm = BASE_SPEED + 200;
         int16_t left_pwm = BASE_SPEED - turn_pwm;
@@ -113,9 +114,9 @@ static uint8_t Handle_Curve_Turn(uint8_t *sensor)
         right_pwm = (right_pwm > 4320) ? 4320 : (right_pwm < -4320) ? -4320 : right_pwm;
         Set_Motor(left_pwm, right_pwm);
         delay_ms(60);
+        last_valid_dir = -1;
         return 1;
     }
-    // 右侧两个传感器黑线（S4+S5）
     if (!sensor[0] && !sensor[1] && !sensor[2] && sensor[3] && sensor[4]) {
         int16_t turn_pwm = BASE_SPEED + 200;
         int16_t left_pwm = BASE_SPEED + turn_pwm;
@@ -124,9 +125,9 @@ static uint8_t Handle_Curve_Turn(uint8_t *sensor)
         right_pwm = (right_pwm > 4320) ? 4320 : (right_pwm < -4320) ? -4320 : right_pwm;
         Set_Motor(left_pwm, right_pwm);
         delay_ms(60);
+        last_valid_dir = 1;
         return 1;
     }
-    // 只有第二个传感器黑线
     if (sensor[1] && !sensor[0] && !sensor[2] && !sensor[3] && !sensor[4]) {
         int16_t turn_pwm = BASE_SPEED;
         int16_t left_pwm = BASE_SPEED - turn_pwm;
@@ -135,9 +136,9 @@ static uint8_t Handle_Curve_Turn(uint8_t *sensor)
         right_pwm = (right_pwm > 4320) ? 4320 : (right_pwm < -4320) ? -4320 : right_pwm;
         Set_Motor(left_pwm, right_pwm);
         delay_ms(40);
+        last_valid_dir = -1;
         return 1;
     }
-    // 只有第四个传感器黑线
     if (sensor[3] && !sensor[0] && !sensor[1] && !sensor[2] && !sensor[4]) {
         int16_t turn_pwm = BASE_SPEED;
         int16_t left_pwm = BASE_SPEED + turn_pwm;
@@ -146,59 +147,152 @@ static uint8_t Handle_Curve_Turn(uint8_t *sensor)
         right_pwm = (right_pwm > 4320) ? 4320 : (right_pwm < -4320) ? -4320 : right_pwm;
         Set_Motor(left_pwm, right_pwm);
         delay_ms(40);
+        last_valid_dir = 1;
         return 1;
     }
     return 0;
 }
 
-// 丢线恢复：圆弧搜索
-static uint8_t Handle_Lost_Line(uint8_t *sensor, int8_t last_dir)
+/*
+ * 丢线恢复：慢速后退 + 原地旋转，直到中间红外重新捕获黑线。
+ * 旋转方向由 pending_turn_dir 或投票决定。
+ * 旋转速度从极低开始，逐步微弱增加，实现细腻对准。
+ */
+static uint8_t Handle_Lost_Line(uint8_t *sensor)
 {
     if (!sensor[0] && !sensor[1] && !sensor[2] && !sensor[3] && !sensor[4]) {
-        Set_Motor(0,0);
-        delay_ms(30);
-        int16_t fwd_speed = (int16_t)(BASE_SPEED * LOST_LINE_FWD_RATIO);
-        int16_t turn_pwm = fwd_speed + 150;
-        int16_t left_pwm, right_pwm;
-        if (last_dir < 0) {
-            left_pwm = fwd_speed - turn_pwm;
-            right_pwm = fwd_speed + turn_pwm;
+        int8_t lost_dir = 0;
+
+        // 1. 决定旋转方向
+        if (pending_turn_dir != 0) {
+            lost_dir = pending_turn_dir;
         } else {
-            left_pwm = fwd_speed + turn_pwm;
-            right_pwm = fwd_speed - turn_pwm;
+            int8_t vote_left = 0, vote_right = 0;
+            for (int i = 0; i < ERR_HIST_LEN; i++) {
+                if (err_sign_history[i] == -1) vote_left++;
+                else if (err_sign_history[i] == 1) vote_right++;
+            }
+            if (vote_right > vote_left + 1) lost_dir = 1;
+            else if (vote_left > vote_right + 1) lost_dir = -1;
+            else lost_dir = last_valid_dir;
+            if (lost_dir == 0) lost_dir = -1;
         }
-        left_pwm = (left_pwm > 4320) ? 4320 : (left_pwm < -4320) ? -4320 : left_pwm;
-        right_pwm = (right_pwm > 4320) ? 4320 : (right_pwm < -4320) ? -4320 : right_pwm;
+
+        char buf[64];
+        sprintf(buf, "[LOST] %s dir: %d\r\n",
+                pending_turn_dir ? "PendingTurn" : "Vote", lost_dir);
+        HAL_UART_Transmit(&huart2, (uint8_t*)buf, strlen(buf), 100);
+
+        // 2. 立即停车，充分消除惯性
+        Set_Motor(0, 0);
+        delay_ms(100);
+
+        // 3. 低速旋转参数（加大后退分量，保持旋转缓慢）
+        int16_t backward_base = 350;   // 后退分量（从200提升到400，后退更明显）
+        int16_t rotate_min   = 300;   // 起始旋转差动量
+        int16_t rotate_max   = 800;   // 最大旋转差动量
+        int16_t rotate_step  = 50;    // 缓慢增加旋转
+        int16_t rotate_pwm = rotate_min;
+
         uint32_t start = HAL_GetTick();
         uint8_t found = 0;
-        while ((HAL_GetTick() - start) < 3000) {
+
+        // 4. 慢速旋转搜索，超时 4000ms
+        while ((HAL_GetTick() - start) < 4000) {
+            int16_t left_pwm, right_pwm;
+            if (lost_dir < 0) {      // 左转
+                left_pwm  = -rotate_pwm - backward_base;
+                right_pwm =  rotate_pwm - backward_base;
+            } else {                 // 右转
+                left_pwm  =  rotate_pwm - backward_base;
+                right_pwm = -rotate_pwm - backward_base;
+            }
+
+            // 限幅
+            left_pwm  = (left_pwm  > 7200) ? 7200  : (left_pwm  < -7200) ? -7200 : left_pwm;
+            right_pwm = (right_pwm > 7200) ? 7200 : (right_pwm < -7200) ? -7200 : right_pwm;
+
             Set_Motor(left_pwm, right_pwm);
-            delay_ms(20);
+            delay_ms(25);
+
+            // 读取传感器
             uint8_t tmp[5];
             Read_Sensors(tmp);
-            if (tmp[0] || tmp[1] || tmp[2] || tmp[3] || tmp[4]) {
+            
+            // 中间红外触发则停止
+            if (tmp[2]) {
+                Set_Motor(0, 0);
+                delay_ms(30);
                 found = 1;
                 break;
             }
+
+            // 缓慢增加旋转强度
+            if (rotate_pwm < rotate_max) {
+                rotate_pwm += rotate_step;
+            }
         }
-        Set_Motor(0,0);
+
+        // 5. 最终停止
+        Set_Motor(0, 0);
+        delay_ms(50);
+
         if (found) {
-            delay_ms(50);
+            straight_cnt = 0;
+            memset(err_sign_history, 0, sizeof(err_sign_history));
+            err_hist_index = 0;
+            delay_ms(30);
             return 1;
         } else {
-            char buf[64];
-            sprintf(buf, "[ERROR] Lost line, stop\r\n");
-            HAL_UART_Transmit(&huart2, (uint8_t*)buf, strlen(buf), 100);
+            char buf2[64];
+            sprintf(buf2, "[ERROR] Lost line, stop\r\n");
+            HAL_UART_Transmit(&huart2, (uint8_t*)buf2, strlen(buf2), 100);
             return 1;
         }
     }
     return 0;
 }
 
+static uint8_t Count_Left_Continuous(uint8_t *sensor) {
+    uint8_t cnt = 0;
+    for (int i = 0; i < 5; i++) {
+        if (sensor[i]) cnt++;
+        else break;
+    }
+    return cnt;
+}
+
+static uint8_t Count_Right_Continuous(uint8_t *sensor) {
+    uint8_t cnt = 0;
+    for (int i = 4; i >= 0; i--) {
+        if (sensor[i]) cnt++;
+        else break;
+    }
+    return cnt;
+}
+
+static void Resolve_Bilateral_Conflict(uint8_t *sensors) {
+    uint8_t left_cnt = Count_Left_Continuous(sensors);
+    uint8_t right_cnt = Count_Right_Continuous(sensors);
+
+    if (left_cnt >= 2 && right_cnt >= 2) {
+        if (last_valid_dir == 1) {
+            for (int i = 0; i < left_cnt; i++) sensors[i] = 0;
+        } else if (last_valid_dir == -1) {
+            for (int i = 4; i >= (5-right_cnt); i--) sensors[i] = 0;
+        } else {
+            if (left_cnt > right_cnt) {
+                for (int i = 4; i >= (5-right_cnt); i--) sensors[i] = 0;
+            } else {
+                for (int i = 0; i < left_cnt; i++) sensors[i] = 0;
+            }
+        }
+    }
+}
+
 void Line_Follow_Task(void)
 {
     static uint32_t last_time = 0;
-    static int8_t last_dir = 0;
     uint32_t now = HAL_GetTick();
     if (now - last_time < 10) return;
     last_time = now;
@@ -206,103 +300,113 @@ void Line_Follow_Task(void)
     uint8_t sensors[5];
     Read_Sensors(sensors);
 
-    if (Handle_Lost_Line(sensors, last_dir)) return;
-    if (Handle_Extreme_Turn(sensors)) return;
-    if (Handle_Curve_Turn(sensors)) {
-        // 更新方向记忆
-        if (sensors[0] || sensors[1]) last_dir = -1;
-        else if (sensors[3] || sensors[4]) last_dir = 1;
-        return;
+    uint8_t all_lost = !sensors[0] && !sensors[1] && !sensors[2] && !sensors[3] && !sensors[4];
+
+    // 锁定逻辑
+    if (!all_lost) {
+        if (sensors[0] == 1 && sensors[4] == 0) {
+            if (pending_turn_dir != -1) {
+                pending_turn_dir = -1;
+                unlock_delay = UNLOCK_DELAY_FRAMES;
+            }
+        } else if (sensors[0] == 0 && sensors[4] == 1) {
+            if (pending_turn_dir != 1) {
+                pending_turn_dir = 1;
+                unlock_delay = UNLOCK_DELAY_FRAMES;
+            }
+        }
     }
 
-    // 正常巡线
-    float raw_error = Get_Position_Error(sensors);
-    float error = raw_error;
+    // 丢线处理
+    if (Handle_Lost_Line(sensors)) return;
 
-    // 直行死区：|error| < 0.2 时强制直行（转向量为0）
-    if (fabs(error) < 0.2f) {
+    // 极端转弯
+    if (Handle_Extreme_Turn(sensors)) return;
+
+    // 双侧冲突仲裁
+    Resolve_Bilateral_Conflict(sensors);
+
+    // 硬编码弯道
+    if (Handle_Curve_Turn(sensors)) return;
+
+    // 正常 PID
+    float error = Get_Position_Error(sensors);
+
+    if (fabs(error) >= 0.5f) {
+        last_valid_dir = (error < 0) ? -1 : 1;
+    }
+
+    int8_t sign = 0;
+    if (error > 0.2f) sign = 1;
+    else if (error < -0.2f) sign = -1;
+    err_sign_history[err_hist_index] = sign;
+    err_hist_index = (err_hist_index + 1) % ERR_HIST_LEN;
+
+    // 解锁管理
+    if (unlock_delay > 0) {
+        unlock_delay--;
+        straight_cnt = 0;
+    } else if (!all_lost && pending_turn_dir != 0) {
+        if (fabs(error) < 0.2f && sensors[2] == 1 && sensors[0] == 0 && sensors[4] == 0) {
+            straight_cnt++;
+            if (straight_cnt >= STRAIGHT_THRESHOLD) {
+                pending_turn_dir = 0;
+                straight_cnt = 0;
+            }
+        } else {
+            straight_cnt = 0;
+        }
+    } else {
+        straight_cnt = 0;
+    }
+
+    // 直行死区
+    if (fabs(error) < 0.4f) {
         Set_Motor(BASE_SPEED, BASE_SPEED);
-        // 复位积分和方向记忆（防止累积）
         integral = 0;
-        persistent_cnt = 0;
-        persistent_dir = 0;
-        // 调试打印
         static uint32_t last_print = 0;
         if (now - last_print > 200) {
             char buf[80];
-            sprintf(buf, "S:%d%d%d%d%d Err:%.2f Straight\r\n",
-                    sensors[0],sensors[1],sensors[2],sensors[3],sensors[4], error);
+            sprintf(buf, "S:%d%d%d%d%d Err:%.2f Straight Pending:%d\r\n",
+                    sensors[0],sensors[1],sensors[2],sensors[3],sensors[4],
+                    error, pending_turn_dir);
             HAL_UART_Transmit(&huart2, (uint8_t*)buf, strlen(buf), 100);
             last_print = now;
         }
         return;
     }
 
-    // 弯道/偏差较大时，使用动态 PID
-    // 根据误差大小调整比例系数（偏差越大，响应越强）
+    // PID 控制
     float Kp = Kp_base;
     if (fabs(error) > 1.0f) Kp = Kp_base * 1.5f;
-    
-    // 更新 last_dir
-    if (error < -0.5f) last_dir = -1;
-    else if (error > 0.5f) last_dir = 1;
-    
-    // 方向记忆（只在持续同向偏差时生效）
-    int8_t current_trend = (error < -0.5f) ? -1 : ((error > 0.5f) ? 1 : 0);
-    if (current_trend != 0) {
-        if (current_trend == persistent_dir) {
-            if (persistent_cnt < PERSISTENT_THRESHOLD) persistent_cnt++;
-        } else {
-            if (persistent_cnt > 0) persistent_cnt--;
-            if (persistent_cnt == 0) persistent_dir = 0;
-        }
-        if (persistent_dir == 0) {
-            persistent_dir = current_trend;
-            persistent_cnt = 1;
-        }
-    } else {
-        if (persistent_cnt > 0) persistent_cnt--;
-        if (persistent_cnt == 0) persistent_dir = 0;
-    }
-    
-    float final_error = error;
-    if (persistent_cnt >= PERSISTENT_THRESHOLD && persistent_dir != 0) {
-        if ((error > 0 && persistent_dir == -1) || (error < 0 && persistent_dir == 1)) {
-            final_error = (persistent_dir == -1) ? -1.0f : 1.0f;
-        }
-    }
-    
-    // PID 计算
+
     float dt = 0.01f;
-    integral += final_error * Ki * dt;
+    integral += error * Ki * dt;
     if (integral > INTEGRAL_LIMIT) integral = INTEGRAL_LIMIT;
     if (integral < -INTEGRAL_LIMIT) integral = -INTEGRAL_LIMIT;
-    float p = Kp * final_error;
+    float p = Kp * error;
     float i = integral;
-    float d = Kd * (final_error - last_error) / dt;
-    last_error = final_error;
+    float d = Kd * (error - last_error) / dt;
+    last_error = error;
     float steering = p + i + d;
-    
-    // 根据误差大小动态限制转向量
+
     int16_t max_steer = STEERING_LIMIT_NORMAL;
     if (fabs(error) > 1.2f) max_steer = STEERING_LIMIT_TURN;
     if (steering > max_steer) steering = max_steer;
     if (steering < -max_steer) steering = -max_steer;
-    
+
     int16_t left_pwm = BASE_SPEED + (int16_t)steering;
     int16_t right_pwm = BASE_SPEED - (int16_t)steering;
-    if (left_pwm > 4320) left_pwm = 4320;
-    if (left_pwm < -4320) left_pwm = -4320;
-    if (right_pwm > 4320) right_pwm = 4320;
-    if (right_pwm < -4320) right_pwm = -4320;
+    left_pwm = (left_pwm > 4320) ? 4320 : (left_pwm < -4320) ? -4320 : left_pwm;
+    right_pwm = (right_pwm > 4320) ? 4320 : (right_pwm < -4320) ? -4320 : right_pwm;
     Set_Motor(left_pwm, right_pwm);
-    
+
     static uint32_t last_print = 0;
     if (now - last_print > 200) {
         char buf[80];
-        sprintf(buf, "S:%d%d%d%d%d Err:%.2f Steer:%.1f Hold:%d\r\n",
+        sprintf(buf, "S:%d%d%d%d%d Err:%.2f Steer:%.1f LastDir:%d Pending:%d\r\n",
                 sensors[0],sensors[1],sensors[2],sensors[3],sensors[4],
-                error, steering, persistent_dir);
+                error, steering, last_valid_dir, pending_turn_dir);
         HAL_UART_Transmit(&huart2, (uint8_t*)buf, strlen(buf), 100);
         last_print = now;
     }
@@ -312,6 +416,10 @@ void Line_Follow_Init(void)
 {
     integral = 0;
     last_error = 0;
-    persistent_dir = 0;
-    persistent_cnt = 0;
+    last_valid_dir = 0;
+    pending_turn_dir = 0;
+    straight_cnt = 0;
+    unlock_delay = 0;
+    memset(err_sign_history, 0, sizeof(err_sign_history));
+    err_hist_index = 0;
 }

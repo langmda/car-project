@@ -42,16 +42,16 @@ void User_Code()
 				Set_Motor(0, 0);
 				break;
 			case MOVE_FORWARD:
-				Set_Motor(2000, 2000);
+				PID_Go_Straight(2000);
 				break;
 			case BACK_OFF:
-				Set_Motor(-2000, -2000);
+				PID_Go_Straight(-2000);
 				break;
 			case TURN_LEFT:
-				Set_Motor(-1500, 1500);
+				Set_Motor(-700, 700);
 				break;
 			case TURN_RIGHT:
-				Set_Motor(1500, -1500);
+				Set_Motor(700, -700);
 				break;
 			case TRAJECTORY_Z:
 				trajectory_Z();

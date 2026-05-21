@@ -6,9 +6,9 @@
 #include "string.h"
 #include <stdarg.h>
 
-float Kp = 50.0f;
-float Ki = 3.0f;
-uint16_t I_Limit = 500;		
+float Kp = 10.0f;
+float Ki = 1.0f;
+uint16_t I_Limit = 100;		
 uint16_t PWM_Limit = 4320; 
 
 volatile int16_t encoder_left = 0, encoder_right = 0;
@@ -21,7 +21,9 @@ int16_t last_left=0, last_right=0;
 float pid_error = 0.0f;             
 float pid_integral = 0.0f;          
 float pid_output = 0.0f;           
-int16_t pid_base_pwm = 0;          
+int16_t pid_base_pwm = 0;       
+
+static int16_t last_base_pwm_sign = 0;
 
 void PI_Param_Clear(void)
 {
@@ -104,22 +106,28 @@ float PID_Calculate(void)
 
 void PID_Go_Straight(int16_t base_pwm)
 {
-    pid_base_pwm = base_pwm;
-    
-    float compensation = PID_Calculate();
-	
-	int16_t left_pwm, right_pwm;
-    if (base_pwm >= 0) 
-	{
-        left_pwm = pid_base_pwm + compensation;
-        right_pwm = pid_base_pwm - compensation;
-    } else 
-	{
-        left_pwm = pid_base_pwm - compensation;   // 后退时补偿符号取反
-        right_pwm = pid_base_pwm + compensation;
+    // 方向改变检测和复位（保留）
+    int16_t current_sign = (base_pwm > 0) ? 1 : ((base_pwm < 0) ? -1 : 0);
+    if (current_sign != 0 && current_sign != last_base_pwm_sign) {
+        PI_Param_Clear();
+        Set_Motor(0, 0);
+        HAL_Delay(50);
+        __HAL_TIM_SET_COUNTER(&htim2, 0);
+        __HAL_TIM_SET_COUNTER(&htim4, 0);
+        encoder_left = 0;
+        encoder_right = 0;
     }
+    last_base_pwm_sign = current_sign;
 
-    left_pwm = (left_pwm > PWM_Limit) ? PWM_Limit : (left_pwm < -PWM_Limit ? -PWM_Limit : left_pwm);
+    pid_base_pwm = base_pwm;
+    float compensation = PID_Calculate();
+
+    // 统一使用：左轮加补偿，右轮减补偿
+    int16_t left_pwm = pid_base_pwm + compensation;
+    int16_t right_pwm = pid_base_pwm - compensation;
+
+    // 限幅
+    left_pwm  = (left_pwm  > PWM_Limit) ? PWM_Limit : (left_pwm  < -PWM_Limit ? -PWM_Limit : left_pwm);
     right_pwm = (right_pwm > PWM_Limit) ? PWM_Limit : (right_pwm < -PWM_Limit ? -PWM_Limit : right_pwm);
 
     Set_Motor(left_pwm, right_pwm);

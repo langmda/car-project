@@ -38,3 +38,4 @@ bizhang\infrared.o: ../Core/Inc/main.h
 bizhang\infrared.o: ../Core/Inc/usart.h
 bizhang\infrared.o: D:\tool\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 bizhang\infrared.o: D:\tool\Keil\ARM\ARMCC\Bin\..\include\math.h
+bizhang\infrared.o: D:\tool\Keil\ARM\ARMCC\Bin\..\include\string.h
