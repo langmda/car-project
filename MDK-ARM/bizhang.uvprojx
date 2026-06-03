@@ -660,6 +660,11 @@
               <FileType>1</FileType>
               <FilePath>..\Core\Src\Infrared.c</FilePath>
             </File>
+            <File>
+              <FileName>avoidance.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\avoidance.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

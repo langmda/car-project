@@ -42,3 +42,4 @@ bizhang\user.o: ../Core/Inc/pid.h
 bizhang\user.o: D:\tool\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 bizhang\user.o: ../Core/Inc/trajectory.h
 bizhang\user.o: ../Core/Inc/infrared.h
+bizhang\user.o: ../Core/Inc/avoidance.h

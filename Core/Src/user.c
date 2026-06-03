@@ -9,6 +9,7 @@
 #include "stdio.h"
 #include "trajectory.h"
 #include "infrared.h"
+#include "avoidance.h"
 
 #define CMD_TIMEOUT 300		 //指令超时时间，如果距离上一次收到指令超过该事件，就会将命令切换为停止
 volatile uint32_t last_cmd_time = 0;  //上一次收到指令的时间
@@ -40,12 +41,14 @@ void User_Code()
 		{
 			case STOP:
 				Set_Motor(0, 0);
+				PID_Reset_Yaw_Reference();
+				Avoidance_Stop();
 				break;
 			case MOVE_FORWARD:
-				PID_Go_Straight(2000);
+				Set_Motor(4000,4300);
 				break;
 			case BACK_OFF:
-				PID_Go_Straight(-2000);
+				Set_Motor(2500,1000);
 				break;
 			case TURN_LEFT:
 				Set_Motor(-700, 700);
@@ -69,56 +72,37 @@ void User_Code()
 	}
 	else if(mode == AUTOMATIC)
 	{
-		//先检测正前方障碍物的距离
-		Set_Angle(90);
-		front_distance = Get_Median_Distance(3);
-		if(front_distance > 0 && front_distance < 60)   //前方障碍物距离较近
-		{
-			Set_Motor(0, 0);
-			Get_Left_Right_Distance();
-			if(left_distance > (right_distance + 10))   //左侧障碍物距离较远，向左转
-			{
-				//后退
-				Set_Motor(-2000, -2000);
-				HAL_Delay(200);
-				//停下
-				Set_Motor(0, 0);
-				HAL_Delay(100);
-				//左转
-				Set_Motor(-2000, 2000);
-				HAL_Delay(200);
-			}
-			else                                //右侧障碍物距离较远，向右转
-			{
-				//后退
-				Set_Motor(-2000, -2000);
-				HAL_Delay(200);
-				//停下
-				Set_Motor(0, 0);
-				HAL_Delay(100);
-				//右转
-				Set_Motor(2000, -2000);
-				HAL_Delay(200);
-			}
-		}else       //前方障碍物距离较远
-		{
-			//前进
-			Set_Motor(2000, 2000);
-		}
+		Maze_AbsoluteYaw();
 	}
 	else if (mode == LINE_FOLLOW)
 	{
 		Line_Follow_Task();   // 巡线主函数
 	}
 	
-	if(read_and_transmit == 1)
+	//if(read_and_transmit == 1)
+	//{
+	//	Read_And_Transmit(); //读取传感器数据并发送
+	//	read_and_transmit = 0;
+	//}
+	
+	uint32_t now_time = HAL_GetTick();
+	static uint32_t last_time = 0;
+
+	if (now_time - last_time >= 500) 
 	{
-		Read_And_Transmit(); //读取传感器数据并发送
-		read_and_transmit = 0;
+		last_time = now_time;
+		
+		float pitch, roll, yaw;
+		if (mpu_dmp_get_data(&pitch, &roll, &yaw) == 0) {
+			// 归一化到 0~360
+			if (yaw < 0) yaw += 360.0f;
+			
+			char msg[64];
+			sprintf(msg, "yaw: %.1f  pitch: %.1f  roll: %.1f\r\n", yaw, pitch, roll);
+			HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), 100);
+		} else {
+			char msg[] = "DMP read failed\r\n";
+			HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), 100);
+		}
 	}
-	/*
-	sprintf(buffer, "KP:%f\r\nKI:%f\r\nIFil:%f\r\nILim:%d\r\nPWMLim:%d\r\n", Kp,Ki,I_Filtering,I_Limit,PWM_Limit);
-	HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
-	HAL_Delay(1000);
-	*/
 }

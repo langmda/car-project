@@ -33,8 +33,8 @@ void turn_angle_blocking(int16_t target_angle_deg)
     uint32_t timeout_ms = 8000;
     uint32_t start_time = HAL_GetTick();
     const float angle_tolerance = 1.0f;
-    const int16_t max_turn_pwm = 2500;
-    const int16_t min_turn_pwm = 120;
+    const int16_t max_turn_pwm = 1200;
+    const int16_t min_turn_pwm = 500;
     uint16_t iter = 0;
     float abs_err;
     float last_valid_yaw = 0;
@@ -134,11 +134,14 @@ void turn_angle_blocking(int16_t target_angle_deg)
         // 检测角度是否卡死
         if (iter > 10 && fabs(current_yaw - last_yaw) < 0.2f) {
             stuck_count++;
-            if (stuck_count > 30) {
-                sprintf(debug_buf, "[ERR] yaw stuck at %.1f, force exit\r\n", current_yaw);
-                HAL_UART_Transmit(&huart2, (uint8_t*)debug_buf, strlen(debug_buf), 100);
-                break;
-            }
+			if (abs_err < 5.0f && stuck_count > 30) {
+				sprintf(debug_buf, "[ERR] yaw stuck near target, force exit\r\n");
+				break;
+			} else if (stuck_count > 30) {
+				// 还未接近目标，可能是卡住，尝试加大 PWM
+				turn_pwm = (int16_t)(error * 25.0f);
+				stuck_count = 0;
+			}
         } else {
             stuck_count = 0;
         }
@@ -187,7 +190,7 @@ void turn_angle_blocking(int16_t target_angle_deg)
         }
         
         // 比例控制 + 多级减速
-        turn_pwm = (int16_t)(error * 20.0f);
+        turn_pwm = (int16_t)(error * 15.0f);
         if (abs_err < 10.0f) {
             turn_pwm = (int16_t)(error * 12.0f);
         }

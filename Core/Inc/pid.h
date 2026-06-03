@@ -19,6 +19,7 @@ float PID_Calculate(void);
 void PID_Go_Straight(int16_t base_pwm);
 void Debug_Print(const char* format, ...);
 void Print_Debug(void); 
+void PID_Reset_Yaw_Reference(void);
 
 extern volatile int16_t encoder_left, encoder_right;
 extern volatile int32_t total_encoder_left;
@@ -29,4 +30,8 @@ extern float Ki;
 extern uint16_t I_Limit;		
 extern uint16_t PWM_Limit; 
 extern int16_t last_left, last_right;
+
+void PID_Go_Straight_Continuous(int16_t base_pwm);
+void PID_Start_Continuous(int16_t base_pwm);
+void PID_Stop_Continuous(void);
 #endif

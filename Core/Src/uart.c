@@ -5,6 +5,7 @@
 #include "main.h"
 #include "stdio.h"
 #include "servo.h"
+#include "avoidance.h"
 
 volatile uint8_t current_cmd = STOP;	//当前有效命令
 volatile uint8_t led_counter = 0;    //led计数器
@@ -17,6 +18,7 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 
         if(uart_rx_buffer[0] == MODE_SWITCH)   //模式切换
         {
+			Avoidance_Stop();
             if(mode == MANUAL)  {mode = AUTOMATIC;}
             else                {mode = MANUAL;}
             uart_rx_buffer[0] = STOP;

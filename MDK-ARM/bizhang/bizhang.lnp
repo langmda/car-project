@@ -24,6 +24,7 @@
 "bizhang\stm32f1xx_it.o"
 "bizhang\stm32f1xx_hal_msp.o"
 "bizhang\infrared.o"
+"bizhang\avoidance.o"
 "bizhang\stm32f1xx_hal_gpio_ex.o"
 "bizhang\stm32f1xx_hal_adc.o"
 "bizhang\stm32f1xx_hal_adc_ex.o"

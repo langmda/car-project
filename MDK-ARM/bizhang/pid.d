@@ -38,3 +38,4 @@ bizhang\pid.o: D:\tool\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 bizhang\pid.o: ../Core/Inc/usart.h
 bizhang\pid.o: D:\tool\Keil\ARM\ARMCC\Bin\..\include\string.h
 bizhang\pid.o: D:\tool\Keil\ARM\ARMCC\Bin\..\include\stdarg.h
+bizhang\pid.o: ../Core/MPU6050/MyCode/inv_mpu.h

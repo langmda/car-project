@@ -22,27 +22,37 @@ Dialog DLL:      TCM.DLL V1.32.0.0
  
 <h2>Project:</h2>
 D:\work\stm32cubemx\bizhang\MDK-ARM\bizhang.uvprojx
-Project File Date:  04/17/2026
+Project File Date:  05/29/2026
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 5 (build 528)', folder: 'D:\tool\Keil\ARM\ARMCC\Bin'
 Build target 'bizhang'
-compiling pid.c...
-..\Core\Src\pid.c(49): warning:  #223-D: function "abs" declared implicitly
-  		if (abs(left - last_left) > 200) left = last_left;
-..\Core\Src\pid.c(50): warning:  #223-D: function "abs" declared implicitly
-  		if (abs(right - last_right) > 200) right = last_right;
-..\Core\Src\pid.c(81): warning:  #223-D: function "abs" declared implicitly
-  	if (abs(pid_base_pwm) > 100) is_moving = 1;
-..\Core\Src\pid.c(85): warning:  #223-D: function "abs" declared implicitly
-  	if (abs(pid_error) < 50 && is_moving) 
-..\Core\Src\pid.c(164): warning:  #1-D: last line of file ends without a newline
+compiling avoidance.c...
+../Core/Inc/avoidance.h(14): warning:  #1-D: last line of file ends without a newline
+  #endif
+../Core/Inc/echo.h(14): warning:  #1295-D: Deprecated declaration Get_Left_Right_Distance - give arg types
+  void Get_Left_Right_Distance();
+../Core/Inc/trajectory.h(10): warning:  #1295-D: Deprecated declaration trajectory_Z - give arg types
+  void trajectory_Z();
+../Core/Inc/trajectory.h(11): warning:  #1295-D: Deprecated declaration trajectory_J - give arg types
+  void trajectory_J();
+../Core/Inc/trajectory.h(12): warning:  #1295-D: Deprecated declaration trajectory_U - give arg types
+  void trajectory_U();
+../Core/Inc/delay.h(9): warning:  #1-D: last line of file ends without a newline
+  #endif
+..\Core\Src\avoidance.c(75): warning:  #223-D: function "strlen" declared implicitly
+          HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), 100);
+..\Core\Src\avoidance.c(107): warning:  #223-D: function "strlen" declared implicitly
+      HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), 100);
+..\Core\Src\avoidance.c(135): warning:  #223-D: function "strlen" declared implicitly
+      HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), 100);
+..\Core\Src\avoidance.c(199): warning:  #1-D: last line of file ends without a newline
   }
-..\Core\Src\pid.c: 5 warnings, 0 errors
+..\Core\Src\avoidance.c: 10 warnings, 0 errors
 linking...
-Program Size: Code=49608 RO-data=4256 RW-data=236 ZI-data=2548  
+Program Size: Code=51240 RO-data=4304 RW-data=268 ZI-data=2532  
 FromELF: creating hex file...
-"bizhang\bizhang.axf" - 0 Error(s), 5 Warning(s).
+"bizhang\bizhang.axf" - 0 Error(s), 10 Warning(s).
 
 <h2>Software Packages used:</h2>
 

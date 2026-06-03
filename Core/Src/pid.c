@@ -5,7 +5,7 @@
 #include "usart.h"
 #include "string.h"
 #include <stdarg.h>
-
+#include "inv_mpu.h"
 float Kp = 10.0f;
 float Ki = 1.0f;
 uint16_t I_Limit = 100;		
@@ -24,6 +24,12 @@ float pid_output = 0.0f;
 int16_t pid_base_pwm = 0;       
 
 static int16_t last_base_pwm_sign = 0;
+
+static float start_yaw = 0.0f;
+static uint8_t yaw_initialized = 0;
+static uint32_t last_yaw_time = 0;
+
+static uint8_t debug_cnt = 0;
 
 void PI_Param_Clear(void)
 {
@@ -106,30 +112,53 @@ float PID_Calculate(void)
 
 void PID_Go_Straight(int16_t base_pwm)
 {
-    // 方向改变检测和复位（保留）
-    int16_t current_sign = (base_pwm > 0) ? 1 : ((base_pwm < 0) ? -1 : 0);
-    if (current_sign != 0 && current_sign != last_base_pwm_sign) {
-        PI_Param_Clear();
-        Set_Motor(0, 0);
-        HAL_Delay(50);
-        __HAL_TIM_SET_COUNTER(&htim2, 0);
-        __HAL_TIM_SET_COUNTER(&htim4, 0);
-        encoder_left = 0;
-        encoder_right = 0;
-    }
-    last_base_pwm_sign = current_sign;
-
     pid_base_pwm = base_pwm;
     float compensation = PID_Calculate();
-
-    // 统一使用：左轮加补偿，右轮减补偿
-    int16_t left_pwm = pid_base_pwm + compensation;
-    int16_t right_pwm = pid_base_pwm - compensation;
-
-    // 限幅
-    left_pwm  = (left_pwm  > PWM_Limit) ? PWM_Limit : (left_pwm  < -PWM_Limit ? -PWM_Limit : left_pwm);
-    right_pwm = (right_pwm > PWM_Limit) ? PWM_Limit : (right_pwm < -PWM_Limit ? -PWM_Limit : right_pwm);
-
+    
+    float yaw_compensation = 0.0f;
+    float pitch, roll, current_yaw;
+    
+    uint32_t now = HAL_GetTick();
+    if (now - last_yaw_time >= 20) {
+        last_yaw_time = now;
+        if (mpu_dmp_get_data(&pitch, &roll, &current_yaw) == 0) 
+		{
+            if (current_yaw < 0) current_yaw += 360.0f;
+            if (!yaw_initialized) {
+                start_yaw = current_yaw;
+                yaw_initialized = 1;
+            }
+            float yaw_error = current_yaw - start_yaw;
+            if (yaw_error > 180.0f) yaw_error -= 360.0f;
+            if (yaw_error < -180.0f) yaw_error += 360.0f;
+            
+            const float YAW_KP = 15.0f;
+            yaw_compensation = yaw_error * YAW_KP;
+            if (yaw_compensation > 200.0f) yaw_compensation = 200.0f;
+            if (yaw_compensation < -200.0f) yaw_compensation = -200.0f;
+			
+			if (++debug_cnt >= 10) {
+				debug_cnt = 0;
+				char dbg_buf[128];
+				sprintf(dbg_buf, "[ANGLE] yaw=%.1f start=%.1f err=%.2f comp=%.1f\r\n",
+						current_yaw, start_yaw, yaw_error, yaw_compensation);
+				HAL_UART_Transmit(&huart2, (uint8_t*)dbg_buf, strlen(dbg_buf), 100);
+			}
+        }
+    }
+    
+    int16_t left_pwm, right_pwm;
+    if (base_pwm >= 0) {
+        left_pwm = base_pwm + (int16_t)compensation - (int16_t)yaw_compensation;
+        right_pwm = base_pwm - (int16_t)compensation + (int16_t)yaw_compensation;
+    } else {
+        left_pwm = base_pwm - (int16_t)compensation + (int16_t)yaw_compensation;
+        right_pwm = base_pwm + (int16_t)compensation - (int16_t)yaw_compensation;
+    }
+    
+    left_pwm = (left_pwm > PWM_Limit) ? PWM_Limit : (left_pwm < -PWM_Limit) ? -PWM_Limit : left_pwm;
+    right_pwm = (right_pwm > PWM_Limit) ? PWM_Limit : (right_pwm < -PWM_Limit) ? -PWM_Limit : right_pwm;
+    
     Set_Motor(left_pwm, right_pwm);
 }
 
@@ -161,4 +190,50 @@ void Print_Debug(void)
                    pid_integral, Kp);
         last_print = now;
     }
+}
+
+void PID_Reset_Yaw_Reference(void)
+{
+    yaw_initialized = 0;
+}
+
+static uint8_t go_straight_continuous = 0;  // 持续直行标志
+
+// 非阻塞直行（每周期调用一次，持续前进）
+void PID_Go_Straight_Continuous(int16_t base_pwm)
+{
+    pid_base_pwm = base_pwm;
+    float compensation = PID_Calculate();   // 计算补偿
+    int16_t left_pwm, right_pwm;
+    if (base_pwm >= 0) {
+        left_pwm  = base_pwm + (int16_t)compensation;
+        right_pwm = base_pwm - (int16_t)compensation;
+    } else {
+        left_pwm  = base_pwm - (int16_t)compensation;
+        right_pwm = base_pwm + (int16_t)compensation;
+    }
+    // 限幅
+    left_pwm  = (left_pwm  > PWM_Limit) ? PWM_Limit : (left_pwm  < -PWM_Limit) ? -PWM_Limit : left_pwm;
+    right_pwm = (right_pwm > PWM_Limit) ? PWM_Limit : (right_pwm < -PWM_Limit) ? -PWM_Limit : right_pwm;
+    Set_Motor(left_pwm, right_pwm);
+}
+
+// 启动持续直行
+void PID_Start_Continuous(int16_t base_pwm)
+{
+    go_straight_continuous = 1;
+    // 可选：重置编码器累计值，避免误差累积
+    total_encoder_left = 0;
+    total_encoder_right = 0;
+    // 设置基础速度
+    pid_base_pwm = base_pwm;
+    // 清空 PID 积分项（可选）
+    pid_integral = 0;
+}
+
+// 停止持续直行
+void PID_Stop_Continuous(void)
+{
+    go_straight_continuous = 0;
+    Set_Motor(0, 0);
 }
