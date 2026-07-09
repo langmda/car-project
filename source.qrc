@@ -18,10 +18,8 @@
         <file>image/音乐播放.png</file>
         <file>image/语音交互.png</file>
         <file>image/轨迹行走.png</file>
-        <file>image/8字形.png</file>
-        <file>image/三角形.png</file>
-        <file>image/星形.png</file>
-        <file>image/圆形.png</file>
-        <file>image/正方形.png</file>
+        <file>image/u.png</file>
+        <file>image/z.png</file>
+        <file>image/j.png</file>
     </qresource>
 </RCC>

@@ -1096,6 +1096,6 @@ D:/work/qt/home/mainwindow.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qwidget.h
  mdp:D:/work/qt/home/build/Qt_6_10_1_for_Android_arm64_v8a-Debug/home_autogen/moc_predefs.h
  mdp:D:/work/qt/home/mainwindow.h
+D:/work/qt/home/main.cpp
 D:/work/qt/home/mainwindow.cpp
  uic:./ui_mainwindow.h
-D:/work/qt/home/main.cpp

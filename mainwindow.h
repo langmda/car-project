@@ -37,7 +37,7 @@ private slots:
     void on_CarControlButton_clicked();
     void on_SenSorDataButton_clicked();
     void on_MusicButton_clicked();
-    void on_ParameteButton_clicked();
+    void on_ParameterButton_clicked();
     void on_DataRecordButton_clicked();
     void on_CameraButton_clicked();
     void on_FaultButton_clicked();
@@ -60,6 +60,8 @@ private slots:
     void on_BackButton_clicked();
     void on_SwitchModeButton_clicked();
     void on_LedButton_clicked();
+    void on_RightCirlcleButton_clicked();
+    void on_UpdatePWMBtn_clicked();
 
     //音乐播放器的槽函数
     void on_SwitchBtn_clicked();
@@ -75,20 +77,28 @@ private slots:
 
     //数据记录页面的槽函数
     void on_DataRecordBtn_clicked();
+    void on_DataClearBtn_clicked();
 
     //实时画面页面的槽函数
     void on_captureBtn_clicked();
     void on_recordBtn_clicked();
     void on_selectPhotoDirBtn_clicked();
     void on_selectVideoDirBtn_clicked();
+    void on_cameraSwitchBtn_clicked();
 
     //轨迹行走页面的槽函数
+    void on_Line_Follow_Button_clicked();
+    void on_Trajectory_Z_Button_clicked();
+    void on_Trajectory_J_Button_clicked();
+    void on_Trajectory_U_Button_clicked();
 
-    void on_Trajectory_Square_Button_clicked();
-    void on_Trajectory_Eight_Button_clicked();
-    void on_Trajectory_Triangle_Button_clicked();
-    void on_Trajectory_Star_Button_clicked();
-    void on_Trajectory_Circle_Button_clicked();
+    //语音识别页面的槽函数
+    void on_VoiceInteractionSwitchBtn_clicked();
+
+    //测试语音用
+    void on_pushButton1_clicked();
+    void on_pushButton2_clicked();
+    void on_pushButton3_clicked();
 
 signals:
     void newFrameReceived(const QByteArray &imageData, const QJsonArray &boxes, double timestamp);
@@ -103,7 +113,7 @@ private:
     void updateMusicHighlight();
     void musicUpdata(QJsonObject musicObj);
     void sensorUpdata(QJsonObject sensorObj);
-    void addEncoderData(int left, int right);
+    void addEncoderData(int left, int right, float yaw);
     void Sensor_Fault(int temp, int humi, int encoderLeft, int encoderRight, int piAdc, int motorAdc);
 
     Ui::MainWindow *ui;
@@ -122,6 +132,10 @@ private:
     QString videoSaveDir;
     bool isRecording = false;
     QFile *videoFile = nullptr;
+    bool cameraConnected = false;
+    QTimer *cameraConnectTimer;
+    QTimer *cameraConnectDelayTimer;
+    bool cameraOn = false;
 
     // 音乐相关
     QStringList musicListCache;
@@ -131,17 +145,30 @@ private:
     bool isManualMusicSwitch = false;
     QTimer *musicSwitchTimer;
 
-// PID参数结构体
-#pragma pack(1)
-    struct PIDParams {
-        uint8_t cmd;
-        float Kp;
-        float Ki;
-        float I_Fil;
-        int32_t I_Lim;
-        int32_t PWM_Lim;
-    };
-#pragma pack()
+    // PID参数结构体
+    #pragma pack(1)
+        struct PIDParams
+        {
+            uint8_t cmd;
+            float Kp;
+            float Ki;
+            int32_t I_Lim;
+            int32_t PWM_Lim;
+        };
+    #pragma pack()
+
+    // 轨迹行走相关
+    bool Line_Follow_Mode = 0;
+
+    //语音交互
+    bool VoiceInteractionOn = false;
+
+    //电池电量滤波
+    float filteredPiBatPercent = 100.0f;    // 初始值设为100%避免显示异常
+    float filteredMotorBatPercent = 100.0f;
+    const float filterAlpha = 0.25f;        // 滤波系数，可调
 };
+
+
 
 #endif // MAINWINDOW_H
