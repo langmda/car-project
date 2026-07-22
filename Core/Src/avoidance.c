@@ -12,12 +12,16 @@
 #include "inv_mpu.h"
 
 // ---------- 可调参数 ----------
-#define FORWARD_SPEED           800     // 直行速度 PWM
-#define FRONT_DIST_THRESH       15.0f   // 前方障碍阈值 (cm)
-#define LEFT_RIGHT_DIST_THRESH  40.0f   // 左右方障碍阈值 (cm)
+#define SIDE_SCAN_INTERVAL_MS   175     // 左右扫描间隔 (ms)
+#define SIDE_CORRECT_THRESH     30.0f   // 触发修正的距离阈值 (cm)
+#define YAW_CORRECT_STEP        6.0f    // 每次修正的航向角步长 (度)
+
+#define FORWARD_SPEED           650     // 直行速度 PWM
+#define FRONT_DIST_THRESH       20.0f   // 前方障碍阈值 (cm)
+#define LEFT_RIGHT_DIST_THRESH  45.0f   // 左右方障碍阈值 (cm)
 #define TURN_DELAY_MS           100     // 停车后等待转向的时间
 #define YAW_KP                  -10.0f   // 直行时角度补偿系数
-#define SCAN_DELAY_MS           60      // 舵机稳定时间
+#define SCAN_DELAY_MS           120      // 舵机稳定时间
 
 // 舵机角度
 #define ANGLE_FRONT             90
@@ -131,29 +135,73 @@ void Maze_AbsoluteYaw(void)
     target_yaw = GetCurrentYaw();
     if (target_yaw < 0) target_yaw += 360.0f;
     
-    sprintf(msg, "[MAZE] Start, target_yaw=%.1f\r\n", target_yaw);
+    float base_target = target_yaw;      // 基础目标（不受临时修正影响）
+    float current_target = base_target;  // 当前直行使用的目标（可临时微调）
+    
+    sprintf(msg, "[MAZE] Start, base_target=%.1f\r\n", base_target);
     HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), 100);
     
     maze_running = 1;
     
     while (maze_running) {
-        // ---------- 阶段1：直行直到前方有障碍 ----------
-        uint32_t last_check = HAL_GetTick();
+        uint32_t last_front_check = HAL_GetTick();
+        uint32_t last_side_scan = HAL_GetTick();
+        
+        // ---- 直行循环 ----
         while (maze_running) {
-            GoStraightWithYaw(FORWARD_SPEED, target_yaw);
+            GoStraightWithYaw(FORWARD_SPEED, current_target);
             uint32_t now = HAL_GetTick();
-            if (now - last_check >= 100) {
-                last_check = now;
+            
+            // 前方障碍检测（每 100ms）
+            if (now - last_front_check >= 100) {
+                last_front_check = now;
                 float front = GetDistanceAt(ANGLE_FRONT);
                 sprintf(msg, "[FRONT] %.1f cm\r\n", front);
                 HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), 100);
-                if (front < FRONT_DIST_THRESH) break;
+                if (front < FRONT_DIST_THRESH) {
+                    break;  // 前方有障碍，退出直行
+                }
             }
+            
+            // 左右扫描与临时航向修正（每 200ms）
+            if (now - last_side_scan >= 200) {
+                last_side_scan = now;
+                float left = GetDistanceAt(ANGLE_LEFT);
+                float right = GetDistanceAt(ANGLE_RIGHT);
+                Set_Angle(ANGLE_FRONT);
+                
+                sprintf(msg, "[SIDE] L=%.1f R=%.1f\r\n", left, right);
+                HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), 100);
+                
+                // 仅修正当前直行的临时目标，不改变基础目标
+                if (right < SIDE_CORRECT_THRESH) {
+                    current_target += YAW_CORRECT_STEP;
+                    sprintf(msg, "[CORRECT] Right close, cur_target += %.1f -> %.1f\r\n",
+                            YAW_CORRECT_STEP, current_target);
+                    HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), 100);
+                } else if (left < SIDE_CORRECT_THRESH) {
+                    current_target -= YAW_CORRECT_STEP;
+                    sprintf(msg, "[CORRECT] Left close, cur_target -= %.1f -> %.1f\r\n",
+                            YAW_CORRECT_STEP, current_target);
+                    HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), 100);
+                }
+                
+                // 限制临时修正不超过 ±15 度
+                float diff = current_target - base_target;
+                if (diff > 15.0f) current_target = base_target + 15.0f;
+                if (diff < -15.0f) current_target = base_target - 15.0f;
+                
+                // 归一化
+                if (current_target >= 360.0f) current_target -= 360.0f;
+                if (current_target < 0.0f) current_target += 360.0f;
+            }
+            
             HAL_Delay(10);
         }
+        
         if (!maze_running) break;
         
-        // ---------- 阶段2：停车，测左右距离 ----------
+        // ---- 前方有障碍：停车，测左右距离，做转向决策 ----
         Set_Motor(0, 0);
         HAL_Delay(TURN_DELAY_MS);
         float left, right;
@@ -161,30 +209,31 @@ void Maze_AbsoluteYaw(void)
         sprintf(msg, "[LR] Left=%.1f, Right=%.1f\r\n", left, right);
         HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), 100);
         
-        // ---------- 阶段3：右手法则决策 ----------
-        bool right_wall = (right < LEFT_RIGHT_DIST_THRESH);   // 复用前方阈值
-        bool front_wall = true;   // 既然进入转向，前方肯定有障碍
+        bool right_wall = (right < LEFT_RIGHT_DIST_THRESH);
         bool left_wall  = (left < LEFT_RIGHT_DIST_THRESH);
-        
+        bool front_wall = true;   // 进入此处说明前方有障碍
         int decision = DecideTurn(right_wall, front_wall, left_wall);
-
-		// 修正打印
-		const char* dstr[] = {"Left", "Forward", "Right", "U-turn"};
-		sprintf(msg, "[DEC] R_wall=%d L_wall=%d -> %s\r\n", right_wall, left_wall, dstr[decision+1]);
-		HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), 100);
-
-		// 计算新目标角度（修正方向）
-		float new_target = target_yaw;
-		if (decision == 1) new_target -= 90.0f;      // 右转
-		else if (decision == -1) new_target += 90.0f; // 左转
-		else if (decision == 2) new_target += 180.0f; // 掉头
-
-		// 归一化
-		if (new_target >= 360.0f) new_target -= 360.0f;
-		if (new_target < 0.0f) new_target += 360.0f;
-
-		if (decision == 0) continue;
-		TurnToTarget(new_target);
+        
+        const char* dstr[] = {"Left", "Forward", "Right", "U-turn"};
+        sprintf(msg, "[DEC] R_wall=%d L_wall=%d -> %s\r\n", right_wall, left_wall, dstr[decision+1]);
+        HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), 100);
+        
+        // 基于基础目标计算新目标（忽略临时修正）
+        float new_base = base_target;
+        if (decision == 1) new_base -= 90.0f;
+        else if (decision == -1) new_base += 90.0f;
+        else if (decision == 2) new_base += 180.0f;
+        
+        // 归一化
+        if (new_base >= 360.0f) new_base -= 360.0f;
+        if (new_base < 0.0f) new_base += 360.0f;
+        
+        if (decision != 0) {
+            TurnToTarget(new_base);
+            // 转向成功后，更新基础目标和临时目标
+            base_target = new_base;
+            current_target = base_target;
+        }
     }
     
     Set_Motor(0, 0);

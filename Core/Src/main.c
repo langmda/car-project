@@ -143,12 +143,12 @@ int main(void)
 	  
 	/*
 	uint8_t infrared_data[5] = {0};
-	Read_IR_Sensor(infrared_data);
+	Read_Sensors(infrared_data);
 	sprintf(buffer, "读取成功：%d %d %d %d %d\r\n", infrared_data[0], infrared_data[1], infrared_data[2], infrared_data[3], infrared_data[4]);
 	HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
 	HAL_Delay(1000); 
 	*/
-	
+	  
 	/*
 	if (mpu_dmp_get_data(&pitch, &roll, &yaw) == 0) 
 	{

@@ -38,3 +38,4 @@ bizhang\uart.o: ../Core/Inc/pid.h
 bizhang\uart.o: D:\tool\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 bizhang\uart.o: ../Core/Inc/servo.h
 bizhang\uart.o: ../Core/Inc/avoidance.h
+bizhang\uart.o: ../Core/Inc/trajectory.h

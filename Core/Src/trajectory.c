@@ -290,13 +290,14 @@ void arc_blocking(int16_t delta_angle_deg, int16_t forward_speed)
 {
     float current_yaw, pitch, roll;
     float start_yaw;
-    float rotated_angle = 0.0f;
-    int16_t turn_pwm = 400;          // 固定转向差速（可调，值越大转弯半径越小）
+    float accumulated_angle = 0.0f;  // 累积转角
+    float prev_yaw;
+    int16_t turn_pwm = 400;
     uint32_t timeout_ms = 10000;
     uint32_t start_time = HAL_GetTick();
     const float angle_tolerance = 5.0f;
+    uint8_t first_read = 1;
 
-    // 重置 PID 和编码器滤波状态（避免后续直行干扰）
     PI_Param_Clear();
     extern int16_t last_left, last_right;
     last_left = 0;
@@ -312,53 +313,57 @@ void arc_blocking(int16_t delta_angle_deg, int16_t forward_speed)
     mpu_dmp_get_data(&pitch, &roll, &current_yaw);
     if (current_yaw < 0) current_yaw += 360.0f;
     start_yaw = current_yaw;
+    prev_yaw = current_yaw;
 
     sprintf(debug_buf, "[ARC] start=%.1f delta=%d speed=%d turn=%d\r\n", 
             start_yaw, delta_angle_deg, forward_speed, turn_pwm);
     HAL_UART_Transmit(&huart2, (uint8_t*)debug_buf, strlen(debug_buf), 100);
 
-    // 根据目标方向设置电机差速（绝对稳定）
+    // 设置差速
     int16_t left_pwm, right_pwm;
-    if (delta_angle_deg > 0) {          // 右转：左轮慢、右轮快
+    if (delta_angle_deg > 0) {          // 右转
         left_pwm = forward_speed - turn_pwm;
         right_pwm = forward_speed + turn_pwm;
-    } else {                            // 左转：左轮快、右轮慢
+    } else {                            // 左转
         left_pwm = forward_speed + turn_pwm;
         right_pwm = forward_speed - turn_pwm;
     }
-    // 限幅
     if (left_pwm > 4320) left_pwm = 4320;
     if (left_pwm < -4320) left_pwm = -4320;
     if (right_pwm > 4320) right_pwm = 4320;
     if (right_pwm < -4320) right_pwm = -4320;
     Set_Motor(left_pwm, right_pwm);
 
-    // 角度积分循环
     while (1) {
         mpu_dmp_get_data(&pitch, &roll, &current_yaw);
         if (current_yaw < 0) current_yaw += 360.0f;
 
-        // 计算已转过的角度（处理跨零点）
-        float diff = current_yaw - start_yaw;
-        if (diff > 180.0f) diff -= 360.0f;
-        if (diff < -180.0f) diff += 360.0f;
-        rotated_angle = diff;
+        if (!first_read) {
+            // 计算本帧增量，处理跨零点
+            float delta = current_yaw - prev_yaw;
+            if (delta > 180.0f) delta -= 360.0f;
+            else if (delta < -180.0f) delta += 360.0f;
+            accumulated_angle += delta;
+        } else {
+            first_read = 0;
+        }
+        prev_yaw = current_yaw;
 
-        // 打印调试信息（每 200ms）
+        // 打印（每 200ms）
         static uint32_t last_print = 0;
         uint32_t now = HAL_GetTick();
         if (now - last_print > 200) {
-            sprintf(debug_buf, "[ARC] yaw=%.1f rotated=%.1f / %d\r\n", 
-                    current_yaw, rotated_angle, delta_angle_deg);
+            sprintf(debug_buf, "[ARC] yaw=%.1f acc=%.1f / %d\r\n", 
+                    current_yaw, accumulated_angle, delta_angle_deg);
             HAL_UART_Transmit(&huart2, (uint8_t*)debug_buf, strlen(debug_buf), 100);
             last_print = now;
         }
 
-        // 退出条件：达到目标角度（考虑方向）
+        // 退出判断
         if (delta_angle_deg > 0) {
-            if (rotated_angle >= delta_angle_deg - angle_tolerance) break;
+            if (accumulated_angle >= delta_angle_deg - angle_tolerance) break;
         } else {
-            if (rotated_angle <= delta_angle_deg + angle_tolerance) break;
+            if (accumulated_angle <= delta_angle_deg + angle_tolerance) break;
         }
 
         if ((HAL_GetTick() - start_time) > timeout_ms) {
@@ -369,12 +374,11 @@ void arc_blocking(int16_t delta_angle_deg, int16_t forward_speed)
         delay_ms(10);
     }
 
-    // 停止并清理状态
     Set_Motor(0, 0);
     PI_Param_Clear();
     last_left = 0;
     last_right = 0;
-    sprintf(debug_buf, "[ARC] finished, rotated=%.1f\r\n", rotated_angle);
+    sprintf(debug_buf, "[ARC] finished, acc=%.1f\r\n", accumulated_angle);
     HAL_UART_Transmit(&huart2, (uint8_t*)debug_buf, strlen(debug_buf), 100);
 }
 

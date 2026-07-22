@@ -4,7 +4,6 @@
 //设置电机转速函数，motor1和motor2范围-7200到7200
 void Set_Motor(int16_t motor1, int16_t motor2)  
 {
-	//将参数限制在-100到100之间
 	if(motor1 > 7200){motor1 = 7200;}
 	if(motor1 < -7200) {motor1 = -7200;}
 	if(motor2 > 7200){motor2 = 7200;}

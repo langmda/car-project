@@ -19,6 +19,8 @@ void User_Code(void);
 #define TRAJECTORY_J 0x15
 #define TRAJECTORY_U 0x16
 #define LINE_FOLLOW_MODE_SWITCH 0x17
+#define CUSTOMIZATION 0x18	//自定义按键
+#define PWM_UPDATE 0x19
 //模式
 #define AUTOMATIC  0x01		//自主避障模式
 #define MANUAL     0x02		//手动操作模式
@@ -29,5 +31,14 @@ extern volatile uint8_t uart_rx_buffer[128];
 extern uint8_t mode;
 extern volatile uint8_t current_cmd;
 extern uint8_t read_and_transmit;
+extern uint32_t leftPWM, rightPWM;
 
+#pragma pack(push, 1)   // 设置为1字节对齐
+typedef struct {
+    uint8_t cmd;
+    int32_t rightPWM;
+    int32_t leftPWM;
+} PWMParams;
+#pragma pack(pop)        // 恢复默认对齐
+	
 #endif

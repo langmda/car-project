@@ -10,8 +10,8 @@
 #define SENSOR_ADDR (0x18 << 1)
 #define REG_ADDR    0x05
 
-#define BASE_SPEED    800
-#define STEERING_LIMIT_NORMAL  300
+#define BASE_SPEED    1200
+#define STEERING_LIMIT_NORMAL  400
 #define STEERING_LIMIT_TURN    800
 #define LOST_LINE_FWD_RATIO 0.7f
 
@@ -50,11 +50,11 @@ static void Read_Sensors(uint8_t *sensor)
     raw[3] = (raw_data >> 1) & 0x01;
     raw[4] = (raw_data >> 0) & 0x01;
 
-    sensor[0] = raw[4];
-    sensor[1] = raw[3];
-    sensor[2] = raw[2];
-    sensor[3] = raw[1];
-    sensor[4] = raw[0];
+    sensor[0] = !raw[4];
+    sensor[1] = !raw[3];
+    sensor[2] = !raw[2];
+    sensor[3] = !raw[1];
+    sensor[4] = !raw[0];
 }
 
 static float Get_Position_Error(uint8_t *sensor)

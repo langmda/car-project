@@ -20,9 +20,10 @@ volatile uint8_t uart_rx_buffer[128];
 uint8_t read_and_transmit = 0;		//读取并发送传感器数据的标志位
 uint8_t read_angle = 0;				//读取mpu6050的角度数据
 
+uint32_t leftPWM = 0, rightPWM = 0;
+
 void User_Code()
 {	
-	
 	if (mode == MANUAL)
 	{
 		if (HAL_GetTick() - last_cmd_time > CMD_TIMEOUT)	//指令超时处理
@@ -45,16 +46,19 @@ void User_Code()
 				Avoidance_Stop();
 				break;
 			case MOVE_FORWARD:
-				Set_Motor(4000,4300);
+				Set_Motor(5000,  5000);
 				break;
 			case BACK_OFF:
-				Set_Motor(2500,1000);
+				Set_Motor(-3000,  -3000);
 				break;
 			case TURN_LEFT:
-				Set_Motor(-700, 700);
+				Set_Motor(-2800, 2800);
 				break;
 			case TURN_RIGHT:
-				Set_Motor(700, -700);
+				Set_Motor(2800, -2800);
+				break;
+			case CUSTOMIZATION:
+				Set_Motor(leftPWM, rightPWM);
 				break;
 			case TRAJECTORY_Z:
 				trajectory_Z();
@@ -79,12 +83,12 @@ void User_Code()
 		Line_Follow_Task();   // 巡线主函数
 	}
 	
-	//if(read_and_transmit == 1)
-	//{
-	//	Read_And_Transmit(); //读取传感器数据并发送
-	//	read_and_transmit = 0;
-	//}
-	
+	if(read_and_transmit == 1)
+	{
+		Read_And_Transmit(); //读取传感器数据并发送
+		read_and_transmit = 0;
+	}
+	/*
 	uint32_t now_time = HAL_GetTick();
 	static uint32_t last_time = 0;
 
@@ -105,4 +109,5 @@ void User_Code()
 			HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), 100);
 		}
 	}
+	*/
 }
