@@ -30,6 +30,7 @@
 #include "user.h"
 #include "uart.h"
 #include "Dht11.h"
+#include "Dht22.h"
 #include "sensor.h"
 #include "echo.h"
 #include "stdio.h"
@@ -128,19 +129,45 @@ int main(void)
   HAL_ADC_Start_DMA(&hadc1, (uint32_t*)adc_buf, 2); 
   
   delay_init();
-  DHT11_Init();
   
+  DHT22_Init();
+
   mpu_dmp_init();
   
   Set_Angle(90);
+
+  #pragma pack(1)  // 强制1字节对齐，关闭自动填充
+  typedef struct {		
+  	  float humi;          
+	  float temp;         
+  } Data_t;
+  #pragma pack()  // 恢复默认对齐
+
+  Data_t data; 
+  
+  static uint32_t lastSendTime = 0;
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	User_Code();  
+	//User_Code();  
 	  
+	// 获取当前系统运行时间（毫秒）
+    uint32_t currentTime = HAL_GetTick();
+    // 判断是否到达 1 秒
+	if (currentTime - lastSendTime >= 2000) 
+	{
+		DHT22_Read_Data_Filtered(&data.temp, &data.humi, 5);
+		//sprintf(buffer, "temp: %f, humi: %f /r/n" ,data.temp, data.humi);
+		//HAL_UART_Transmit(&huart2, (uint8_t*)&buffer, sizeof(buffer), 100);
+		HAL_UART_Transmit(&huart2, (uint8_t*)&data, sizeof(Data_t), 100);
+		lastSendTime = currentTime;
+	}
+    HAL_Delay(10);
+	
+
 	/*
 	uint8_t infrared_data[5] = {0};
 	Read_Sensors(infrared_data);

@@ -13,6 +13,7 @@
 
 static char debug_buf[128];
 
+uint32_t maxpwm = 0, minpwm = 0;
 // 原地转向（正角度为左转，负角度为右转）
 void turn_angle_blocking(int16_t target_angle_deg) 
 {
@@ -33,8 +34,8 @@ void turn_angle_blocking(int16_t target_angle_deg)
     uint32_t timeout_ms = 8000;
     uint32_t start_time = HAL_GetTick();
     const float angle_tolerance = 1.0f;
-    const int16_t max_turn_pwm = 1200;
-    const int16_t min_turn_pwm = 500;
+    const int16_t max_turn_pwm = maxpwm;
+    const int16_t min_turn_pwm = minpwm;
     uint16_t iter = 0;
     float abs_err;
     float last_valid_yaw = 0;
@@ -249,7 +250,7 @@ void go_straight_blocking(int32_t distance_mm)
     HAL_UART_Transmit(&huart2, (uint8_t*)debug_buf, strlen(debug_buf), 100);
     
     while (1) {
-        PID_Go_Straight(2000);
+        PID_Go_Straight(4000);
         
         int32_t delta_left = total_encoder_left - start_total_left;
         int32_t delta_right = total_encoder_right - start_total_right;
@@ -384,11 +385,11 @@ void arc_blocking(int16_t delta_angle_deg, int16_t forward_speed)
 
 void trajectory_Z()
 {
-	go_straight_blocking(600);
+	go_straight_blocking(1200);
 	turn_angle_blocking(-120);
-	go_straight_blocking(1000);
+	go_straight_blocking(2000);
 	turn_angle_blocking(120);
-	go_straight_blocking(600);
+	go_straight_blocking(1200);
 }
 void trajectory_J()
 {
@@ -398,6 +399,6 @@ void trajectory_J()
 void trajectory_U()
 {
 	go_straight_blocking(1000);
-	arc_blocking(-160, 1000);
+	arc_blocking(-160, 3000);
 	go_straight_blocking(1000);
 }

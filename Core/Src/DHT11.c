@@ -6,7 +6,7 @@
 void DHT11_Rst(void)	   
 {                 
 	DHT11_Mode(OUT); 	// SET OUTPUT
-	DHT11_Low; 	      // 拉低DQ
+	DHT11_Low; 	      	// 拉低DQ
 	delay_ms(20);    	// 主机拉低18~30ms
 	DHT11_High; 			// DQ=1 
 	delay_us(13);     	// 主机拉高10~35us

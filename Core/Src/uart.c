@@ -10,6 +10,7 @@
 
 volatile uint8_t current_cmd = STOP;	//当前有效命令
 volatile uint8_t led_counter = 0;    //led计数器
+extern uint32_t maxpwm, minpwm;
 
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
@@ -68,8 +69,8 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 		else if (uart_rx_buffer[0] == PWM_UPDATE) 
 		{
 			PWMParams *PWM = (PWMParams*)uart_rx_buffer;
-			leftPWM = PWM->leftPWM;
-			rightPWM = PWM->rightPWM;
+			minpwm = PWM->leftPWM;
+			maxpwm = PWM->rightPWM;
 			char buffer[256];
 			sprintf(buffer, "leftPWM:%d rightPWM:%d", leftPWM, rightPWM);
 			HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);

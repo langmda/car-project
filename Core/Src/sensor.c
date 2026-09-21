@@ -1,6 +1,7 @@
 #include "sensor.h"
 #include "tim.h"
 #include "dht11.h"
+#include "dht22.h"
 #include "usart.h"
 #include "pid.h"
 #include "user.h"
@@ -10,6 +11,9 @@ RawData_t raw_data;
 
 uint16_t adc_buf[2];
 
+static float last_temp = 0.0f;
+static float last_humi = 0.0f;
+
 void Read_And_Transmit(void) 
 {
 	raw_data.cmd = SENSOR_DATA; 
@@ -17,7 +21,18 @@ void Read_And_Transmit(void)
 	raw_data.encoder_left = encoder_left;
 	raw_data.encoder_right = encoder_right;
 	
-	DHT11_Read_Data(&raw_data.temp, &raw_data.humi);
+	uint8_t ret = DHT22_Read_Data(&raw_data.temp, &raw_data.humi);
+    if (ret == 0) 
+	{
+        // 读取成功，更新上次有效值
+        last_temp = raw_data.temp;
+        last_humi = raw_data.humi;
+    } else 
+	{
+        // 读取失败，使用上次有效值
+        raw_data.temp = last_temp;
+        raw_data.humi = last_humi;
+    }
 	
     raw_data.pi_adc = adc_buf[0]; //读取电池1电压
     raw_data.motor_adc = adc_buf[1]; //读取电池2电压
