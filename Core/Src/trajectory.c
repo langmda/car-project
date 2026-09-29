@@ -13,7 +13,6 @@
 
 static char debug_buf[128];
 
-uint32_t maxpwm = 0, minpwm = 0;
 // 原地转向（正角度为左转，负角度为右转）
 void turn_angle_blocking(int16_t target_angle_deg) 
 {

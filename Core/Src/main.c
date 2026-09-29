@@ -61,6 +61,9 @@
 
 /* USER CODE BEGIN PV */
   char buffer[256];
+  float pitch;
+  float roll;
+  float yaw;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -152,11 +155,12 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	//User_Code();  
+	User_Code();  
 	  
 	// 获取当前系统运行时间（毫秒）
-    uint32_t currentTime = HAL_GetTick();
+    //uint32_t currentTime = HAL_GetTick();
     // 判断是否到达 1 秒
+	/*
 	if (currentTime - lastSendTime >= 2000) 
 	{
 		DHT22_Read_Data_Filtered(&data.temp, &data.humi, 5);
@@ -166,7 +170,7 @@ int main(void)
 		lastSendTime = currentTime;
 	}
     HAL_Delay(10);
-	
+	*/
 
 	/*
 	uint8_t infrared_data[5] = {0};

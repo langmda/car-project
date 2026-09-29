@@ -57,7 +57,7 @@ static void Read_Sensors(uint8_t *sensor)
     sensor[4] = !raw[0];
 }
 
-static float Get_Position_Error(uint8_t *sensor)
+static float Get_Position_Error(uint8_t *sensor)		//加权计算误差
 {
     int16_t numerator = 0, denominator = 0;
     int8_t weights[] = {-2, -1, 0, 1, 2};
@@ -71,8 +71,8 @@ static float Get_Position_Error(uint8_t *sensor)
     return (float)numerator / denominator;
 }
 
-static uint8_t Handle_Extreme_Turn(uint8_t *sensor)
-{
+static uint8_t Handle_Extreme_Turn(uint8_t *sensor)		//处理大偏差：只有最左边或最右边一路检测到黑线
+{														//纠正方向直到中间一路看到黑线或者超时，有反馈
     if (sensor[0] && !sensor[1] && !sensor[2] && !sensor[3] && !sensor[4]) {
         Set_Motor(-BASE_SPEED, BASE_SPEED);
         uint32_t timeout = HAL_GetTick() + 800;
@@ -104,8 +104,8 @@ static uint8_t Handle_Extreme_Turn(uint8_t *sensor)
     return 0;
 }
 
-static uint8_t Handle_Curve_Turn(uint8_t *sensor)
-{
+static uint8_t Handle_Curve_Turn(uint8_t *sensor)		//处理小偏差，最左边两路、最右边两路、最左边第二路，最右边第二路检测到黑线
+{														//向纠正方向运动一定时间电机，开环，后面就交给其他逻辑处理
     if (sensor[0] && sensor[1] && !sensor[2] && !sensor[3] && !sensor[4]) {
         int16_t turn_pwm = BASE_SPEED + 200;
         int16_t left_pwm = BASE_SPEED - turn_pwm;
@@ -303,7 +303,7 @@ void Line_Follow_Task(void)
     uint8_t all_lost = !sensors[0] && !sensors[1] && !sensors[2] && !sensors[3] && !sensors[4];
 
     // 锁定逻辑
-    if (!all_lost) {
+    if (!all_lost) {		//未丢线，如果最左边一路或最右边一路检测到黑线，就设置待定转向方向
         if (sensors[0] == 1 && sensors[4] == 0) {
             if (pending_turn_dir != -1) {
                 pending_turn_dir = -1;

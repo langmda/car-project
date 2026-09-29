@@ -7,11 +7,13 @@
 typedef struct {
     uint8_t cmd;
     float Kp;
-    float Ki;
-    int32_t I_Lim;
-    int32_t PWM_Lim;
+    float YAW_KP;
+    uint16_t PWM_Lim;
 } PIDParams_t;
 #pragma pack()   // »Ö¸´Ä¬ÈÏ¶ÔÆë
+
+#define DBG_HEAD  "$"
+#define DBG_TAIL  "*\r\n"
 
 void PI_Param_Clear(void);
 void Read_Encoder(void);
@@ -30,6 +32,7 @@ extern float Ki;
 extern uint16_t I_Limit;		
 extern uint16_t PWM_Limit; 
 extern int16_t last_left, last_right;
+extern float YAW_KP;
 
 void PID_Go_Straight_Continuous(int16_t base_pwm);
 void PID_Start_Continuous(int16_t base_pwm);

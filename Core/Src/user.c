@@ -46,7 +46,7 @@ void User_Code()
 				Avoidance_Stop();
 				break;
 			case MOVE_FORWARD:
-				Set_Motor(5000,  5000);
+				PID_Go_Straight(2000);
 				break;
 			case BACK_OFF:
 				Set_Motor(-3000,  -3000);

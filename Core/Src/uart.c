@@ -47,8 +47,7 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 		{
 			PIDParams_t *pid = (PIDParams_t*)uart_rx_buffer;
 			Kp = pid->Kp;
-			Ki = pid->Ki;
-			I_Limit = pid->I_Lim;
+			YAW_KP = pid->YAW_KP;
 			PWM_Limit = pid->PWM_Lim;
 		}   
 		else if (uart_rx_buffer[0] == LINE_FOLLOW_MODE_SWITCH) 
@@ -69,11 +68,8 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 		else if (uart_rx_buffer[0] == PWM_UPDATE) 
 		{
 			PWMParams *PWM = (PWMParams*)uart_rx_buffer;
-			minpwm = PWM->leftPWM;
-			maxpwm = PWM->rightPWM;
-			char buffer[256];
-			sprintf(buffer, "leftPWM:%d rightPWM:%d", leftPWM, rightPWM);
-			HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
+			leftPWM = PWM->leftPWM;
+			rightPWM = PWM->rightPWM;
 		}	
 		else 
 		{
