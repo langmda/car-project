@@ -43,3 +43,5 @@ bizhang\avoidance.o: D:\tool\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 bizhang\avoidance.o: ../Core/Inc/user.h
 bizhang\avoidance.o: D:\tool\Keil\ARM\ARMCC\Bin\..\include\stdbool.h
 bizhang\avoidance.o: ../Core/MPU6050/MyCode/inv_mpu.h
+bizhang\avoidance.o: ../Core/Inc/tim.h
+bizhang\avoidance.o: ../Core/Inc/sensor.h

@@ -22,25 +22,52 @@ static float integral = 0;
 static float last_error = 0;
 static const float INTEGRAL_LIMIT = 80;
 
-static int8_t last_valid_dir = 0;
+/* ============================================================
+ *  last_valid_dir: ´øÊ±¼ä´ÁµÄ¡°ÉÏ´ÎÃ÷È·Æ«Ïò¡±
+ *  - ³¬¹ı LAST_VALID_TIMEOUT_MS Î´Ë¢ĞÂ ¡ú ÊÓÎª¹ıÆÚ£¬·µ»Ø 0
+ *  - Í¨¹ı Update_Last_Valid_Dir() Ğ´Èë£¨×Ô¶¯¼ÇÂ¼Ê±¼ä´Á£©
+ *  - Í¨¹ı Get_Last_Valid_Dir()   ¶ÁÈ¡£¨×Ô¶¯ÅĞ¶¨¹ıÆÚ£©
+ * ============================================================ */
+static int8_t   last_valid_dir = 0;
+static uint32_t last_valid_ms  = 0;
+#define LAST_VALID_TIMEOUT_MS 2000
 
-// Îó²î·ûºÅÀúÊ· (Í¶Æ±ºó±¸)
+static void Update_Last_Valid_Dir(int8_t dir)
+{
+    last_valid_dir = dir;
+    last_valid_ms  = HAL_GetTick();
+}
+
+static int8_t Get_Last_Valid_Dir(void)
+{
+    if (last_valid_dir == 0) return 0;
+    if ((HAL_GetTick() - last_valid_ms) > LAST_VALID_TIMEOUT_MS) return 0;
+    return last_valid_dir;
+}
+
+/* Îó²î·ûºÅÀúÊ· (Í¶Æ±ºó±¸) */
 #define ERR_HIST_LEN 5
 static int8_t err_sign_history[ERR_HIST_LEN] = {0};
 static uint8_t err_hist_index = 0;
 
-// µ¥±ß·½ÏòËø¶¨
-static int8_t pending_turn_dir = 0;
-static uint8_t straight_cnt = 0;
-#define STRAIGHT_THRESHOLD 20
-static uint8_t unlock_delay = 0;
-#define UNLOCK_DELAY_FRAMES 15
+/* ============================================================
+ *  µ¥±ß·½ÏòËø¶¨: Ê±¼ä´Á°æ
+ *  - pending_turn_dir ÓÉ×îÍâÁ½Â·´¥·¢
+ *  - unlock_start_ms   Ö®ºó UNLOCK_DELAY_MS ÄÚ²»ÔÊĞí¸Ä¶¯
+ *  - straight_start_ms Á¬ĞøÖ±ĞĞÂú STRAIGHT_MS ²Å½âËø
+ * ============================================================ */
+static int8_t   pending_turn_dir = 0;
+static uint32_t unlock_start_ms  = 0;
+#define UNLOCK_DELAY_MS 150
+
+static uint32_t straight_start_ms = 0;
+#define STRAIGHT_MS 200
 
 static void Read_Sensors(uint8_t *sensor)
 {
     uint8_t raw_data;
     if (HAL_I2C_Mem_Read(&hi2c2, SENSOR_ADDR, REG_ADDR, I2C_MEMADD_SIZE_8BIT, &raw_data, 1, 100) != HAL_OK) {
-        for (int i=0; i<5; i++) sensor[i] = 0;
+        for (int i = 0; i < 5; i++) sensor[i] = 0;
         return;
     }
     uint8_t raw[5];
@@ -57,11 +84,11 @@ static void Read_Sensors(uint8_t *sensor)
     sensor[4] = !raw[0];
 }
 
-static float Get_Position_Error(uint8_t *sensor)		//¼ÓÈ¨¼ÆËãÎó²î
+static float Get_Position_Error(uint8_t *sensor)   // ¼ÓÈ¨¼ÆËãÎó²î
 {
     int16_t numerator = 0, denominator = 0;
     int8_t weights[] = {-2, -1, 0, 1, 2};
-    for (int i=0; i<5; i++) {
+    for (int i = 0; i < 5; i++) {
         if (sensor[i]) {
             numerator += weights[i];
             denominator++;
@@ -71,8 +98,8 @@ static float Get_Position_Error(uint8_t *sensor)		//¼ÓÈ¨¼ÆËãÎó²î
     return (float)numerator / denominator;
 }
 
-static uint8_t Handle_Extreme_Turn(uint8_t *sensor)		//´¦Àí´óÆ«²î£ºÖ»ÓĞ×î×ó±ß»ò×îÓÒ±ßÒ»Â·¼ì²âµ½ºÚÏß
-{														//¾ÀÕı·½ÏòÖ±µ½ÖĞ¼äÒ»Â·¿´µ½ºÚÏß»òÕß³¬Ê±£¬ÓĞ·´À¡
+static uint8_t Handle_Extreme_Turn(uint8_t *sensor)  // ´óÆ«²î£ºÖ»ÓĞ×î×ó/×îÓÒÒ»Â·ºÚ
+{
     if (sensor[0] && !sensor[1] && !sensor[2] && !sensor[3] && !sensor[4]) {
         Set_Motor(-BASE_SPEED, BASE_SPEED);
         uint32_t timeout = HAL_GetTick() + 800;
@@ -82,9 +109,9 @@ static uint8_t Handle_Extreme_Turn(uint8_t *sensor)		//´¦Àí´óÆ«²î£ºÖ»ÓĞ×î×ó±ß»ò×
             if (tmp[2]) break;
             delay_ms(10);
         }
-        Set_Motor(0,0);
+        Set_Motor(0, 0);
         delay_ms(30);
-        last_valid_dir = -1;
+        Update_Last_Valid_Dir(-1);
         return 1;
     }
     if (!sensor[0] && !sensor[1] && !sensor[2] && !sensor[3] && sensor[4]) {
@@ -96,58 +123,58 @@ static uint8_t Handle_Extreme_Turn(uint8_t *sensor)		//´¦Àí´óÆ«²î£ºÖ»ÓĞ×î×ó±ß»ò×
             if (tmp[2]) break;
             delay_ms(10);
         }
-        Set_Motor(0,0);
+        Set_Motor(0, 0);
         delay_ms(30);
-        last_valid_dir = 1;
+        Update_Last_Valid_Dir(1);
         return 1;
     }
     return 0;
 }
 
-static uint8_t Handle_Curve_Turn(uint8_t *sensor)		//´¦ÀíĞ¡Æ«²î£¬×î×ó±ßÁ½Â·¡¢×îÓÒ±ßÁ½Â·¡¢×î×ó±ßµÚ¶şÂ·£¬×îÓÒ±ßµÚ¶şÂ·¼ì²âµ½ºÚÏß
-{														//Ïò¾ÀÕı·½ÏòÔË¶¯Ò»¶¨Ê±¼äµç»ú£¬¿ª»·£¬ºóÃæ¾Í½»¸øÆäËûÂß¼­´¦Àí
+static uint8_t Handle_Curve_Turn(uint8_t *sensor)   // Ğ¡Æ«²îÓ²±àÂëÍäµÀ
+{
     if (sensor[0] && sensor[1] && !sensor[2] && !sensor[3] && !sensor[4]) {
         int16_t turn_pwm = BASE_SPEED + 200;
-        int16_t left_pwm = BASE_SPEED - turn_pwm;
+        int16_t left_pwm  = BASE_SPEED - turn_pwm;
         int16_t right_pwm = BASE_SPEED + turn_pwm;
-        left_pwm = (left_pwm > 4320) ? 4320 : (left_pwm < -4320) ? -4320 : left_pwm;
+        left_pwm  = (left_pwm  > 4320) ? 4320 : (left_pwm  < -4320) ? -4320 : left_pwm;
         right_pwm = (right_pwm > 4320) ? 4320 : (right_pwm < -4320) ? -4320 : right_pwm;
         Set_Motor(left_pwm, right_pwm);
         delay_ms(60);
-        last_valid_dir = -1;
+        Update_Last_Valid_Dir(-1);
         return 1;
     }
     if (!sensor[0] && !sensor[1] && !sensor[2] && sensor[3] && sensor[4]) {
         int16_t turn_pwm = BASE_SPEED + 200;
-        int16_t left_pwm = BASE_SPEED + turn_pwm;
+        int16_t left_pwm  = BASE_SPEED + turn_pwm;
         int16_t right_pwm = BASE_SPEED - turn_pwm;
-        left_pwm = (left_pwm > 4320) ? 4320 : (left_pwm < -4320) ? -4320 : left_pwm;
+        left_pwm  = (left_pwm  > 4320) ? 4320 : (left_pwm  < -4320) ? -4320 : left_pwm;
         right_pwm = (right_pwm > 4320) ? 4320 : (right_pwm < -4320) ? -4320 : right_pwm;
         Set_Motor(left_pwm, right_pwm);
         delay_ms(60);
-        last_valid_dir = 1;
+        Update_Last_Valid_Dir(1);
         return 1;
     }
     if (sensor[1] && !sensor[0] && !sensor[2] && !sensor[3] && !sensor[4]) {
         int16_t turn_pwm = BASE_SPEED;
-        int16_t left_pwm = BASE_SPEED - turn_pwm;
+        int16_t left_pwm  = BASE_SPEED - turn_pwm;
         int16_t right_pwm = BASE_SPEED + turn_pwm;
-        left_pwm = (left_pwm > 4320) ? 4320 : (left_pwm < -4320) ? -4320 : left_pwm;
+        left_pwm  = (left_pwm  > 4320) ? 4320 : (left_pwm  < -4320) ? -4320 : left_pwm;
         right_pwm = (right_pwm > 4320) ? 4320 : (right_pwm < -4320) ? -4320 : right_pwm;
         Set_Motor(left_pwm, right_pwm);
         delay_ms(40);
-        last_valid_dir = -1;
+        Update_Last_Valid_Dir(-1);
         return 1;
     }
     if (sensor[3] && !sensor[0] && !sensor[1] && !sensor[2] && !sensor[4]) {
         int16_t turn_pwm = BASE_SPEED;
-        int16_t left_pwm = BASE_SPEED + turn_pwm;
+        int16_t left_pwm  = BASE_SPEED + turn_pwm;
         int16_t right_pwm = BASE_SPEED - turn_pwm;
-        left_pwm = (left_pwm > 4320) ? 4320 : (left_pwm < -4320) ? -4320 : left_pwm;
+        left_pwm  = (left_pwm  > 4320) ? 4320 : (left_pwm  < -4320) ? -4320 : left_pwm;
         right_pwm = (right_pwm > 4320) ? 4320 : (right_pwm < -4320) ? -4320 : right_pwm;
         Set_Motor(left_pwm, right_pwm);
         delay_ms(40);
-        last_valid_dir = 1;
+        Update_Last_Valid_Dir(1);
         return 1;
     }
     return 0;
@@ -156,14 +183,13 @@ static uint8_t Handle_Curve_Turn(uint8_t *sensor)		//´¦ÀíĞ¡Æ«²î£¬×î×ó±ßÁ½Â·¡¢×îÓ
 /*
  * ¶ªÏß»Ö¸´£ºÂıËÙºóÍË + Ô­µØĞı×ª£¬Ö±µ½ÖĞ¼äºìÍâÖØĞÂ²¶»ñºÚÏß¡£
  * Ğı×ª·½ÏòÓÉ pending_turn_dir »òÍ¶Æ±¾ö¶¨¡£
- * Ğı×ªËÙ¶È´Ó¼«µÍ¿ªÊ¼£¬Öğ²½Î¢ÈõÔö¼Ó£¬ÊµÏÖÏ¸Äå¶Ô×¼¡£
  */
 static uint8_t Handle_Lost_Line(uint8_t *sensor)
 {
     if (!sensor[0] && !sensor[1] && !sensor[2] && !sensor[3] && !sensor[4]) {
         int8_t lost_dir = 0;
 
-        // 1. ¾ö¶¨Ğı×ª·½Ïò
+        /* 1. ¾ö¶¨Ğı×ª·½Ïò */
         if (pending_turn_dir != 0) {
             lost_dir = pending_turn_dir;
         } else {
@@ -172,9 +198,9 @@ static uint8_t Handle_Lost_Line(uint8_t *sensor)
                 if (err_sign_history[i] == -1) vote_left++;
                 else if (err_sign_history[i] == 1) vote_right++;
             }
-            if (vote_right > vote_left + 1) lost_dir = 1;
+            if (vote_right > vote_left + 1)      lost_dir = 1;
             else if (vote_left > vote_right + 1) lost_dir = -1;
-            else lost_dir = last_valid_dir;
+            else                                 lost_dir = Get_Last_Valid_Dir();
             if (lost_dir == 0) lost_dir = -1;
         }
 
@@ -183,43 +209,39 @@ static uint8_t Handle_Lost_Line(uint8_t *sensor)
                 pending_turn_dir ? "PendingTurn" : "Vote", lost_dir);
         HAL_UART_Transmit(&huart2, (uint8_t*)buf, strlen(buf), 100);
 
-        // 2. Á¢¼´Í£³µ£¬³ä·ÖÏû³ı¹ßĞÔ
+        /* 2. Á¢¼´Í£³µ£¬Ïû³ı¹ßĞÔ */
         Set_Motor(0, 0);
         delay_ms(100);
 
-        // 3. µÍËÙĞı×ª²ÎÊı£¨¼Ó´óºóÍË·ÖÁ¿£¬±£³ÖĞı×ª»ºÂı£©
-        int16_t backward_base = 350;   // ºóÍË·ÖÁ¿£¨´Ó200ÌáÉıµ½400£¬ºóÍË¸üÃ÷ÏÔ£©
-        int16_t rotate_min   = 300;   // ÆğÊ¼Ğı×ª²î¶¯Á¿
-        int16_t rotate_max   = 800;   // ×î´óĞı×ª²î¶¯Á¿
-        int16_t rotate_step  = 50;    // »ºÂıÔö¼ÓĞı×ª
-        int16_t rotate_pwm = rotate_min;
+        /* 3. µÍËÙĞı×ª²ÎÊı */
+        int16_t backward_base = 350;
+        int16_t rotate_min    = 300;
+        int16_t rotate_max    = 800;
+        int16_t rotate_step   = 50;
+        int16_t rotate_pwm    = rotate_min;
 
         uint32_t start = HAL_GetTick();
         uint8_t found = 0;
 
-        // 4. ÂıËÙĞı×ªËÑË÷£¬³¬Ê± 4000ms
+        /* 4. ÂıËÙĞı×ªËÑË÷£¬³¬Ê± 4000ms */
         while ((HAL_GetTick() - start) < 4000) {
             int16_t left_pwm, right_pwm;
-            if (lost_dir < 0) {      // ×ó×ª
+            if (lost_dir < 0) {          // ×ó×ª
                 left_pwm  = -rotate_pwm - backward_base;
                 right_pwm =  rotate_pwm - backward_base;
-            } else {                 // ÓÒ×ª
+            } else {                     // ÓÒ×ª
                 left_pwm  =  rotate_pwm - backward_base;
                 right_pwm = -rotate_pwm - backward_base;
             }
 
-            // ÏŞ·ù
-            left_pwm  = (left_pwm  > 7200) ? 7200  : (left_pwm  < -7200) ? -7200 : left_pwm;
-            right_pwm = (right_pwm > 7200) ? 7200 : (right_pwm < -7200) ? -7200 : right_pwm;
+            left_pwm  = (left_pwm  > 7200) ?  7200 : (left_pwm  < -7200) ? -7200 : left_pwm;
+            right_pwm = (right_pwm > 7200) ?  7200 : (right_pwm < -7200) ? -7200 : right_pwm;
 
             Set_Motor(left_pwm, right_pwm);
             delay_ms(25);
 
-            // ¶ÁÈ¡´«¸ĞÆ÷
             uint8_t tmp[5];
             Read_Sensors(tmp);
-            
-            // ÖĞ¼äºìÍâ´¥·¢ÔòÍ£Ö¹
             if (tmp[2]) {
                 Set_Motor(0, 0);
                 delay_ms(30);
@@ -227,18 +249,17 @@ static uint8_t Handle_Lost_Line(uint8_t *sensor)
                 break;
             }
 
-            // »ºÂıÔö¼ÓĞı×ªÇ¿¶È
             if (rotate_pwm < rotate_max) {
                 rotate_pwm += rotate_step;
             }
         }
 
-        // 5. ×îÖÕÍ£Ö¹
+        /* 5. ×îÖÕÍ£Ö¹ */
         Set_Motor(0, 0);
         delay_ms(50);
 
         if (found) {
-            straight_cnt = 0;
+            straight_start_ms = 0;
             memset(err_sign_history, 0, sizeof(err_sign_history));
             err_hist_index = 0;
             delay_ms(30);
@@ -253,7 +274,8 @@ static uint8_t Handle_Lost_Line(uint8_t *sensor)
     return 0;
 }
 
-static uint8_t Count_Left_Continuous(uint8_t *sensor) {
+static uint8_t Count_Left_Continuous(uint8_t *sensor)
+{
     uint8_t cnt = 0;
     for (int i = 0; i < 5; i++) {
         if (sensor[i]) cnt++;
@@ -262,7 +284,8 @@ static uint8_t Count_Left_Continuous(uint8_t *sensor) {
     return cnt;
 }
 
-static uint8_t Count_Right_Continuous(uint8_t *sensor) {
+static uint8_t Count_Right_Continuous(uint8_t *sensor)
+{
     uint8_t cnt = 0;
     for (int i = 4; i >= 0; i--) {
         if (sensor[i]) cnt++;
@@ -271,18 +294,20 @@ static uint8_t Count_Right_Continuous(uint8_t *sensor) {
     return cnt;
 }
 
-static void Resolve_Bilateral_Conflict(uint8_t *sensors) {
-    uint8_t left_cnt = Count_Left_Continuous(sensors);
+static void Resolve_Bilateral_Conflict(uint8_t *sensors)
+{
+    uint8_t left_cnt  = Count_Left_Continuous(sensors);
     uint8_t right_cnt = Count_Right_Continuous(sensors);
 
     if (left_cnt >= 2 && right_cnt >= 2) {
-        if (last_valid_dir == 1) {
+        int8_t lv = Get_Last_Valid_Dir();       // ´ø¹ıÆÚÅĞ¶¨
+        if (lv == 1) {
             for (int i = 0; i < left_cnt; i++) sensors[i] = 0;
-        } else if (last_valid_dir == -1) {
-            for (int i = 4; i >= (5-right_cnt); i--) sensors[i] = 0;
+        } else if (lv == -1) {
+            for (int i = 4; i >= (5 - right_cnt); i--) sensors[i] = 0;
         } else {
             if (left_cnt > right_cnt) {
-                for (int i = 4; i >= (5-right_cnt); i--) sensors[i] = 0;
+                for (int i = 4; i >= (5 - right_cnt); i--) sensors[i] = 0;
             } else {
                 for (int i = 0; i < left_cnt; i++) sensors[i] = 0;
             }
@@ -302,65 +327,76 @@ void Line_Follow_Task(void)
 
     uint8_t all_lost = !sensors[0] && !sensors[1] && !sensors[2] && !sensors[3] && !sensors[4];
 
-    // Ëø¶¨Âß¼­
-    if (!all_lost) {		//Î´¶ªÏß£¬Èç¹û×î×ó±ßÒ»Â·»ò×îÓÒ±ßÒ»Â·¼ì²âµ½ºÚÏß£¬¾ÍÉèÖÃ´ı¶¨×ªÏò·½Ïò
+    /* ---- Ëø¶¨Âß¼­£º×îÍâÁ½Â·´¥·¢Ê±Éè·½Ïò£¬²¢Ë¢ĞÂÀä¾²ÆÚÊ±¼ä´Á ---- */
+    if (!all_lost) {
         if (sensors[0] == 1 && sensors[4] == 0) {
             if (pending_turn_dir != -1) {
                 pending_turn_dir = -1;
-                unlock_delay = UNLOCK_DELAY_FRAMES;
+                unlock_start_ms  = now;
+                straight_start_ms = 0;
             }
         } else if (sensors[0] == 0 && sensors[4] == 1) {
             if (pending_turn_dir != 1) {
                 pending_turn_dir = 1;
-                unlock_delay = UNLOCK_DELAY_FRAMES;
+                unlock_start_ms  = now;
+                straight_start_ms = 0;
             }
         }
     }
 
-    // ¶ªÏß´¦Àí
+    /* ---- ¶ªÏß´¦Àí ---- */
     if (Handle_Lost_Line(sensors)) return;
 
-    // ¼«¶Ë×ªÍä
+    /* ---- ¼«¶Ë×ªÍä ---- */
     if (Handle_Extreme_Turn(sensors)) return;
 
-    // Ë«²à³åÍ»ÖÙ²Ã
+    /* ---- Ë«²à³åÍ»ÖÙ²Ã ---- */
     Resolve_Bilateral_Conflict(sensors);
 
-    // Ó²±àÂëÍäµÀ
+    /* ---- Ó²±àÂëÍäµÀ ---- */
     if (Handle_Curve_Turn(sensors)) return;
 
-    // Õı³£ PID
+    /* ---- Õı³£ PID ---- */
     float error = Get_Position_Error(sensors);
 
     if (fabs(error) >= 0.5f) {
-        last_valid_dir = (error < 0) ? -1 : 1;
+        Update_Last_Valid_Dir((error < 0) ? -1 : 1);
     }
 
     int8_t sign = 0;
-    if (error > 0.2f) sign = 1;
+    if      (error >  0.2f) sign = 1;
     else if (error < -0.2f) sign = -1;
     err_sign_history[err_hist_index] = sign;
     err_hist_index = (err_hist_index + 1) % ERR_HIST_LEN;
 
-    // ½âËø¹ÜÀí
-    if (unlock_delay > 0) {
-        unlock_delay--;
-        straight_cnt = 0;
-    } else if (!all_lost && pending_turn_dir != 0) {
-        if (fabs(error) < 0.2f && sensors[2] == 1 && sensors[0] == 0 && sensors[4] == 0) {
-            straight_cnt++;
-            if (straight_cnt >= STRAIGHT_THRESHOLD) {
-                pending_turn_dir = 0;
-                straight_cnt = 0;
+    /* ---- ½âËø¹ÜÀí£ºÀä¾²ÆÚ + Á¬ĞøÖ±ĞĞ¼ÆÊ± ---- */
+    if ((now - unlock_start_ms) < UNLOCK_DELAY_MS) 
+	{
+        straight_start_ms = 0;			//Àä¾²ÆÚÄÚ²»½âËø
+    } 
+	else if (!all_lost && pending_turn_dir != 0) 		//Î´¶ªÏßÇÒ·½Ïò±äÁ¿²»Îª¿Õ£¬Èç¹ûÄÜ½«ºÚÏßÎÈ¶¨ÔÚÖĞ¼ä£¬³ÖĞø200ms£¬½«Çå¿Õ·½Ïò±äÁ¿
+	{
+        if (fabs(error) < 0.2f && sensors[2] == 1 && sensors[0] == 0 && sensors[4] == 0) 		//Õâ´Î¼ì²âÖĞºÚÏßÎÈ¶¨ÔÚÖĞ¼ä
+		{
+            if (straight_start_ms == 0) 							//»¹Î´¿ªÊ¼¼ì²âºÚÏßÊÇ·ñÄÜÎÈ¶¨ÔÚÖĞ¼ä£¬¿ªÊ¼¼ì²â
+				straight_start_ms = now;
+            if ((now - straight_start_ms) >= STRAIGHT_MS) 			//ºÚÏß³ÖĞøÎÈ¶¨³¬¹ı200ms£¬Çå¿Õ·½Ïò±äÁ¿
+			{
+                pending_turn_dir  = 0;
+                straight_start_ms = 0;
             }
-        } else {
-            straight_cnt = 0;
         }
-    } else {
-        straight_cnt = 0;
+		else										//Õâ´Î¼ì²âÖĞºÚÏß²»ÔÚÖĞ¼ä£¬Çå¿Õ¼ÆÊ±£¬ÏÂ´ÎÖØĞÂ¿ªÊ¼¼ì²â
+		{	
+            straight_start_ms = 0;
+        }
+    }
+	else 											//¶ªÏß»ò·½Ïò±äÁ¿Îª¿Õ£¬Çå¿Õ¼ÆÊ±£¬µÈ´ıÏÂ´ÎÉèÖÃ·½Ïò±äÁ¿
+	{
+        straight_start_ms = 0;
     }
 
-    // Ö±ĞĞËÀÇø
+    /* ---- Ö±ĞĞËÀÇø ---- */
     if (fabs(error) < 0.4f) {
         Set_Motor(BASE_SPEED, BASE_SPEED);
         integral = 0;
@@ -368,7 +404,7 @@ void Line_Follow_Task(void)
         if (now - last_print > 200) {
             char buf[80];
             sprintf(buf, "S:%d%d%d%d%d Err:%.2f Straight Pending:%d\r\n",
-                    sensors[0],sensors[1],sensors[2],sensors[3],sensors[4],
+                    sensors[0], sensors[1], sensors[2], sensors[3], sensors[4],
                     error, pending_turn_dir);
             HAL_UART_Transmit(&huart2, (uint8_t*)buf, strlen(buf), 100);
             last_print = now;
@@ -376,13 +412,13 @@ void Line_Follow_Task(void)
         return;
     }
 
-    // PID ¿ØÖÆ
+    /* ---- PID ¿ØÖÆ ---- */
     float Kp = Kp_base;
     if (fabs(error) > 1.0f) Kp = Kp_base * 1.5f;
 
     float dt = 0.01f;
     integral += error * Ki * dt;
-    if (integral > INTEGRAL_LIMIT) integral = INTEGRAL_LIMIT;
+    if (integral >  INTEGRAL_LIMIT) integral =  INTEGRAL_LIMIT;
     if (integral < -INTEGRAL_LIMIT) integral = -INTEGRAL_LIMIT;
     float p = Kp * error;
     float i = integral;
@@ -392,12 +428,12 @@ void Line_Follow_Task(void)
 
     int16_t max_steer = STEERING_LIMIT_NORMAL;
     if (fabs(error) > 1.2f) max_steer = STEERING_LIMIT_TURN;
-    if (steering > max_steer) steering = max_steer;
+    if (steering >  max_steer) steering =  max_steer;
     if (steering < -max_steer) steering = -max_steer;
 
-    int16_t left_pwm = BASE_SPEED + (int16_t)steering;
+    int16_t left_pwm  = BASE_SPEED + (int16_t)steering;
     int16_t right_pwm = BASE_SPEED - (int16_t)steering;
-    left_pwm = (left_pwm > 4320) ? 4320 : (left_pwm < -4320) ? -4320 : left_pwm;
+    left_pwm  = (left_pwm  > 4320) ? 4320 : (left_pwm  < -4320) ? -4320 : left_pwm;
     right_pwm = (right_pwm > 4320) ? 4320 : (right_pwm < -4320) ? -4320 : right_pwm;
     Set_Motor(left_pwm, right_pwm);
 
@@ -405,8 +441,8 @@ void Line_Follow_Task(void)
     if (now - last_print > 200) {
         char buf[80];
         sprintf(buf, "S:%d%d%d%d%d Err:%.2f Steer:%.1f LastDir:%d Pending:%d\r\n",
-                sensors[0],sensors[1],sensors[2],sensors[3],sensors[4],
-                error, steering, last_valid_dir, pending_turn_dir);
+                sensors[0], sensors[1], sensors[2], sensors[3], sensors[4],
+                error, steering, Get_Last_Valid_Dir(), pending_turn_dir);
         HAL_UART_Transmit(&huart2, (uint8_t*)buf, strlen(buf), 100);
         last_print = now;
     }
@@ -416,10 +452,14 @@ void Line_Follow_Init(void)
 {
     integral = 0;
     last_error = 0;
+
     last_valid_dir = 0;
-    pending_turn_dir = 0;
-    straight_cnt = 0;
-    unlock_delay = 0;
+    last_valid_ms  = 0;
+
+    pending_turn_dir  = 0;
+    unlock_start_ms   = 0;
+    straight_start_ms = 0;
+
     memset(err_sign_history, 0, sizeof(err_sign_history));
     err_hist_index = 0;
 }

@@ -116,19 +116,20 @@ float Get_Median_Distance(uint8_t count)
     float temp;
 
     // 1. 多次测距，收集有效数据
-    for(i = 0; i < count; i++)
-    {
+    for(i = 0; i < count; i++) 
+	{
         Trig();
         Wait_Echo_Measure();
-        while(distance_lock){}; // 等待解锁
-        
-        // 过滤无效值（超出量程）
-        if(distance > 2.0f && distance < 400.0f)
-        {
+        while(distance_lock){};
+        if(distance > 2.0f && distance < 400.0f) 
+		{
             distances[valid_cnt++] = distance;
         }
-        
-        HAL_Delay(60); // 两次测距间隔，避免声波干扰
+        // ★ 只在多次测量之间加间隔
+        if (i < count - 1) 
+		{
+            HAL_Delay(60);
+        }
     }
 
     // 2. 若无有效数据，返回0

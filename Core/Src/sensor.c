@@ -60,6 +60,8 @@ void Read_And_Transmit(void)
     } else {
         frame.data.yaw = 0.0f;
     }
+	
+	frame.data.mode = mode;
 
     uint8_t crc = 0x00;
 	crc = crc8_update(crc, (uint8_t *)&frame.len, 2);         // len（小端两字节）

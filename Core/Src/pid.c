@@ -10,8 +10,6 @@
 /* ==================== 可调参数 ==================== */
 // 内环（编码器速度差环）
 float Kp = 90.0f;
-float Ki = 0.8f;
-uint16_t I_Limit   = 800;     // 积分限幅
 uint16_t PWM_Limit = 4320;    // PWM 输出限幅
 float DIFF_LIMIT = 1200.0f;   // 内环目标差速限幅（脉冲/周期）
 
@@ -29,24 +27,27 @@ int16_t last_left = 0, last_right = 0;
 
 /* ---------- 内环状态 ---------- */
 float pid_error = 0.0f;          // 内环误差 = 目标差速 - 实际差速
-float pid_integral = 0.0f;
 float pid_output = 0.0f;         // 内环输出（PWM 补偿量）
 int16_t pid_base_pwm = 0;
 
 /* ---------- 外环状态 ---------- */
-float yaw_target_diff = 0.0f;    // 外环输出：目标差速
+float yaw_target_diff = 0.0f;    			// 记录外环输出，用于传感器读取失败、数据异常时沿用上一次外环输出
 static float start_yaw = 0.0f;
 static uint8_t yaw_initialized = 0;
 static uint32_t last_yaw_time = 0;
 
 static uint8_t debug_cnt = 0;
 
+static float yaw_target_angle = 0.0f;		//航向角度
+static uint8_t yaw_target_set = 0;			//标志位，表示当前是否设置过航向角度。0表示没有设定过，1表示设定过
+
+//调试
+float g_last_yaw = 0;
 /* ==================== 基础函数 ==================== */
 
 void PI_Param_Clear(void)
 {
     pid_error = 0.0f;
-    pid_integral = 0.0f;
     pid_output = 0.0f;
     pid_base_pwm = 0;
     yaw_target_diff = 0.0f;
@@ -58,6 +59,7 @@ void PI_Param_Clear(void)
     last_pid_time = HAL_GetTick();
 }
 
+//如果距离上次读取编码器超过20ms，调用后才会读取编码器，如果编码器读数异常大，将保留上次读取的数据
 void Read_Encoder(void)
 {
     uint32_t current_time = HAL_GetTick();
@@ -90,50 +92,36 @@ void Read_Encoder(void)
 /* ==================== 外环：航向角环 ==================== */
 /**
  * 读取 MPU6050，计算航向偏差，输出"目标左右轮差速"
- * 返回：目标差速（右轮 - 左轮），正数表示需要右转补偿
+ * 返回：目标差速（右轮 - 左轮），作为内环输入
  */
-float Yaw_Loop_Update(float dt)
+float Yaw_Loop_Update()
 {
-    float yaw_target = 0.0f;
     float pitch, roll, current_yaw;
 
     uint32_t now = HAL_GetTick();
-    if (now - last_yaw_time < 20) return yaw_target_diff;  // 未到周期，返回上次值
+    if (now - last_yaw_time < 20) return yaw_target_diff;	//如果距离上次计算外环还没过20ms，就用上次的外环输出（传感器读取频率有限，没必要太快）
     last_yaw_time = now;
 
-    if (mpu_dmp_get_data(&pitch, &roll, &current_yaw) != 0)
-        return yaw_target_diff;  // 读取失败，保持上次输出
+    if (mpu_dmp_get_data(&pitch, &roll, &current_yaw) != 0)		//读取失败，返回上次的外环输出
+        return yaw_target_diff;
+	g_last_yaw = current_yaw;
 
-    if (current_yaw < 0) current_yaw += 360.0f;
+    if (current_yaw < 0) current_yaw += 360.0f;			//角度归一化到0到360度，其实这行没有也行，后面对角度误差归一化了
 
-    if (!yaw_initialized) {
-        start_yaw = current_yaw;
-        yaw_initialized = 1;
+    if (!yaw_target_set) {					//还没有设定过航向角度，就将当前角度设定为航向角度
+        yaw_target_angle = current_yaw;		
+        yaw_target_set = 1;					//标记为已经设定过目标航向
     }
 
-    float yaw_error = current_yaw - start_yaw;
-    // 归一化到 [-180, 180]
-    if (yaw_error >  180.0f) yaw_error -= 360.0f;
+    float yaw_error = current_yaw - yaw_target_angle;
+    if (yaw_error >  180.0f) yaw_error -= 360.0f;			//将角度误差归一化到-180到180度
     if (yaw_error < -180.0f) yaw_error += 360.0f;
 
-    // 外环 P（可扩展 I）
-    yaw_target = -yaw_error * YAW_KP;
-
-    // 外环输出限幅：限制目标差速
+    float yaw_target = -yaw_error * YAW_KP;
     if (yaw_target >  YAW_OUT_LIMIT) yaw_target =  YAW_OUT_LIMIT;
     if (yaw_target < -YAW_OUT_LIMIT) yaw_target = -YAW_OUT_LIMIT;
 
-    yaw_target_diff = yaw_target;
-
-    // 调试打印
-    if (++debug_cnt >= 10) {
-        debug_cnt = 0;
-        char dbg_buf[128];
-        sprintf(dbg_buf, "[YAW] yaw=%.1f start=%.1f err=%.2f target=%.1f\r\n",
-                current_yaw, start_yaw, yaw_error, yaw_target_diff);
-        HAL_UART_Transmit(&huart2, (uint8_t*)dbg_buf, strlen(dbg_buf), 100);
-    }
-
+    yaw_target_diff = yaw_target;							//将临时外环输出存到全局变量
     return yaw_target_diff;
 }
 
@@ -142,27 +130,14 @@ float Yaw_Loop_Update(float dt)
  * 目标：让 (encoder_right - encoder_left) 跟踪 yaw_target_diff
  * 输出：PWM 补偿量
  */
-float Speed_Loop_Update(float target_diff, float dt)
+float Speed_Loop_Update(float target_diff)
 {
     Read_Encoder();
 
     float actual_diff = (float)(encoder_right - encoder_left);
-    pid_error = target_diff - actual_diff;   // 注意：目标 - 实际
+    pid_error = target_diff - actual_diff;   // 内环误差
 
-    // 积分分离 + 运动判断
-    static uint8_t is_moving = 0;
-    is_moving = (abs(pid_base_pwm) > 100) ? 1 : 0;
-
-    if (abs(pid_error) < 80.0f && is_moving) {
-        pid_integral += pid_error * Ki * dt;
-    }
-
-    // 积分限幅
-    if (pid_integral >  I_Limit) pid_integral =  I_Limit;
-    if (pid_integral < -I_Limit) pid_integral = -I_Limit;
-
-    // PI 输出
-    pid_output = pid_error * Kp + pid_integral;
+    pid_output = pid_error * Kp;
 
     // 输出限幅
     if (pid_output >  PWM_Limit) pid_output =  PWM_Limit;
@@ -171,22 +146,16 @@ float Speed_Loop_Update(float target_diff, float dt)
     return pid_output;
 }
 
-/* ==================== 主控制函数（串级） ==================== */
-void PID_Go_Straight(int16_t base_pwm)
+/* ==================== 主控制非阻塞函数 ==================== */
+void PID_Go_Straight(int16_t base_pwm)			//由全局变量yaw_target_angle控制直行方向
 {
-    static uint32_t last_time = 0;
-    uint32_t now = HAL_GetTick();
-    float dt = (now - last_time) / 1000.0f;
-    if (dt <= 0.001f || dt > 0.1f) dt = 0.02f;
-    last_time = now;
-
     pid_base_pwm = base_pwm;
 
     /* ---- 外环：航向 → 目标差速 ---- */
-    float target_diff = Yaw_Loop_Update(dt);
+    float target_diff = Yaw_Loop_Update();
 
     /* ---- 内环：跟踪目标差速 → PWM 补偿 ---- */
-    float compensation = Speed_Loop_Update(target_diff, dt);
+    float compensation = Speed_Loop_Update(target_diff);
 
     /* ---- 叠加到 PWM ---- */
     int16_t left_pwm, right_pwm;
@@ -207,40 +176,40 @@ void PID_Go_Straight(int16_t base_pwm)
     if (right_pwm < -PWM_Limit) right_pwm = -PWM_Limit;
 
     Set_Motor(left_pwm, right_pwm);
-	Print_Debug();
-}
-
-/* ==================== 只用编码器直行（无陀螺仪） ==================== */
-void PID_Go_Straight_EncoderOnly(int16_t base_pwm)
-{
-    static uint32_t last_time = 0;
-    uint32_t now = HAL_GetTick();
-    float dt = (now - last_time) / 1000.0f;
-    if (dt <= 0.001f || dt > 0.1f) dt = 0.02f;
-    last_time = now;
-
-    pid_base_pwm = base_pwm;
-
-    // 目标差速 = 0，纯走直线
-    float compensation = Speed_Loop_Update(0.0f, dt);
-
-    int16_t left_pwm, right_pwm;
-    if (base_pwm >= 0) {
-        left_pwm  = base_pwm - (int16_t)compensation;
-        right_pwm = base_pwm + (int16_t)compensation;
-    } else {
-        left_pwm  = base_pwm + (int16_t)compensation;
-        right_pwm = base_pwm - (int16_t)compensation;
+	
+	static uint32_t last_dbg = 0;
+    if (HAL_GetTick() - last_dbg >= 200) {
+        last_dbg = HAL_GetTick();
+        char dbg[160];
+        sprintf(dbg, "$[PID] tgt=%.1f yaw=%.1f diff=%.1f comp=%.0f L=%d R=%d*\r\n",
+                yaw_target_angle,
+                g_last_yaw,      // 如果 pid.c 里没有这个变量，就调 Yaw_Loop_Update 里那个
+                target_diff,
+                compensation,
+                left_pwm, right_pwm);
+        HAL_UART_Transmit(&huart2, (uint8_t*)dbg, strlen(dbg), 100);
     }
-
-    if (left_pwm  >  PWM_Limit) left_pwm  =  PWM_Limit;
-    if (left_pwm  < -PWM_Limit) left_pwm  = -PWM_Limit;
-    if (right_pwm >  PWM_Limit) right_pwm =  PWM_Limit;
-    if (right_pwm < -PWM_Limit) right_pwm = -PWM_Limit;
-
-    Set_Motor(left_pwm, right_pwm);
 }
 
+//避障中转向后调用，清除记录的外环输出，刷新航向角度
+void PID_Set_Yaw_Target(float target)
+{
+    yaw_target_angle = target;
+    yaw_target_set = 1;
+    yaw_target_diff = 0.0f;
+}
+//避障中修正角度后调用，刷新航向角度，不清除记录的外环输出
+void PID_Update_Yaw_Target(float target)
+{
+    yaw_target_angle = target;
+    yaw_target_set = 1;
+}
+//小车停车时调用，清除记录的外环输出，不刷新航向角度
+void PID_Reset_Yaw_Reference(void)
+{
+    yaw_target_set = 0;
+    yaw_target_diff = 0.0f;
+}
 /* ==================== 调试 ==================== */
 void Debug_Print(const char* format, ...)
 {
@@ -263,11 +232,4 @@ void Print_Debug(void)
                     encoder_left, encoder_right);
         last_print = now;
     }
-}
-
-void PID_Reset_Yaw_Reference(void)
-{
-    yaw_initialized = 0;
-    pid_integral = 0.0f;        // 重置航向时顺便清积分
-    yaw_target_diff = 0.0f;
 }

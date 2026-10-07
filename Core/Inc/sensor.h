@@ -21,6 +21,7 @@ typedef struct {
     uint16_t pi_adc;
     uint16_t motor_adc;
     float    yaw;
+	uint8_t  mode;
 } Payload_t;
 
 /* 完整数据包 */

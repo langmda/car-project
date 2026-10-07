@@ -33,8 +33,8 @@ void turn_angle_blocking(int16_t target_angle_deg)
     uint32_t timeout_ms = 8000;
     uint32_t start_time = HAL_GetTick();
     const float angle_tolerance = 1.0f;
-    const int16_t max_turn_pwm = maxpwm;
-    const int16_t min_turn_pwm = minpwm;
+    const int16_t max_turn_pwm = 1500;
+    const int16_t min_turn_pwm = 800;
     uint16_t iter = 0;
     float abs_err;
     float last_valid_yaw = 0;

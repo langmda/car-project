@@ -5,8 +5,8 @@
 
 #pragma pack(1)  // 强制1字节对齐
 typedef struct {
-    uint8_t cmd;
-    float Kp;
+		uint8_t cmd;
+		float Kp;
     float YAW_KP;
     uint16_t PWM_Lim;
 } PIDParams_t;
@@ -27,14 +27,12 @@ extern volatile int16_t encoder_left, encoder_right;
 extern volatile int32_t total_encoder_left;
 extern volatile int32_t total_encoder_right;
 
-extern float Kp;
-extern float Ki;
-extern uint16_t I_Limit;		
+extern float Kp;	
 extern uint16_t PWM_Limit; 
 extern int16_t last_left, last_right;
 extern float YAW_KP;
+extern uint32_t last_pid_time;
 
-void PID_Go_Straight_Continuous(int16_t base_pwm);
-void PID_Start_Continuous(int16_t base_pwm);
-void PID_Stop_Continuous(void);
+void PID_Set_Yaw_Target(float target);
+void PID_Update_Yaw_Target(float target);
 #endif

@@ -46,16 +46,16 @@ void User_Code()
 				Avoidance_Stop();
 				break;
 			case MOVE_FORWARD:
-				PID_Go_Straight(2000);
+				PID_Go_Straight(650);
 				break;
 			case BACK_OFF:
 				Set_Motor(-3000,  -3000);
 				break;
 			case TURN_LEFT:
-				Set_Motor(-2800, 2800);
+				Set_Motor(-800, 800);
 				break;
 			case TURN_RIGHT:
-				Set_Motor(2800, -2800);
+				Set_Motor(800, -800);
 				break;
 			case CUSTOMIZATION:
 				Set_Motor(leftPWM, rightPWM);
