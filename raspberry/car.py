@@ -1494,13 +1494,13 @@ if __name__ == "__main__":
     load_music_list()
     tts_player = TTSPlayer(audio_dir="/home/lang/car/tts", shutdown_event=shutdown_event)
 
-    BAIDU_APP_ID = "121439094"
-    BAIDU_API_KEY = "1IKtkqkG5n2POLNsGp0l83uM"
-    BAIDU_SECRET_KEY = "u86diCU47JyaEsYqMrMvGEKFsPlVDpMm"
+    BAIDU_APP_ID = "...122306686"
+    BAIDU_API_KEY = "...MilNY56k0r5wJZgOcMw73jws"
+    BAIDU_SECRET_KEY = "...u86diCU47JyaEsEKFsPlVDpMm"
 
-    BAIDU_TTS_APP_ID = "122306686"
-    BAIDU_TTS_API_KEY = "MilNY56k0r5wJZgOcMw73jws"
-    BAIDU_TTS_SECRET_KEY = "8GG0V8MonYun0QOyQ5mdP67bdniSwzJV"
+    BAIDU_TTS_APP_ID = "...122306686"
+    BAIDU_TTS_API_KEY = "...MilNY56k0r5wJZgOcMw73jws"
+    BAIDU_TTS_SECRET_KEY = "...8GG0V8MonYun0Q7bdniSwzJV"
 
     tts_client = AipSpeech(BAIDU_TTS_APP_ID, BAIDU_TTS_API_KEY, BAIDU_TTS_SECRET_KEY)
 
