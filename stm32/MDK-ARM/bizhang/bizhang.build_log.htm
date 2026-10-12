@@ -1,0 +1,93 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: ¦ÌVision V5.24.2.0
+Copyright (C) 2017 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: 1 Administrator, 1, LIC=IK1BF-6PTD1-8T83P-MVK88-K7DGM-P2R9Y
+ 
+Tool Versions:
+Toolchain:       MDK-ARM Plus  Version: 5.24.1
+Toolchain Path:  D:\tool\Keil\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.06 update 5 (build 528)
+Assembler:       Armasm.exe V5.06 update 5 (build 528)
+Linker/Locator:  ArmLink.exe V5.06 update 5 (build 528)
+Library Manager: ArmAr.exe V5.06 update 5 (build 528)
+Hex Converter:   FromElf.exe V5.06 update 5 (build 528)
+CPU DLL:         SARMCM3.DLL V5.24.1
+Dialog DLL:      DCM.DLL V1.16.0.0
+Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V3.0.1.0
+Dialog DLL:      TCM.DLL V1.32.0.0
+ 
+<h2>Project:</h2>
+D:\work\stm32cubemx\bizhang\MDK-ARM\bizhang.uvprojx
+Project File Date:  08/04/2026
+
+<h2>Output:</h2>
+*** Using Compiler 'V5.06 update 5 (build 528)', folder: 'D:\tool\Keil\ARM\ARMCC\Bin'
+Build target 'bizhang'
+compiling avoidance.c...
+../Core/Inc/avoidance.h(13): warning:  #1-D: last line of file ends without a newline
+  #endif
+../Core/Inc/echo.h(14): warning:  #1295-D: Deprecated declaration Get_Left_Right_Distance - give arg types
+  void Get_Left_Right_Distance();
+../Core/Inc/trajectory.h(10): warning:  #1295-D: Deprecated declaration trajectory_Z - give arg types
+  void trajectory_Z();
+../Core/Inc/trajectory.h(11): warning:  #1295-D: Deprecated declaration trajectory_J - give arg types
+  void trajectory_J();
+../Core/Inc/trajectory.h(12): warning:  #1295-D: Deprecated declaration trajectory_U - give arg types
+  void trajectory_U();
+../Core/Inc/delay.h(9): warning:  #1-D: last line of file ends without a newline
+  #endif
+../Core/Inc/sensor.h(40): warning:  #1-D: last line of file ends without a newline
+  #endif
+..\Core\Src\avoidance.c(67): warning:  #223-D: function "strlen" declared implicitly
+      HAL_UART_Transmit(&huart2, (uint8_t*)dbg, strlen(dbg), 100);
+..\Core\Src\avoidance.c(92): warning:  #223-D: function "strlen" declared implicitly
+      HAL_UART_Transmit(&huart2, (uint8_t*)dbg, strlen(dbg), 100);
+..\Core\Src\avoidance.c(98): warning:  #223-D: function "fabs" declared implicitly
+              after, new_target, fabs(after - new_target));
+..\Core\Src\avoidance.c(98): warning:  #181-D: argument is incompatible with corresponding format string conversion
+              after, new_target, fabs(after - new_target));
+..\Core\Src\avoidance.c(160): warning:  #223-D: function "strlen" declared implicitly
+  				HAL_UART_Transmit(&huart2, (uint8_t*)dbg, strlen(dbg), 100);
+..\Core\Src\avoidance.c(174): warning:  #223-D: function "strlen" declared implicitly
+                  HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), 100);
+..\Core\Src\avoidance.c(226): warning:  #223-D: function "strlen" declared implicitly
+  		HAL_UART_Transmit(&huart2, (uint8_t*)dbg, strlen(dbg), 100);
+..\Core\Src\avoidance.c(252): warning:  #1-D: last line of file ends without a newline
+  }
+..\Core\Src\avoidance.c(35): warning:  #177-D: variable "last_yaw_print"  was declared but never referenced
+  static uint32_t last_yaw_print = 0;
+..\Core\Src\avoidance.c: 16 warnings, 0 errors
+linking...
+Program Size: Code=50476 RO-data=3940 RW-data=300 ZI-data=2692  
+FromELF: creating hex file...
+"bizhang\bizhang.axf" - 0 Error(s), 16 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: ARM
+                http://www.keil.com/pack/ARM.CMSIS.5.0.1.pack
+                ARM.CMSIS.5.0.1
+                CMSIS (Cortex Microcontroller Software Interface Standard)
+   * Component: CORE Version: 5.0.1
+
+Package Vendor: Keil
+                http://www.keil.com/pack/Keil.STM32F1xx_DFP.2.2.0.pack
+                Keil.STM32F1xx_DFP.2.2.0
+                STMicroelectronics STM32F1 Series Device Support, Drivers and Examples
+
+<h2>Collection of Component include folders:</h2>
+  .\RTE\_bizhang
+  D:\tool\Keil\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include
+  D:\tool\Keil\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include
+
+<h2>Collection of Component Files used:</h2>
+
+   * Component: ARM::CMSIS:CORE:5.0.1
+Build Time Elapsed:  00:00:01
+</pre>
+</body>
+</html>
