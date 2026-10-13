@@ -27,10 +27,10 @@ extern volatile int16_t encoder_left, encoder_right;
 extern volatile int32_t total_encoder_left;
 extern volatile int32_t total_encoder_right;
 
-extern float Kp;	
-extern uint16_t PWM_Limit; 
+extern volatile float Kp;	
+extern volatile uint16_t PWM_Limit; 
 extern int16_t last_left, last_right;
-extern float YAW_KP;
+extern volatile float YAW_KP;
 extern uint32_t last_pid_time;
 
 void PID_Set_Yaw_Target(float target);

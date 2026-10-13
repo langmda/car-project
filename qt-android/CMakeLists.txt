@@ -17,6 +17,10 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+        cameraworker.h
+        cameraworker.cpp
+        mp4writer.cpp
+        mp4writer.h
 )
 
 # 安卓适配 - 添加编译选项
@@ -35,7 +39,8 @@ if(ANDROID)
 endif()
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(home
+
+qt_add_executable(home
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
         source.qrc

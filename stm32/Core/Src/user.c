@@ -14,7 +14,7 @@
 #define CMD_TIMEOUT 300		 //指令超时时间，如果距离上一次收到指令超过该事件，就会将命令切换为停止
 volatile uint32_t last_cmd_time = 0;  //上一次收到指令的时间
 uint8_t last_cmd  = 0xFF;	 //上一次收到的指令 
-uint8_t mode = MANUAL;		 //默认模式为手动操作
+volatile uint8_t mode = MANUAL;		 //默认模式为手动操作
 volatile uint8_t uart_rx_buffer[128];
 
 uint8_t read_and_transmit = 0;		//读取并发送传感器数据的标志位

@@ -17,6 +17,8 @@
 #include <QDateTime>
 #include <QFile>
 #include <QTimer>
+#include <QThread>
+#include "cameraworker.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -85,6 +87,11 @@ private slots:
     void on_selectPhotoDirBtn_clicked();
     void on_selectVideoDirBtn_clicked();
     void on_cameraSwitchBtn_clicked();
+    void onFrameReady(const QImage &img);
+    void onCameraConnected();
+    void onCameraError(const QString &msg);
+    void onRecordingStarted(const QString &path);
+    void onRecordingFailed(const QString &msg);
 
     //轨迹行走页面的槽函数
     void on_Line_Follow_Button_clicked();
@@ -102,10 +109,13 @@ private slots:
 
 signals:
     void newFrameReceived(const QByteArray &imageData, const QJsonArray &boxes, double timestamp);
+    void requestStartCamera(const QString &ip, quint16 port);
+    void requestStopCamera();
+    void requestStartRecording(const QString &path);
+    void requestStopRecording();
 
 private:
     void readTcpData();
-    void receiveCameraData();
     void connect_error();
     void camera_connect_error();
     void updateMusicLabel();
@@ -124,18 +134,13 @@ private:
     const quint16 RASPI_PORT = 8888;
 
     // 摄像头
-    QTcpSocket *cameraSocket;
-    QByteArray cameraBuffer;
-    int expectedFrameSize = 0;
-    bool receivingFrame = false;
     QString photoSaveDir;
     QString videoSaveDir;
     bool isRecording = false;
-    QFile *videoFile = nullptr;
-    bool cameraConnected = false;
-    QTimer *cameraConnectTimer;
-    QTimer *cameraConnectDelayTimer;
     bool cameraOn = false;
+    QThread      *m_cameraThread = nullptr;
+    CameraWorker *m_cameraWorker = nullptr;
+    QImage lastFrameImage;
 
     // 音乐相关
     QStringList musicListCache;

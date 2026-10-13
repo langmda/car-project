@@ -87,14 +87,6 @@ MainWindow::MainWindow(QWidget *parent)
     tcpSocket->connectToHost(QHostAddress(RASPI_IP), RASPI_PORT);
     connect(tcpSocket, &QTcpSocket::readyRead, this, &MainWindow::readTcpData);
 
-    // 暂时不连接摄像头的TCP
-    cameraSocket = nullptr;
-
-    // 摄像头连接的定时器
-    cameraConnectTimer = nullptr;
-    cameraConnectDelayTimer = new QTimer(this);
-    cameraConnectDelayTimer->setSingleShot(true);
-
     // 初始化音乐播放页面的定时器
     musicSwitchTimer = new QTimer(this);
     musicSwitchTimer->setSingleShot(true);
@@ -128,15 +120,49 @@ MainWindow::MainWindow(QWidget *parent)
     ui->KiLabel->setText("KI : 1.0");
     ui->IlimLabel->setText("I_lim : 800");
     ui->PWMlimLabel->setText("PWM_lim : 4320");
+
+    // === 摄像头工作线程 ===
+    m_cameraThread = new QThread();
+    m_cameraWorker = new CameraWorker();
+    m_cameraWorker->moveToThread(m_cameraThread);     //把m_cameraWorker的线程归属改成了m_cameraThread，之后发送信号发送给m_cameraWorker，槽函数都是在m_cameraThread处理，而不是在主线程中处理
+    m_cameraThread->start();                          //线程默认调用exec()事件循环
+
+    // 主线程 → 工作线程（信号都是自定义信号，发送给摄像头工作线程，摄像头工作线程在事件循环中取出信号，执行槽函数）
+    connect(this, &MainWindow::requestStartCamera,
+            m_cameraWorker, &CameraWorker::start);
+    connect(this, &MainWindow::requestStopCamera,
+            m_cameraWorker, &CameraWorker::stop);
+    connect(this, &MainWindow::requestStartRecording,
+            m_cameraWorker, &CameraWorker::startRecording);
+    connect(this, &MainWindow::requestStopRecording,
+            m_cameraWorker, &CameraWorker::stopRecording);
+
+    // 工作线程 → 主线程（信号都是自定义信号，发送给主线程，主线程在事件循环中取出信号，执行槽函数）
+    connect(m_cameraWorker, &CameraWorker::frameReady,
+            this, &MainWindow::onFrameReady);
+    connect(m_cameraWorker, &CameraWorker::connected,
+            this, &MainWindow::onCameraConnected);
+    connect(m_cameraWorker, &CameraWorker::errorOccurred,
+            this, &MainWindow::onCameraError);
+    connect(m_cameraWorker, &CameraWorker::recordingStarted,
+            this, &MainWindow::onRecordingStarted);
+    connect(m_cameraWorker, &CameraWorker::recordingFailed,
+            this, &MainWindow::onRecordingFailed);
 }
 
 MainWindow::~MainWindow()
 {
-    if (isRecording && videoFile)
-    {
-        videoFile->close();
-        delete videoFile;
-        videoFile = nullptr;
+    if (m_cameraThread) {
+        if (m_cameraThread->isRunning()) {
+            QMetaObject::invokeMethod(m_cameraWorker, "stop",
+                                      Qt::BlockingQueuedConnection);
+            m_cameraThread->quit();
+            m_cameraThread->wait();
+        }
+        delete m_cameraWorker;
+        delete m_cameraThread;
+        m_cameraWorker = nullptr;
+        m_cameraThread = nullptr;
     }
     delete ui;
 }
@@ -258,55 +284,6 @@ void MainWindow::readTcpData()
 
                 QString displayText = QString("[%1] 识别结果：%2").arg(timeStr).arg(text);
                 ui->voiceResultTextEdit->append(displayText);  // 需要先在UI中添加一个QTextEdit
-            }
-        }
-    }
-}
-
-void MainWindow::receiveCameraData() {
-    cameraBuffer.append(cameraSocket->readAll());
-
-    while (cameraBuffer.size() > 0) {
-        if (!receivingFrame) {
-            if (cameraBuffer.size() < 4) return;
-            expectedFrameSize = (static_cast<unsigned char>(cameraBuffer[0]) << 24) |
-                                (static_cast<unsigned char>(cameraBuffer[1]) << 16) |
-                                (static_cast<unsigned char>(cameraBuffer[2]) << 8) |
-                                static_cast<unsigned char>(cameraBuffer[3]);
-            // 增加合理性检查：帧大小不宜过大（例如超过 200KB）
-            if(expectedFrameSize <= 0 || expectedFrameSize > 200000) {
-                qDebug() << "⚠️ 无效的帧大小:" << expectedFrameSize << "，丢弃并重新同步";
-                cameraBuffer.remove(0, 1); // 丢弃一个字节尝试重新同步
-                receivingFrame = false;
-                continue;
-            }
-            cameraBuffer.remove(0, 4);
-            receivingFrame = true;
-        }
-
-        if (receivingFrame) {
-            if (cameraBuffer.size() < expectedFrameSize) return;
-            QByteArray jpegData = cameraBuffer.left(expectedFrameSize);
-            cameraBuffer.remove(0, expectedFrameSize);
-            receivingFrame = false;
-
-            QImage originalImage;
-            if (originalImage.loadFromData(jpegData, "JPEG")) {
-                QImage rotatedImage = originalImage.mirrored(true, true);
-                QPixmap pixmap = QPixmap::fromImage(rotatedImage);
-                ui->videoLabel->setPixmap(pixmap.scaled(ui->videoLabel->size(),
-                                                        Qt::KeepAspectRatio, Qt::SmoothTransformation));
-                if (isRecording && videoFile && videoFile->isOpen()) {
-                    QByteArray rotatedJpegData;
-                    QBuffer buffer(&rotatedJpegData);
-                    buffer.open(QIODevice::WriteOnly);
-                    rotatedImage.save(&buffer, "JPEG", 70);
-                    buffer.close();
-                    videoFile->write(rotatedJpegData);
-                }
-            } else {
-                qDebug() << "JPEG解码失败，帧大小:" << expectedFrameSize;
-                // 不要断开连接，继续尝试下一帧
             }
         }
     }
@@ -920,8 +897,10 @@ void MainWindow::on_DataClearBtn_clicked()
 /*************实时画面的函数************/
 void MainWindow::on_captureBtn_clicked()
 {
-    if(cameraSocket->state() != QTcpSocket::ConnectedState)
-    {camera_connect_error(); return;}
+    if (!cameraOn || lastFrameImage.isNull()) {
+        camera_connect_error();
+        return;
+    }
 
     if (photoSaveDir.isEmpty()) {
         QMessageBox::warning(this, "提示", "请先选择照片保存目录");
@@ -945,38 +924,28 @@ void MainWindow::on_captureBtn_clicked()
 }
 void MainWindow::on_recordBtn_clicked()
 {
-    if(cameraSocket->state() != QTcpSocket::ConnectedState)
-    {camera_connect_error(); return;}
+    if (!cameraOn) { camera_connect_error(); return; }
 
     if (!isRecording) {
         if (videoSaveDir.isEmpty()) {
             QMessageBox::warning(this, "提示", "请先选择视频保存目录");
             return;
         }
-
-        QString timestamp = QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss");
-        QString filePath = QString("%1/rec_%2.mjpeg").arg(videoSaveDir).arg(timestamp);
-
-        videoFile = new QFile(filePath);
-        if (!videoFile->open(QIODevice::WriteOnly)) {
-            QMessageBox::warning(this, "提示", "无法创建视频文件，请检查目录权限");
-            delete videoFile;
-            videoFile = nullptr;
+        QDir dir(videoSaveDir);
+        if (!dir.exists() && !dir.mkpath(".")) {
+            QMessageBox::warning(this, "提示", "无法创建目录：" + videoSaveDir);
             return;
         }
+        QString timestamp = QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss");
+        QString path = QString("%1/rec_%2.mp4").arg(videoSaveDir).arg(timestamp);
 
         isRecording = true;
+        emit requestStartRecording(path);       // 交给 worker
         ui->recordBtn->setText("停止录像");
-        QMessageBox::information(this, "提示", "开始录像，文件保存在：\n" + filePath);
     } else {
-        if (videoFile) {
-            videoFile->close();
-            delete videoFile;
-            videoFile = nullptr;
-        }
+        emit requestStopRecording();
         isRecording = false;
         ui->recordBtn->setText("开始录像");
-        QMessageBox::information(this, "提示", "录像已停止");
     }
 }
 void MainWindow::on_selectPhotoDirBtn_clicked()
@@ -999,109 +968,75 @@ void MainWindow::on_selectVideoDirBtn_clicked()
 }
 void MainWindow::on_cameraSwitchBtn_clicked()
 {
-    ui->cameraSwitchBtn->setEnabled(false);
-    if(tcpSocket->state() != QTcpSocket::ConnectedState) {
+    if (tcpSocket->state() != QTcpSocket::ConnectedState) {
         connect_error();
-        ui->cameraSwitchBtn->setEnabled(true);
         return;
     }
+
     if (!cameraOn) {
+        // 通知树莓派打开摄像头
         quint8 cmd = CAMERA_ON;
-        tcpSocket->write((char*)&cmd, 1);
+        tcpSocket->write((char*)&cmd, 1);        // ★ 改成这样
 
-        // 清理旧连接
-        if (cameraSocket) {
-            cameraSocket->disconnectFromHost();
-            cameraSocket->deleteLater();
-            cameraSocket = nullptr;
-        }
-        if (cameraConnectTimer) {
-            cameraConnectTimer->stop();
-            delete cameraConnectTimer;
-            cameraConnectTimer = nullptr;
-        }
-
-        // 创建连接超时定时器（但先不启动）
-        cameraConnectTimer = new QTimer(this);
-        cameraConnectTimer->setSingleShot(true);
-
-        // 重新绑定延迟定时器的超时动作（每次开启时绑定，避免lambda捕获空指针）
-        disconnect(cameraConnectDelayTimer, nullptr, nullptr, nullptr);
-        connect(cameraConnectDelayTimer, &QTimer::timeout, this, [this]() {
-            if (!cameraSocket) {
-                cameraSocket = new QTcpSocket(this);
-                cameraConnected = false;
-
-                connect(cameraSocket, &QTcpSocket::connected, this, [this]() {
-                    qDebug() << "✅ 摄像头TCP连接成功";
-                    cameraConnected = true;
-                    if(cameraConnectTimer) cameraConnectTimer->stop();
-                });
-                connect(cameraSocket, &QTcpSocket::errorOccurred, this, [this](QAbstractSocket::SocketError err) {
-                    qDebug() << "❌ 摄像头连接错误:" << err;
-                    if(!cameraConnected) {
-                        QMessageBox::warning(this, "提示", "摄像头连接失败：" + cameraSocket->errorString());
-                        QDateTime current = QDateTime::currentDateTime();
-                        QString timestamp = current.toString("yyyy-MM-dd hh:mm:ss.zzz");
-                        int row = ui->FaultTableWidget->rowCount();
-                        ui->FaultTableWidget->insertRow(row);
-                        ui->FaultTableWidget->setItem(row, 0, new QTableWidgetItem(timestamp));
-                        ui->FaultTableWidget->setItem(row, 1, new QTableWidgetItem("摄像头TCP连接错误"));
-                    }
-                    cameraSocket->deleteLater();
-                    cameraSocket = nullptr;
-                    ui->cameraSwitchBtn->setText("开启摄像头");
-                    cameraOn = false;
-                });
-                connect(cameraSocket, &QTcpSocket::readyRead, this, &MainWindow::receiveCameraData);
-                connect(cameraConnectTimer, &QTimer::timeout, this, [this]() {
-                    if(!cameraConnected && cameraSocket && cameraSocket->state() != QTcpSocket::ConnectedState) {
-                        cameraSocket->abort();
-                        QMessageBox::warning(this, "提示", "摄像头连接超时");
-                        ui->cameraSwitchBtn->setText("开启摄像头");
-                        cameraOn = false;
-                    }
-                });
-
-                cameraSocket->connectToHost(QHostAddress(RASPI_IP), 8889);
-                if (cameraConnectTimer)
-                {
-                    cameraConnectTimer->start(3000);
-                }
-            }
+        // 延迟 200ms 再连（等树莓派摄像头线程起来）
+        QTimer::singleShot(200, this, [this]() {
+            emit requestStartCamera(RASPI_IP, 8889);
         });
-
-        // 延迟800ms后执行连接
-        cameraConnectDelayTimer->start(800);
 
         ui->cameraSwitchBtn->setText("关闭摄像头");
         cameraOn = true;
-    } else
-    {
+    } else {
         quint8 cmd = CAMERA_OFF;
-        tcpSocket->write((char*)&cmd, 1);
+        tcpSocket->write((char*)&cmd, 1);        // ★ 改成这样
+        emit requestStopCamera();
         ui->cameraSwitchBtn->setText("开启摄像头");
         cameraOn = false;
-
-        if (cameraSocket)
-        {
-            cameraSocket->disconnectFromHost();
-            cameraSocket->deleteLater();
-            cameraSocket = nullptr;
-        }
-        if (cameraConnectDelayTimer)
-        {
-            cameraConnectDelayTimer->stop();
-        }
-        if(cameraConnectTimer)
-        {
-            cameraConnectTimer->stop();
-            delete cameraConnectTimer;
-            cameraConnectTimer = nullptr;
-        }
         ui->videoLabel->clear();
+        lastFrameImage = QImage();
     }
-    ui->cameraSwitchBtn->setEnabled(true);
+}
+void MainWindow::onFrameReady(const QImage &img)
+{
+    lastFrameImage = img;   // 拍照用
+
+    // 只有当前在摄像头页面才刷新，省 CPU
+    if (ui->stackedWidget->currentWidget() == ui->CameraPage) {
+        ui->videoLabel->setPixmap(
+            QPixmap::fromImage(img).scaled(ui->videoLabel->size(),
+                                           Qt::KeepAspectRatio,
+                                           Qt::FastTransformation));
+    }
+}
+void MainWindow::onCameraConnected()
+{
+    qDebug() << "✅ 摄像头连接成功";
+}
+
+void MainWindow::onCameraError(const QString &msg)
+{
+    QMessageBox::warning(this, "提示", "摄像头错误：" + msg);
+
+    QDateTime current = QDateTime::currentDateTime();
+    QString ts = current.toString("yyyy-MM-dd hh:mm:ss.zzz");
+    int row = ui->FaultTableWidget->rowCount();
+    ui->FaultTableWidget->insertRow(row);
+    ui->FaultTableWidget->setItem(row, 0, new QTableWidgetItem(ts));
+    ui->FaultTableWidget->setItem(row, 1, new QTableWidgetItem("摄像头TCP连接错误"));
+
+    ui->cameraSwitchBtn->setText("开启摄像头");
+    cameraOn = false;
+}
+
+void MainWindow::onRecordingStarted(const QString &path)
+{
+    QMessageBox::information(this, "提示", "开始录像，文件：\n" + path);
+}
+
+void MainWindow::onRecordingFailed(const QString &msg)
+{
+    QMessageBox::warning(this, "提示", "录像启动失败：" + msg);
+    isRecording = false;
+    ui->recordBtn->setText("开始录像");
 }
 /*************实时画面的函数************/
 

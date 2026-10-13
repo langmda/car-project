@@ -9,13 +9,13 @@
 
 /* ==================== 可调参数 ==================== */
 // 内环（编码器速度差环）
-float Kp = 90.0f;
-uint16_t PWM_Limit = 4320;    // PWM 输出限幅
+volatile float Kp = 90.0f;
+volatile uint16_t PWM_Limit = 4320;    // PWM 输出限幅
 float DIFF_LIMIT = 1200.0f;   // 内环目标差速限幅（脉冲/周期）
 
 // 外环（航向角环）
-float YAW_KP = 2.0f;          // 航向 P
-float YAW_OUT_LIMIT = 800.0f; // 外环输出限幅（即目标差速上限）
+volatile float YAW_KP = 2.0f;          // 航向 P
+float YAW_OUT_LIMIT = 100.0f; // 外环输出限幅（即目标差速上限）
 /* ================================================== */
 
 volatile int16_t encoder_left = 0, encoder_right = 0;
@@ -96,6 +96,15 @@ void Read_Encoder(void)
  */
 float Yaw_Loop_Update()
 {
+	float kp_local, yawkp_local;
+	uint16_t pwm_lim_local;
+
+	__disable_irq();
+	kp_local     = Kp;
+	yawkp_local  = YAW_KP;
+	pwm_lim_local = PWM_Limit;
+	__enable_irq();
+		
     float pitch, roll, current_yaw;
 
     uint32_t now = HAL_GetTick();
@@ -117,7 +126,7 @@ float Yaw_Loop_Update()
     if (yaw_error >  180.0f) yaw_error -= 360.0f;			//将角度误差归一化到-180到180度
     if (yaw_error < -180.0f) yaw_error += 360.0f;
 
-    float yaw_target = -yaw_error * YAW_KP;
+    float yaw_target = -yaw_error * yawkp_local;
     if (yaw_target >  YAW_OUT_LIMIT) yaw_target =  YAW_OUT_LIMIT;
     if (yaw_target < -YAW_OUT_LIMIT) yaw_target = -YAW_OUT_LIMIT;
 
@@ -132,16 +141,25 @@ float Yaw_Loop_Update()
  */
 float Speed_Loop_Update(float target_diff)
 {
+	float kp_local, yawkp_local;
+	uint16_t pwm_lim_local;
+
+	__disable_irq();
+	kp_local     = Kp;
+	yawkp_local  = YAW_KP;
+	pwm_lim_local = PWM_Limit;
+	__enable_irq();
+	
     Read_Encoder();
 
     float actual_diff = (float)(encoder_right - encoder_left);
     pid_error = target_diff - actual_diff;   // 内环误差
 
-    pid_output = pid_error * Kp;
+    pid_output = pid_error * kp_local;
 
     // 输出限幅
-    if (pid_output >  PWM_Limit) pid_output =  PWM_Limit;
-    if (pid_output < -PWM_Limit) pid_output = -PWM_Limit;
+    if (pid_output >  pwm_lim_local) pid_output =  PWM_Limit;
+    if (pid_output < -pwm_lim_local) pid_output = -PWM_Limit;
 
     return pid_output;
 }

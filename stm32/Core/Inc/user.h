@@ -28,7 +28,7 @@ void User_Code(void);
 
 extern volatile uint32_t last_cmd_time;
 extern volatile uint8_t uart_rx_buffer[128];
-extern uint8_t mode;
+extern volatile uint8_t mode;
 extern volatile uint8_t current_cmd;
 extern uint8_t read_and_transmit;
 extern uint32_t leftPWM, rightPWM;
