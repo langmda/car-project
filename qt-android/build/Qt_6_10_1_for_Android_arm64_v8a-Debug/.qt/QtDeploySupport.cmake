@@ -35,7 +35,7 @@ set(__QT_DEPLOY_SYSTEM_NAME "Android")
 set(__QT_DEPLOY_SHARED_LIBRARY_SUFFIX ".so")
 set(__QT_DEPLOY_IS_SHARED_LIBS_BUILD "ON")
 set(__QT_DEPLOY_TOOL "")
-set(__QT_DEPLOY_IMPL_DIR "D:/work/qt/home/build/Qt_6_10_1_for_Android_arm64_v8a-Debug/.qt")
+set(__QT_DEPLOY_IMPL_DIR "C:/Users/Administrator/Desktop/project/car/car-project/qt-android/build/Qt_6_10_1_for_Android_arm64_v8a-Debug/.qt")
 set(__QT_DEPLOY_VERBOSE "")
 set(__QT_CMAKE_EXPORT_NAMESPACE "Qt6")
 set(__QT_LIBINFIX "")
@@ -60,7 +60,7 @@ set(__QT_DEPLOY_QT_DEBUG_POSTFIX "")
 
 # Define the CMake commands to be made available during deployment.
 set(__qt_deploy_support_files
-    "D:/work/qt/home/build/Qt_6_10_1_for_Android_arm64_v8a-Debug/.qt/QtDeployTargets.cmake"
+    "C:/Users/Administrator/Desktop/project/car/car-project/qt-android/build/Qt_6_10_1_for_Android_arm64_v8a-Debug/.qt/QtDeployTargets.cmake"
     "D:/tool/Qt/6.10.1/android_arm64_v8a/lib/cmake/Qt6Core/Qt6CoreDeploySupport.cmake"
 )
 foreach(__qt_deploy_support_file IN LISTS __qt_deploy_support_files)

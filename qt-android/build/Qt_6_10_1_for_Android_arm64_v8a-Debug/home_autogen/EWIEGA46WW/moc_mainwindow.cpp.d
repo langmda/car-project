@@ -1,5 +1,7 @@
-D:/work/qt/home/build/Qt_6_10_1_for_Android_arm64_v8a-Debug/home_autogen/EWIEGA46WW/moc_mainwindow.cpp: D:/work/qt/home/mainwindow.h \
-  D:/work/qt/home/build/Qt_6_10_1_for_Android_arm64_v8a-Debug/home_autogen/moc_predefs.h \
+C:/Users/Administrator/Desktop/project/car/car-project/qt-android/build/Qt_6_10_1_for_Android_arm64_v8a-Debug/home_autogen/EWIEGA46WW/moc_mainwindow.cpp: C:/Users/Administrator/Desktop/project/car/car-project/qt-android/mainwindow.h \
+  C:/Users/Administrator/Desktop/project/car/car-project/qt-android/build/Qt_6_10_1_for_Android_arm64_v8a-Debug/home_autogen/moc_predefs.h \
+  C:/Users/Administrator/Desktop/project/car/car-project/qt-android/cameraworker.h \
+  C:/Users/Administrator/Desktop/project/car/car-project/qt-android/mp4writer.h \
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/18/include/__stdarg___gnuc_va_list.h \
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/18/include/__stdarg___va_copy.h \
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/18/include/__stdarg_va_arg.h \
@@ -586,6 +588,12 @@ D:/work/qt/home/build/Qt_6_10_1_for_Android_arm64_v8a-Debug/home_autogen/EWIEGA4
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/__ranges/view_interface.h \
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/__split_buffer \
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/__std_mbstate_t.h \
+  D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/__stop_token/atomic_unique_lock.h \
+  D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/__stop_token/intrusive_list_view.h \
+  D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/__stop_token/intrusive_shared_ptr.h \
+  D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/__stop_token/stop_source.h \
+  D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/__stop_token/stop_state.h \
+  D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/__stop_token/stop_token.h \
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/__string/char_traits.h \
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/__string/constexpr_c_functions.h \
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/__string/extern_template_lists.h \
@@ -595,8 +603,12 @@ D:/work/qt/home/build/Qt_6_10_1_for_Android_arm64_v8a-Debug/home_autogen/EWIEGA4
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/__system_error/error_code.h \
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/__system_error/error_condition.h \
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/__system_error/system_error.h \
+  D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/__thread/formatter.h \
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/__thread/id.h \
+  D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/__thread/jthread.h \
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/__thread/poll_with_backoff.h \
+  D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/__thread/this_thread.h \
+  D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/__thread/thread.h \
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/__threading_support \
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/__tree \
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/__tuple/make_tuple_types.h \
@@ -800,6 +812,7 @@ D:/work/qt/home/build/Qt_6_10_1_for_Android_arm64_v8a-Debug/home_autogen/EWIEGA4
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/float.h \
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/forward_list \
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/functional \
+  D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/future \
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/initializer_list \
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/iomanip \
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/ios \
@@ -819,6 +832,7 @@ D:/work/qt/home/build/Qt_6_10_1_for_Android_arm64_v8a-Debug/home_autogen/EWIEGA4
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/print \
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/ratio \
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/set \
+  D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/sstream \
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/stdbool.h \
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/stddef.h \
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/stdexcept \
@@ -826,6 +840,7 @@ D:/work/qt/home/build/Qt_6_10_1_for_Android_arm64_v8a-Debug/home_autogen/EWIEGA4
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/string \
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/string_view \
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/system_error \
+  D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/thread \
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/tuple \
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/type_traits \
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/typeinfo \
@@ -873,15 +888,19 @@ D:/work/qt/home/build/Qt_6_10_1_for_Android_arm64_v8a-Debug/home_autogen/EWIEGA4
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/wchar.h \
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/wctype.h \
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/xlocale.h \
+  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/QByteArray \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/QDateTime \
-  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/QDebug \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/QFile \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/QJsonArray \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/QJsonDocument \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/QJsonObject \
+  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/QObject \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/QStandardPaths \
+  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/QString \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/QStringList \
+  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/QThread \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/QTimer \
+  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/QVector \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/q17memory.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/q20functional.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/q20iterator.h \
@@ -890,6 +909,7 @@ D:/work/qt/home/build/Qt_6_10_1_for_Android_arm64_v8a-Debug/home_autogen/EWIEGA4
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/q20utility.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/q23type_traits.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/q23utility.h \
+  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qabstracteventdispatcher.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qabstractitemmodel.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qalgorithms.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qalloc.h \
@@ -901,6 +921,7 @@ D:/work/qt/home/build/Qt_6_10_1_for_Android_arm64_v8a-Debug/home_autogen/EWIEGA4
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qatomic.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qatomic_cxx11.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qbasicatomic.h \
+  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qbasictimer.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qbindingstorage.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qbytearray.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qbytearrayalgorithms.h \
@@ -924,14 +945,13 @@ D:/work/qt/home/build/Qt_6_10_1_for_Android_arm64_v8a-Debug/home_autogen/EWIEGA4
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qdarwinhelpers.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qdatastream.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qdatetime.h \
+  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qdeadlinetimer.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qdebug.h \
-  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qdir.h \
-  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qdirlisting.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qendian.h \
+  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qeventloop.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qexceptionhandling.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qfile.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qfiledevice.h \
-  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qfileinfo.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qflags.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qfloat16.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qforeach.h \
@@ -947,6 +967,7 @@ D:/work/qt/home/build/Qt_6_10_1_for_Android_arm64_v8a-Debug/home_autogen/EWIEGA4
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qitemselectionmodel.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qiterable.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qiterator.h \
+  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qjsonarray.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qjsondocument.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qjsonobject.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qjsonparseerror.h \
@@ -1012,7 +1033,8 @@ D:/work/qt/home/build/Qt_6_10_1_for_Android_arm64_v8a-Debug/home_autogen/EWIEGA4
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qtenvironmentvariables.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qtextstream.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qtformat_impl.h \
-  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qtimezone.h \
+  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qthread.h \
+  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qtimer.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qtmetamacros.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qtnoop.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qtpreprocessorsupport.h \
@@ -1028,9 +1050,11 @@ D:/work/qt/home/build/Qt_6_10_1_for_Android_arm64_v8a-Debug/home_autogen/EWIEGA4
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/quuid.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qvariant.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qvarlengtharray.h \
+  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qvector.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qversiontagging.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qxptype_traits.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qyieldcpu.h \
+  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtGui/QImage \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtGui/qaction.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtGui/qbitmap.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtGui/qbrush.h \
@@ -1065,23 +1089,17 @@ D:/work/qt/home/build/Qt_6_10_1_for_Android_arm64_v8a-Debug/home_autogen/EWIEGA4
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtNetwork/qtnetwork-config.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtNetwork/qtnetworkexports.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtNetwork/qtnetworkglobal.h \
-  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/QFileDialog \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/QListWidgetItem \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/QMainWindow \
-  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/QMessageBox \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qabstractitemdelegate.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qabstractitemview.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qabstractscrollarea.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qabstractslider.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qabstractspinbox.h \
-  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qdialog.h \
-  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qdialogbuttonbox.h \
-  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qfiledialog.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qframe.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qlistview.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qlistwidget.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qmainwindow.h \
-  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qmessagebox.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qrubberband.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qsizepolicy.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qslider.h \

@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "org.qtproject.example.home-mergeDebugResources-11:/values-fa/values-fa.xml",
+            "outputFile": "org.qtproject.example.home-mergeDebugResources-10:/values-fa/values-fa.xml",
             "map": [
                 {
                     "source": "D:\\tool\\Qt\\6.10.1\\android_arm64_v8a\\src\\android\\java\\res\\values-fa\\strings.xml",

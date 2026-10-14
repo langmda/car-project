@@ -1,6 +1,6 @@
 [
     {
-        "merged": "org.qtproject.example.home-debug-13:/xml_qtprovider_paths.xml.flat",
-        "source": "org.qtproject.example.home-android-build-home-14:/xml/qtprovider_paths.xml"
+        "merged": "org.qtproject.example.home-debug-12:/xml_qtprovider_paths.xml.flat",
+        "source": "org.qtproject.example.home-android-build-home-13:/xml/qtprovider_paths.xml"
     }
 ]

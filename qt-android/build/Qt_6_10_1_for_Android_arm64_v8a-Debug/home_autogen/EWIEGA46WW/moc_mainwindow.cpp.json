@@ -2,7 +2,7 @@
     "classes": [
         {
             "className": "MainWindow",
-            "lineNumber": 27,
+            "lineNumber": 26,
             "object": true,
             "qualifiedClassName": "MainWindow",
             "signals": [
@@ -23,212 +23,256 @@
                         }
                     ],
                     "index": 0,
-                    "lineNumber": 104,
+                    "lineNumber": 108,
                     "name": "newFrameReceived",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "ip",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "port",
+                            "type": "quint16"
+                        }
+                    ],
+                    "index": 1,
+                    "lineNumber": 109,
+                    "name": "requestStartCamera",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "index": 2,
+                    "lineNumber": 110,
+                    "name": "requestStopCamera",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "path",
+                            "type": "QString"
+                        }
+                    ],
+                    "index": 3,
+                    "lineNumber": 111,
+                    "name": "requestStartRecording",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "index": 4,
+                    "lineNumber": 112,
+                    "name": "requestStopRecording",
                     "returnType": "void"
                 }
             ],
             "slots": [
                 {
                     "access": "private",
-                    "index": 1,
-                    "lineNumber": 37,
+                    "index": 5,
+                    "lineNumber": 36,
                     "name": "on_CarControlButton_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 2,
-                    "lineNumber": 38,
+                    "index": 6,
+                    "lineNumber": 37,
                     "name": "on_SenSorDataButton_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 3,
-                    "lineNumber": 39,
+                    "index": 7,
+                    "lineNumber": 38,
                     "name": "on_MusicButton_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 4,
-                    "lineNumber": 40,
+                    "index": 8,
+                    "lineNumber": 39,
                     "name": "on_ParameterButton_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 5,
-                    "lineNumber": 41,
+                    "index": 9,
+                    "lineNumber": 40,
                     "name": "on_DataRecordButton_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 6,
-                    "lineNumber": 42,
+                    "index": 10,
+                    "lineNumber": 41,
                     "name": "on_CameraButton_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 7,
-                    "lineNumber": 43,
+                    "index": 11,
+                    "lineNumber": 42,
                     "name": "on_FaultButton_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 8,
-                    "lineNumber": 44,
+                    "index": 12,
+                    "lineNumber": 43,
                     "name": "on_TrajectoryButton_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 9,
-                    "lineNumber": 45,
+                    "index": 13,
+                    "lineNumber": 44,
                     "name": "on_VoiceInteractionButton_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 10,
-                    "lineNumber": 46,
+                    "index": 14,
+                    "lineNumber": 45,
                     "name": "on_Parameter_BackHomeButton_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 11,
-                    "lineNumber": 47,
+                    "index": 15,
+                    "lineNumber": 46,
                     "name": "on_CarControl_BackHomeButton_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 12,
-                    "lineNumber": 48,
+                    "index": 16,
+                    "lineNumber": 47,
                     "name": "on_SensorData_BackHomeButton_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 13,
-                    "lineNumber": 49,
+                    "index": 17,
+                    "lineNumber": 48,
                     "name": "on_Music_BackHomeButton_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 14,
-                    "lineNumber": 50,
+                    "index": 18,
+                    "lineNumber": 49,
                     "name": "on_DataRecord_BackHomeButton_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 15,
-                    "lineNumber": 51,
+                    "index": 19,
+                    "lineNumber": 50,
                     "name": "on_Camera_BackHomeButton_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 16,
-                    "lineNumber": 52,
+                    "index": 20,
+                    "lineNumber": 51,
                     "name": "on_Fault_BackHomeButton_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 17,
-                    "lineNumber": 53,
+                    "index": 21,
+                    "lineNumber": 52,
                     "name": "on_VoiceInteraction_BackHomeButton_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 18,
-                    "lineNumber": 54,
+                    "index": 22,
+                    "lineNumber": 53,
                     "name": "on_Trajectory_BackHomeButton_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 19,
-                    "lineNumber": 57,
+                    "index": 23,
+                    "lineNumber": 56,
                     "name": "on_FrontButton_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 20,
-                    "lineNumber": 58,
+                    "index": 24,
+                    "lineNumber": 57,
                     "name": "on_LeftButton_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 21,
-                    "lineNumber": 59,
+                    "index": 25,
+                    "lineNumber": 58,
                     "name": "on_RightButton_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 22,
-                    "lineNumber": 60,
+                    "index": 26,
+                    "lineNumber": 59,
                     "name": "on_BackButton_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 23,
-                    "lineNumber": 61,
+                    "index": 27,
+                    "lineNumber": 60,
                     "name": "on_SwitchModeButton_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 24,
-                    "lineNumber": 62,
+                    "index": 28,
+                    "lineNumber": 61,
                     "name": "on_LedButton_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 25,
-                    "lineNumber": 63,
+                    "index": 29,
+                    "lineNumber": 62,
                     "name": "on_RightCirlcleButton_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 26,
-                    "lineNumber": 64,
+                    "index": 30,
+                    "lineNumber": 63,
                     "name": "on_UpdatePWMBtn_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 27,
-                    "lineNumber": 67,
+                    "index": 31,
+                    "lineNumber": 66,
                     "name": "on_SwitchBtn_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 28,
-                    "lineNumber": 68,
+                    "index": 32,
+                    "lineNumber": 67,
                     "name": "on_PrevBtn_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 29,
-                    "lineNumber": 69,
+                    "index": 33,
+                    "lineNumber": 68,
                     "name": "on_NextBtn_clicked",
                     "returnType": "void"
                 },
@@ -240,8 +284,8 @@
                             "type": "int"
                         }
                     ],
-                    "index": 30,
-                    "lineNumber": 70,
+                    "index": 34,
+                    "lineNumber": 69,
                     "name": "on_VolumeSlider_valueChanged",
                     "returnType": "void"
                 },
@@ -253,134 +297,193 @@
                             "type": "QListWidgetItem*"
                         }
                     ],
-                    "index": 31,
-                    "lineNumber": 71,
+                    "index": 35,
+                    "lineNumber": 70,
                     "name": "on_MusicListWidget_itemClicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 32,
-                    "lineNumber": 72,
+                    "index": 36,
+                    "lineNumber": 71,
                     "name": "on_ProgressSlider_sliderReleased",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 33,
-                    "lineNumber": 73,
+                    "index": 37,
+                    "lineNumber": 72,
                     "name": "on_MusicModeBtn_released",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 34,
-                    "lineNumber": 76,
+                    "index": 38,
+                    "lineNumber": 75,
                     "name": "on_UpdataParameterBtn_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 35,
-                    "lineNumber": 79,
+                    "index": 39,
+                    "lineNumber": 78,
                     "name": "on_DataRecordBtn_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 36,
-                    "lineNumber": 80,
+                    "index": 40,
+                    "lineNumber": 79,
                     "name": "on_DataClearBtn_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 37,
-                    "lineNumber": 83,
+                    "index": 41,
+                    "lineNumber": 82,
                     "name": "on_captureBtn_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 38,
-                    "lineNumber": 84,
+                    "index": 42,
+                    "lineNumber": 83,
                     "name": "on_recordBtn_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 39,
-                    "lineNumber": 85,
+                    "index": 43,
+                    "lineNumber": 84,
                     "name": "on_selectPhotoDirBtn_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 40,
-                    "lineNumber": 86,
+                    "index": 44,
+                    "lineNumber": 85,
                     "name": "on_selectVideoDirBtn_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 41,
-                    "lineNumber": 87,
+                    "index": 45,
+                    "lineNumber": 86,
                     "name": "on_cameraSwitchBtn_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 42,
-                    "lineNumber": 90,
-                    "name": "on_Line_Follow_Button_clicked",
-                    "returnType": "void"
-                },
-                {
-                    "access": "private",
-                    "index": 43,
-                    "lineNumber": 91,
-                    "name": "on_Trajectory_Z_Button_clicked",
-                    "returnType": "void"
-                },
-                {
-                    "access": "private",
-                    "index": 44,
-                    "lineNumber": 92,
-                    "name": "on_Trajectory_J_Button_clicked",
-                    "returnType": "void"
-                },
-                {
-                    "access": "private",
-                    "index": 45,
-                    "lineNumber": 93,
-                    "name": "on_Trajectory_U_Button_clicked",
-                    "returnType": "void"
-                },
-                {
-                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "img",
+                            "type": "QImage"
+                        }
+                    ],
                     "index": 46,
-                    "lineNumber": 96,
-                    "name": "on_VoiceInteractionSwitchBtn_clicked",
+                    "lineNumber": 87,
+                    "name": "onFrameReady",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
                     "index": 47,
-                    "lineNumber": 99,
+                    "lineNumber": 88,
+                    "name": "onCameraConnected",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "msg",
+                            "type": "QString"
+                        }
+                    ],
+                    "index": 48,
+                    "lineNumber": 89,
+                    "name": "onCameraError",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "path",
+                            "type": "QString"
+                        }
+                    ],
+                    "index": 49,
+                    "lineNumber": 90,
+                    "name": "onRecordingStarted",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "msg",
+                            "type": "QString"
+                        }
+                    ],
+                    "index": 50,
+                    "lineNumber": 91,
+                    "name": "onRecordingFailed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "index": 51,
+                    "lineNumber": 94,
+                    "name": "on_Line_Follow_Button_clicked",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "index": 52,
+                    "lineNumber": 95,
+                    "name": "on_Trajectory_Z_Button_clicked",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "index": 53,
+                    "lineNumber": 96,
+                    "name": "on_Trajectory_J_Button_clicked",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "index": 54,
+                    "lineNumber": 97,
+                    "name": "on_Trajectory_U_Button_clicked",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "index": 55,
+                    "lineNumber": 100,
+                    "name": "on_VoiceInteractionSwitchBtn_clicked",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "index": 56,
+                    "lineNumber": 103,
                     "name": "on_pushButton1_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 48,
-                    "lineNumber": 100,
+                    "index": 57,
+                    "lineNumber": 104,
                     "name": "on_pushButton2_clicked",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
-                    "index": 49,
-                    "lineNumber": 101,
+                    "index": 58,
+                    "lineNumber": 105,
                     "name": "on_pushButton3_clicked",
                     "returnType": "void"
                 }

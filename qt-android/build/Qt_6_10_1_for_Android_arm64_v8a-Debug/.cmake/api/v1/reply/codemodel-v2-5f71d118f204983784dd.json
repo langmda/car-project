@@ -1,0 +1,178 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-0e6d3a1be3e91be4ca6b.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "home",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "_qt_internal_apk_dependencies::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-_qt_internal_apk_dependencies-Debug-7a99f69a0763173827b7.json",
+					"name" : "_qt_internal_apk_dependencies",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "aab::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-aab-Debug-0b612bf8b2e4cfc78b7f.json",
+					"name" : "aab",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "aar::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-aar-Debug-a1040e6bed70a75bcd68.json",
+					"name" : "aar",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "apk::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-apk-Debug-5eb2d77efd34a2151f63.json",
+					"name" : "apk",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "apk_all::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-apk_all-Debug-08af9f110b2ccd3be2ef.json",
+					"name" : "apk_all",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "home::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-home-Debug-8234608b2c8bd6417f35.json",
+					"name" : "home",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "home_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-home_autogen-Debug-8ba53798c740b6b4673a.json",
+					"name" : "home_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "home_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-home_autogen_timestamp_deps-Debug-1630ce626c74c9f57f3d.json",
+					"name" : "home_autogen_timestamp_deps",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "home_copy_apk_dependencies::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-home_copy_apk_dependencies-Debug-a0f005195bf72674d344.json",
+					"name" : "home_copy_apk_dependencies",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "home_make_aab::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-home_make_aab-Debug-5f2451a51037fba0dfcd.json",
+					"name" : "home_make_aab",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "home_make_aar::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-home_make_aar-Debug-85f3ce97a4a3bb8bd79e.json",
+					"name" : "home_make_aar",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "home_make_apk::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-home_make_apk-Debug-1c1fa0794f5a0f93b3da.json",
+					"name" : "home_make_apk",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "home_prepare_apk_dir::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-home_prepare_apk_dir-Debug-c301caed6ba7f0b096dc.json",
+					"name" : "home_prepare_apk_dir",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "qt_internal_plugins::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-qt_internal_plugins-Debug-0dd5779fa82a1ed9e045.json",
+					"name" : "qt_internal_plugins",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/Administrator/Desktop/project/car/car-project/qt-android/build/Qt_6_10_1_for_Android_arm64_v8a-Debug",
+		"source" : "C:/Users/Administrator/Desktop/project/car/car-project/qt-android"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 7
+	}
+}

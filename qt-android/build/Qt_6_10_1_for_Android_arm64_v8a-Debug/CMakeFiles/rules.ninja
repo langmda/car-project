@@ -42,7 +42,7 @@ rule CUSTOM_COMMAND
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = D:\tool\Qt\Tools\CMake_64\bin\cmake.exe --regenerate-during-build -SD:\work\qt\home -BD:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug
+  command = D:\tool\Qt\Tools\CMake_64\bin\cmake.exe --regenerate-during-build -SC:\Users\Administrator\Desktop\project\car\car-project\qt-android -BC:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug
   description = Re-running CMake...
   generator = 1
 

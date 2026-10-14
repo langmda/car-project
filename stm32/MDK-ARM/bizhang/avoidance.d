@@ -1,5 +1,5 @@
 bizhang\avoidance.o: ..\Core\Src\avoidance.c
-bizhang\avoidance.o: ../Core/Inc/avoidance.h
+bizhang\avoidance.o: ..\Core\Src\avoidance.h
 bizhang\avoidance.o: D:\tool\Keil\ARM\ARMCC\Bin\..\include\stdint.h
 bizhang\avoidance.o: ../Core/Inc/servo.h
 bizhang\avoidance.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h
@@ -43,5 +43,3 @@ bizhang\avoidance.o: D:\tool\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 bizhang\avoidance.o: ../Core/Inc/user.h
 bizhang\avoidance.o: D:\tool\Keil\ARM\ARMCC\Bin\..\include\stdbool.h
 bizhang\avoidance.o: ../Core/MPU6050/MyCode/inv_mpu.h
-bizhang\avoidance.o: ../Core/Inc/tim.h
-bizhang\avoidance.o: ../Core/Inc/sensor.h

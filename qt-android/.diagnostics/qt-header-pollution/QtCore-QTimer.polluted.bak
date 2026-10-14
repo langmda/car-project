@@ -1,0 +1,133 @@
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include <QMainWindow>
+#include <QtNetwork/QTcpSocket>
+#include <QtNetwork/QHostAddress>
+#include <QMessageBox>
+#include <QMainWindow>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QDebug>
+#include <QStringList>
+#include <QListWidgetItem>
+#include <QFileDialog>
+#include <QStandardPaths>
+#include <QDateTime>
+#include <QFile>
+#include <QTimer>
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    MainWindow(QWidget *parent = nullptr);
+    ~MainWindow();
+
+private slots:
+    //功能页面切换的槽函数
+    void on_CarControlButton_clicked();
+    void on_SenSorDataButton_clicked();
+    void on_MusicButton_clicked();
+    void on_ParameteButton_clicked();
+    void on_DataRecordButton_clicked();
+    void on_CameraButton_clicked();
+    void on_FaultButton_clicked();
+    void on_VoiceInteractionButton_clicked();
+    void on_Parameter_BackHomeButton_clicked();
+    void on_CarControl_BackHomeButton_clicked();
+    void on_SensorData_BackHomeButton_clicked();
+    void on_Music_BackHomeButton_clicked();
+    void on_DataRecord_BackHomeButton_clicked();
+    void on_Camera_BackHomeButton_clicked();
+    void on_Fault_BackHomeButton_clicked();
+    void on_VoiceInteraction_BackHomeButton_clicked();
+
+    //小车控制的槽函数
+    void on_FrontButton_clicked();
+    void on_LeftButton_clicked();
+    void on_RightButton_clicked();
+    void on_BackButton_clicked();
+    void on_SwitchModeButton_clicked();
+    void on_LedButton_clicked();
+
+    //音乐播放器的槽函数
+    void on_SwitchBtn_clicked();
+    void on_PrevBtn_clicked();
+    void on_NextBtn_clicked();
+    void on_VolumeSlider_valueChanged(int value);       //音量调节滑块的值改变时，发送音量改变命令
+    void on_MusicListWidget_itemClicked(QListWidgetItem *item);     //点击音乐文件显示列表的音乐文件时，将当前播放音乐修改为对应音乐
+    void on_ProgressSlider_sliderReleased();            //调整播放进度条
+    void on_MusicModeBtn_released();
+
+    //参数调试页面的槽函数
+    void on_UpdataParameterBtn_clicked();
+
+    //数据记录页面的槽函数
+    void on_DataRecordBtn_clicked();
+
+    //实时画面页面的槽函数
+    void on_captureBtn_clicked();               // 拍照按钮
+    void on_recordBtn_clicked();                // 录像按钮（切换开始/停止）
+    void on_selectPhotoDirBtn_clicked();        // 选择照片保存目录
+    void on_selectVideoDirBtn_clicked();        // 选择视频保存目录
+private:
+    void readTcpData();     //接收从树莓派传来的TCP数据
+    void receiveCameraData();                  // 处理接收到的视频流
+    void connect_error();   //网络连接错误处理函数
+    void camera_connect_error();     //摄像头网络连接错误处理函数
+    void updateMusicLabel();    // 更新当前播放音乐标签
+    void updateMusicWidget();   // 更新音乐列表
+    void updateMusicHighlight ();// 更新高亮音乐
+    void musicUpdata(QJsonObject musicObj);     //处理音乐播放器的更新数据
+    void sensorUpdata(QJsonObject sensorObj);    //处理传感器的更新数据
+    void addEncoderData(int left, int right);   // 向表格添加一行编码器数据
+    void Sensor_Fault(int temp, int humi, int encoderLeft, int encoderRight, int piAdc, int motorAdc);            //判断传感器数据是否异常，如果异常记录进故障诊断页面
+
+    Ui::MainWindow *ui;
+
+    // TCP连接
+    QTcpSocket *tcpSocket;                      // 主TCP客户端（命令和数据）
+    const QString RASPI_IP = "192.168.43.67";   // 手机热点下树莓派的IP
+    const quint16 RASPI_PORT = 8888;            // 树莓派的主端口
+
+    // 摄像头
+    QTcpSocket *cameraSocket;                    // 用于摄像头视频流
+    QByteArray cameraBuffer;                      // 接收缓冲区
+    int expectedFrameSize = 0;                     // 当前帧的预期大小
+    bool receivingFrame = false;                   // 是否正在接收帧数据
+    QString photoSaveDir;           // 照片保存目录
+    QString videoSaveDir;           // 视频保存目录
+    bool isRecording = false;               // 是否正在录像
+    QFile *videoFile = nullptr;               // 录像文件指针（直接写入JPEG数据）
+
+    // 音乐相关
+    QStringList musicListCache; // 音乐文件信息缓存列表
+    int currentMusicIndex = 0;  // 当前播放的音乐索引
+    int is_playing = 0;         // 用于记录播放和暂停的状态，更改图片
+    int music_mode = 0;         // 用于记录当前的音乐模式（0：列表循环 1：单曲循环 2：随机播放）
+    bool isManualMusicSwitch = false; // 标记是否手动切换音乐，手动操作后将变为true，这时将无视树莓派的更新数据信息，1s后由变为false，这时树莓派的更新数据才有效
+    QTimer *musicSwitchTimer;         // 定时器：超时清除手动切换标记
+
+// PID参数结构体
+#pragma pack(1)  // 1字节对齐
+    struct PIDParams {
+        uint8_t cmd;      // 命令字
+        float Kp;         // 比例系数
+        float Ki;         // 积分系数
+        float I_Fil;      // 积分滤波系数
+        int32_t I_Lim;    // 积分限幅
+        int32_t PWM_Lim;  // PWM限幅
+    };
+#pragma pack()
+};
+
+#endif // MAINWINDOW_H

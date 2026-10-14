@@ -10,25 +10,25 @@
 10        android:targetSdkVersion="36" />
 11
 12    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-12-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:7:5-80
-12-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:7:22-76
+12-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:7:5-80
+12-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:7:22-76
 13    <uses-permission android:name="android.permission.INTERNET" />
-13-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:8:5-68
-13-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:8:22-64
+13-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:8:5-68
+13-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:8:22-64
 14    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-14-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:9:5-82
-14-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:9:22-78
+14-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:9:5-82
+14-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:9:22-78
 15
 16    <supports-screens
-16-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:10:5-14:39
+16-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:10:5-14:39
 17        android:anyDensity="true"
-17-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:11:9-34
+17-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:11:9-34
 18        android:largeScreens="true"
-18-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:12:9-36
+18-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:12:9-36
 19        android:normalScreens="true"
-19-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:13:9-37
+19-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:13:9-37
 20        android:smallScreens="true" />
-20-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:14:9-36
+20-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:14:9-36
 21
 22    <permission
 22-->[androidx.core:core:1.16.0] C:\Users\Administrator\.gradle\caches\8.14.3\transforms\c568280f9817ac135c28ceef303183fa\transformed\core-1.16.0\AndroidManifest.xml:22:5-24:47
@@ -42,77 +42,77 @@
 26-->[androidx.core:core:1.16.0] C:\Users\Administrator\.gradle\caches\8.14.3\transforms\c568280f9817ac135c28ceef303183fa\transformed\core-1.16.0\AndroidManifest.xml:26:22-94
 27
 28    <application
-28-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:15:5-52:19
+28-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:15:5-52:19
 29        android:name="org.qtproject.qt.android.bindings.QtApplication"
-29-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:16:9-71
+29-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:16:9-71
 30        android:allowBackup="true"
-30-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:20:9-35
+30-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:20:9-35
 31        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
 31-->[androidx.core:core:1.16.0] C:\Users\Administrator\.gradle\caches\8.14.3\transforms\c568280f9817ac135c28ceef303183fa\transformed\core-1.16.0\AndroidManifest.xml:28:18-86
 32        android:debuggable="true"
 33        android:extractNativeLibs="false"
 34        android:fullBackupOnly="false"
-34-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:21:9-39
+34-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:21:9-39
 35        android:hardwareAccelerated="true"
-35-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:17:9-43
+35-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:17:9-43
 36        android:label="home"
-36-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:18:9-29
+36-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:18:9-29
 37        android:requestLegacyExternalStorage="true" >
-37-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:19:9-52
+37-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:19:9-52
 38        <activity
-38-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:22:9-41:20
+38-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:22:9-41:20
 39            android:name="org.qtproject.qt.android.bindings.QtActivity"
-39-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:23:13-72
+39-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:23:13-72
 40            android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|layoutDirection|locale|fontScale|keyboard|keyboardHidden|navigation|mcc|mnc|density"
-40-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:24:13-182
+40-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:24:13-182
 41            android:exported="true"
-41-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:28:13-36
+41-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:28:13-36
 42            android:label="home"
-42-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:25:13-33
+42-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:25:13-33
 43            android:launchMode="singleTop"
-43-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:26:13-43
+43-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:26:13-43
 44            android:screenOrientation="unspecified" >
-44-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:27:13-52
+44-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:27:13-52
 45            <intent-filter>
-45-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:29:13-32:29
+45-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:29:13-32:29
 46                <action android:name="android.intent.action.MAIN" />
-46-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:30:17-69
-46-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:30:25-66
+46-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:30:17-69
+46-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:30:25-66
 47
 48                <category android:name="android.intent.category.LAUNCHER" />
-48-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:31:17-77
-48-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:31:27-74
+48-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:31:17-77
+48-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:31:27-74
 49            </intent-filter>
 50
 51            <meta-data
-51-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:34:11-36:40
+51-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:34:11-36:40
 52                android:name="android.app.lib_name"
-52-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:35:17-52
+52-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:35:17-52
 53                android:value="home" />
-53-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:36:17-37
+53-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:36:17-37
 54            <meta-data
-54-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:38:11-40:36
+54-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:38:11-40:36
 55                android:name="android.app.arguments"
-55-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:39:17-53
+55-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:39:17-53
 56                android:value="" />
-56-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:40:17-33
+56-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:40:17-33
 57        </activity>
 58
 59        <provider
 60            android:name="androidx.core.content.FileProvider"
-60-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:44:13-62
+60-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:44:13-62
 61            android:authorities="org.qtproject.example.home.qtprovider"
-61-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:45:13-62
+61-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:45:13-62
 62            android:exported="false"
-62-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:46:13-37
+62-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:46:13-37
 63            android:grantUriPermissions="true" >
-63-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:47:13-47
+63-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:47:13-47
 64            <meta-data
-64-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:48:13-50:59
+64-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:48:13-50:59
 65                android:name="android.support.FILE_PROVIDER_PATHS"
-65-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:49:17-67
+65-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:49:17-67
 66                android:resource="@xml/qtprovider_paths" />
-66-->D:\work\qt\home\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:50:17-57
+66-->C:\Users\Administrator\Desktop\project\car\car-project\qt-android\build\Qt_6_10_1_for_Android_arm64_v8a-Debug\android-build-home\AndroidManifest.xml:50:17-57
 67        </provider>
 68        <provider
 68-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Administrator\.gradle\caches\8.14.3\transforms\441bff5fafe8cb8a3b0318be3826d2df\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:24:9-32:20

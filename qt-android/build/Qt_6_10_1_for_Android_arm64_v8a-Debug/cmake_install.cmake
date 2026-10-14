@@ -1,4 +1,4 @@
-# Install script for directory: D:/work/qt/home
+# Install script for directory: C:/Users/Administrator/Desktop/project/car/car-project/qt-android
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -43,7 +43,7 @@ if(NOT DEFINED CMAKE_OBJDUMP)
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE MODULE FILES "D:/work/qt/home/build/Qt_6_10_1_for_Android_arm64_v8a-Debug/libhome_arm64-v8a.so")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE MODULE FILES "C:/Users/Administrator/Desktop/project/car/car-project/qt-android/build/Qt_6_10_1_for_Android_arm64_v8a-Debug/libhome_arm64-v8a.so")
   if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/libhome_arm64-v8a.so" AND
      NOT IS_SYMLINK "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/libhome_arm64-v8a.so")
     if(CMAKE_INSTALL_DO_STRIP)
@@ -67,6 +67,6 @@ endif()
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-  file(WRITE "D:/work/qt/home/build/Qt_6_10_1_for_Android_arm64_v8a-Debug/${CMAKE_INSTALL_MANIFEST}"
+  file(WRITE "C:/Users/Administrator/Desktop/project/car/car-project/qt-android/build/Qt_6_10_1_for_Android_arm64_v8a-Debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()

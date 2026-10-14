@@ -1,1 +1,2 @@
-D:/work/qt/home/build/Qt_6_10_1_for_Android_arm64_v8a-Debug/home_autogen/include/../EWIEGA46WW/moc_mainwindow.cpp.json
+C:/Users/Administrator/Desktop/project/car/car-project/qt-android/build/Qt_6_10_1_for_Android_arm64_v8a-Debug/home_autogen/include/../EWIEGA46WW/moc_cameraworker.cpp.json
+C:/Users/Administrator/Desktop/project/car/car-project/qt-android/build/Qt_6_10_1_for_Android_arm64_v8a-Debug/home_autogen/include/../EWIEGA46WW/moc_mainwindow.cpp.json

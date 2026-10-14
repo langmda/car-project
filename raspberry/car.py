@@ -135,17 +135,6 @@ command_map = {
     "走Z字形": ["走一个Z字形", "走Z字", "Z字形", "走Z", "走之字形", "走一个Z"]
 }
 
-voice_detector = BaiduVoiceDetector
-(
-    command_queue=command_queue,
-    app_id=BAIDU_APP_ID,
-    api_key=BAIDU_API_KEY,
-    secret_key=BAIDU_SECRET_KEY,
-    audio_source=audio_source_t,
-    shutdown_event=shutdown_event,
-    silence_timeout=1.0
-)
-
 # 语音会话期间应被忽略的客户端音乐命令
 _MUSIC_COMMANDS = {
     CMD_SWITCH_PLAY_PAUSE, CMD_PREV, CMD_NEXT,
@@ -1422,6 +1411,7 @@ def camera_server_thread():
 
 #看门狗线程
 def watchdog_thread():
+    global ser
     while not shutdown_event.is_set():
         now = time.time()
 
@@ -1432,7 +1422,6 @@ def watchdog_thread():
                 if ser and ser.isOpen():
                     ser.close()
                 time.sleep(0.5)
-                global ser
                 ser = init_serial()
             except Exception as e:
                 print(f"❌ [Watchdog] 串口重开失败: {e}")
@@ -1494,13 +1483,13 @@ if __name__ == "__main__":
     load_music_list()
     tts_player = TTSPlayer(audio_dir="/home/lang/car/tts", shutdown_event=shutdown_event)
 
-    BAIDU_APP_ID = "...122306686"
-    BAIDU_API_KEY = "...MilNY56k0r5wJZgOcMw73jws"
-    BAIDU_SECRET_KEY = "...u86diCU47JyaEsEKFsPlVDpMm"
+    BAIDU_APP_ID = "121439094"
+    BAIDU_API_KEY = "1IKtkqkG5n2POLNsGp0l83uM"
+    BAIDU_SECRET_KEY = "u86diCU47JyaEsYqMrMvGEKFsPlVDpMm"
 
-    BAIDU_TTS_APP_ID = "...122306686"
-    BAIDU_TTS_API_KEY = "...MilNY56k0r5wJZgOcMw73jws"
-    BAIDU_TTS_SECRET_KEY = "...8GG0V8MonYun0Q7bdniSwzJV"
+    BAIDU_TTS_APP_ID = "122306686"
+    BAIDU_TTS_API_KEY = "MilNY56k0r5wJZgOcMw73jws"
+    BAIDU_TTS_SECRET_KEY = "8GG0V8MonYun0QOyQ5mdP67bdniSwzJV"
 
     tts_client = AipSpeech(BAIDU_TTS_APP_ID, BAIDU_TTS_API_KEY, BAIDU_TTS_SECRET_KEY)
 
@@ -1520,6 +1509,16 @@ if __name__ == "__main__":
     audio_source_t.start()
     watchdog_t = threading.Thread(target=watchdog_thread, daemon=True)
     watchdog_t.start()
+
+    voice_detector = BaiduVoiceDetector(
+        command_queue=command_queue,
+        app_id=BAIDU_APP_ID,
+        api_key=BAIDU_API_KEY,
+        secret_key=BAIDU_SECRET_KEY,
+        audio_source=audio_source_t,
+        shutdown_event=shutdown_event,
+        silence_timeout=1.0
+    )
 
     wake_word_thread = WakeWordDetector(
         command_queue=command_queue,

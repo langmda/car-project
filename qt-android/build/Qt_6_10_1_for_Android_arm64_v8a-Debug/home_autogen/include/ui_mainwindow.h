@@ -1886,8 +1886,8 @@ public:
 "    background-color: rgb(30, 129, 195);\n"
 "}"));
         FrontButton->setAutoRepeat(true);
-        FrontButton->setAutoRepeatDelay(75);
-        FrontButton->setAutoRepeatInterval(75);
+        FrontButton->setAutoRepeatDelay(100);
+        FrontButton->setAutoRepeatInterval(100);
 
         gridLayout->addWidget(FrontButton, 4, 1, 1, 1);
 
@@ -2201,7 +2201,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        stackedWidget->setCurrentIndex(5);
+        stackedWidget->setCurrentIndex(7);
 
 
         QMetaObject::connectSlotsByName(MainWindow);

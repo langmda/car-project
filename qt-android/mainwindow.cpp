@@ -58,26 +58,37 @@
 #define VOL_BAT_FULL 12600
 #define VOL_BAT_EMPTY 10800
 
+//模式
+#define AUTOMATIC  0x01		//自主避障模式
+#define MANUAL     0x02		//手动操作模式
+#define LINE_FOLLOW 0x03	//循线模式
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , car_mode(MANUAL)
 {
     ui->setupUi(this);
 
     ui->stackedWidget->setCurrentWidget(ui->HomePage);
 
+#ifdef Q_OS_ANDROID
+    // Android 上使用公共目录
+    photoSaveDir = "/storage/emulated/0/Pictures";
+    videoSaveDir = "/storage/emulated/0/Pictures";
+#else
     photoSaveDir = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
     videoSaveDir = QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
-    if (photoSaveDir.isEmpty())
-    {
-        photoSaveDir = QDir::currentPath() + "/Pictures";
-        QDir().mkpath(photoSaveDir);
+    if (photoSaveDir.isEmpty()) {
+        photoSaveDir = QDir::homePath() + "/Pictures";
     }
-    if (videoSaveDir.isEmpty())
-    {
-        videoSaveDir = QDir::currentPath() + "/Videos";
-        QDir().mkpath(videoSaveDir);
+    if (videoSaveDir.isEmpty()) {
+        videoSaveDir = QDir::homePath() + "/Movies";
     }
+#endif
+    // 确保目录存在
+    QDir().mkpath(photoSaveDir);
+    QDir().mkpath(videoSaveDir);
     ui->labelPhotoDir->setText("照片目录：" + photoSaveDir);
     ui->labelVideoDir->setText("视频目录：" + videoSaveDir);
 
@@ -86,6 +97,39 @@ MainWindow::MainWindow(QWidget *parent)
     tcpSocket->abort();
     tcpSocket->connectToHost(QHostAddress(RASPI_IP), RASPI_PORT);
     connect(tcpSocket, &QTcpSocket::readyRead, this, &MainWindow::readTcpData);
+
+    localCmdTimer.start();      // 用于抑制 0x0F/0x10 的命令回环
+
+    // === 摄像头工作线程 ===
+    // 帧接收、CRC 校验、JPEG 落盘（录像）全部在工作线程完成，主线程只负责显示与 UI
+    m_cameraThread = new QThread();          // 不设父对象，由析构函数负责回收
+    m_cameraWorker = new CameraWorker();
+    m_cameraWorker->moveToThread(m_cameraThread);
+    m_cameraThread->start();                 // 启动线程事件循环
+
+    // 主线程 → 工作线程
+    connect(this, &MainWindow::requestStartCamera,
+            m_cameraWorker, &CameraWorker::start);
+    connect(this, &MainWindow::requestStopCamera,
+            m_cameraWorker, &CameraWorker::stop);
+    connect(this, &MainWindow::requestStartRecording,
+            m_cameraWorker, &CameraWorker::startRecording);
+    connect(this, &MainWindow::requestStopRecording,
+            m_cameraWorker, &CameraWorker::stopRecording);
+
+    // 工作线程 → 主线程
+    connect(m_cameraWorker, &CameraWorker::videoFrame,
+            this, &MainWindow::on_videoFrame);
+    connect(m_cameraWorker, &CameraWorker::connected,
+            this, &MainWindow::on_cameraConnected);
+    connect(m_cameraWorker, &CameraWorker::errorOccurred,
+            this, &MainWindow::on_cameraError);
+    connect(m_cameraWorker, &CameraWorker::recordingStarted,
+            this, &MainWindow::on_recordingStarted);
+    connect(m_cameraWorker, &CameraWorker::recordingFailed,
+            this, &MainWindow::on_recordingFailed);
+    connect(m_cameraWorker, &CameraWorker::recordingStopped,
+            this, &MainWindow::on_recordingStopped);
 
     // 初始化音乐播放页面的定时器
     musicSwitchTimer = new QTimer(this);
@@ -116,75 +160,44 @@ MainWindow::MainWindow(QWidget *parent)
     ui->FaultTableWidget->setColumnWidth(1, 120);
 
     //填入参数调试页面的QLabel值
-    ui->KpLabel->setText("KP : 50.0");
-    ui->KiLabel->setText("KI : 1.0");
-    ui->IlimLabel->setText("I_lim : 800");
-    ui->PWMlimLabel->setText("PWM_lim : 4320");
-
-    // === 摄像头工作线程 ===
-    m_cameraThread = new QThread();
-    m_cameraWorker = new CameraWorker();
-    m_cameraWorker->moveToThread(m_cameraThread);     //把m_cameraWorker的线程归属改成了m_cameraThread，之后发送信号发送给m_cameraWorker，槽函数都是在m_cameraThread处理，而不是在主线程中处理
-    m_cameraThread->start();                          //线程默认调用exec()事件循环
-
-    // 主线程 → 工作线程（信号都是自定义信号，发送给摄像头工作线程，摄像头工作线程在事件循环中取出信号，执行槽函数）
-    connect(this, &MainWindow::requestStartCamera,
-            m_cameraWorker, &CameraWorker::start);
-    connect(this, &MainWindow::requestStopCamera,
-            m_cameraWorker, &CameraWorker::stop);
-    connect(this, &MainWindow::requestStartRecording,
-            m_cameraWorker, &CameraWorker::startRecording);
-    connect(this, &MainWindow::requestStopRecording,
-            m_cameraWorker, &CameraWorker::stopRecording);
-
-    // 工作线程 → 主线程（信号都是自定义信号，发送给主线程，主线程在事件循环中取出信号，执行槽函数）
-    connect(m_cameraWorker, &CameraWorker::frameReady,
-            this, &MainWindow::onFrameReady);
-    connect(m_cameraWorker, &CameraWorker::connected,
-            this, &MainWindow::onCameraConnected);
-    connect(m_cameraWorker, &CameraWorker::errorOccurred,
-            this, &MainWindow::onCameraError);
-    connect(m_cameraWorker, &CameraWorker::recordingStarted,
-            this, &MainWindow::onRecordingStarted);
-    connect(m_cameraWorker, &CameraWorker::recordingFailed,
-            this, &MainWindow::onRecordingFailed);
+    ui->KpLabel->setText("KP : ");
+    ui->YawKpLabel->setText("YAW_KP : ");
+    ui->PWMlimLabel->setText("PWM_lim : ");
 }
 
 MainWindow::~MainWindow()
 {
+    // 先在工作线程里收尾（停 socket、关录像文件），再退出线程并回收
     if (m_cameraThread) {
         if (m_cameraThread->isRunning()) {
             QMetaObject::invokeMethod(m_cameraWorker, "stop",
                                       Qt::BlockingQueuedConnection);
             m_cameraThread->quit();
-            m_cameraThread->wait();
+            m_cameraThread->wait(3000);
         }
-        delete m_cameraWorker;
+        delete m_cameraWorker;      // 已 moveToThread 出去，必须手动 delete
         delete m_cameraThread;
         m_cameraWorker = nullptr;
         m_cameraThread = nullptr;
     }
+    mp4Writer = nullptr;            // 录像文件由工作线程负责关闭
     delete ui;
 }
 
 void MainWindow::connect_error()
 {
     ui->FrontButton->setEnabled(false);
-    ui->LeftButton->setEnabled(false);
     ui->RightButton->setEnabled(false);
+    ui->LeftButton->setEnabled(false);
     ui->BackButton->setEnabled(false);
-    ui->SwitchModeButton->setEnabled(false);
-    ui->LedButton->setEnabled(false);
     ui->RightCirlcleButton->setEnabled(false);
 
     QMessageBox::warning(this, "提示", "未连接到树莓派，请检查网络！");
 
     ui->FrontButton->setEnabled(true);
-    ui->LeftButton->setEnabled(true);
     ui->RightButton->setEnabled(true);
+    ui->LeftButton->setEnabled(true);
     ui->BackButton->setEnabled(true);
-    ui->SwitchModeButton->setEnabled(true);
-    ui->LedButton->setEnabled(true);
     ui->RightCirlcleButton->setEnabled(true);
 
     QDateTime current = QDateTime::currentDateTime();
@@ -199,96 +212,155 @@ void MainWindow::connect_error()
     return;
 }
 
-void MainWindow::camera_connect_error()
+void MainWindow::readTcpData()              //主TCP收到数据时触发，接收数据包，解析出帧体并处理
 {
-    QMessageBox::warning(this, "提示", "未连接到树莓派，请检查网络！");
-}
+    tcpBuffer.append(tcpSocket->readAll());
 
-void MainWindow::readTcpData()
-{
-    while (tcpSocket->bytesAvailable() > 0) // 持续读取所有可用数据
+    static constexpr int     HEAD_LEN    = 2;
+    static constexpr int     LEN_LEN     = 4;
+    static constexpr int     CRC_LEN     = 1;
+    static constexpr quint32 MAX_PAYLOAD = 64 * 1024;
+
+    while (tcpBuffer.size() > 0)
     {
-        char peekCmd;
-        tcpSocket->peek(&peekCmd, 1);  // 偷看第一个字节，不取走
-        //单字节命令
-        if (static_cast<quint8>(peekCmd) == 0x0F)   // 如果是拍照命令 (0x0F)
-        {
-            char cmd;
-            tcpSocket->read(&cmd, 1);  // 正式读取命令
-            qDebug() << "📸 收到拍照命令";
-            on_captureBtn_clicked();
-            continue;  // 继续循环，处理下一个数据
+        // 1. 找帧头
+        int headerPos = findFrameHeader(tcpBuffer);
+        if (headerPos < 0) {
+            if (tcpBuffer.size() > 1) tcpBuffer = tcpBuffer.right(1);
+            return;
         }
-        else if (static_cast<quint8>(peekCmd) == 0x10)  // 如果是录像切换命令 (0x10)
-        {
-            char cmd;
-            tcpSocket->read(&cmd, 1);  // 正式读取命令
-            qDebug() << "🎥 收到录像切换命令";
-            on_recordBtn_clicked();
-            continue;  // 继续循环，处理下一个数据
+        if (headerPos > 0) {
+            qDebug() << "🗑️ 主TCP丢弃" << headerPos << "字节垃圾";
+            tcpBuffer.remove(0, headerPos);
         }
-        //JSON数据
-        // 1. 读取树莓派发送的数据（按行读取，每行是一份JSON数据）
-        if (tcpSocket->canReadLine())
-        {
-            QByteArray line = tcpSocket->readLine().trimmed();  // 读取一行并去掉换行/空格
-            if (line.isEmpty()) continue;
 
-            // 2. 解析JSON数据
-            QJsonParseError jsonError;
-            QJsonDocument doc = QJsonDocument::fromJson(line, &jsonError);
-            if (jsonError.error != QJsonParseError::NoError) {      // JSON解析失败
-                QMessageBox::warning(this, "提示", "❌ JSON解析失败");
-                continue;
-            }
-            QJsonObject obj = doc.object();
-            QString msgType = obj["type"].toString();   //获取JSON数据类型
+        // 2. 长度字段到齐？
+        if (tcpBuffer.size() < HEAD_LEN + LEN_LEN) return;
 
-            // 3. 根据数据类型进行对应的处理
-            if (msgType == "music_list")    //音乐文件列表
-            {
-                //获取数据
-                QJsonArray musicArray = obj["data"].toArray();
-                musicListCache.clear();
-                for (int i=0; i<musicArray.size(); i++)
-                {musicListCache.append(musicArray[i].toString());}
-                //更新音乐列表和当前播放音乐标签
-                if (musicListCache.isEmpty())   //没有检测到音乐文件信息缓存，报错
-                {
-                    QMessageBox::warning(this, "提示", "未检测到音乐文件缓存");
-                    return;
-                }
-                updateMusicWidget();
-                updateMusicLabel();
-                updateMusicHighlight ();
-            }
-            else if (msgType == "status_update")   //状态更新，包括传感器数据、音乐播放状态
-            {
-                QJsonObject dataObj = obj["data"].toObject();
+        // 3. 解析长度（大端）
+        quint32 payloadLen = qFromBigEndian<quint32>(
+            reinterpret_cast<const uchar*>(tcpBuffer.constData() + HEAD_LEN));
 
-                QJsonObject sensorObj = dataObj["sensor"].toObject();
-                QJsonObject musicObj = dataObj["music"].toObject();
-
-                sensorUpdata(sensorObj);
-                musicUpdata(musicObj);
-            }
-            else if (msgType == "voice_result")     //语音识别结果
-            {
-                QJsonObject dataObj = obj["data"].toObject();
-                QString text = dataObj["text"].toString();
-                double timestamp = dataObj["timestamp"].toDouble();
-
-                // 转换为本地时间显示
-                QDateTime time = QDateTime::fromSecsSinceEpoch(timestamp);
-                QString timeStr = time.toString("hh:mm:ss");
-
-                QString displayText = QString("[%1] 识别结果：%2").arg(timeStr).arg(text);
-                ui->voiceResultTextEdit->append(displayText);  // 需要先在UI中添加一个QTextEdit
-            }
+        if (payloadLen == 0 || payloadLen > MAX_PAYLOAD) {
+            qDebug() << "⚠️ 主TCP非法长度:" << payloadLen;
+            tcpBuffer.remove(0, 1);
+            continue;
         }
+
+        // 4. 整帧到齐？
+        int totalLen = HEAD_LEN + LEN_LEN + static_cast<int>(payloadLen) + CRC_LEN;
+        if (tcpBuffer.size() < totalLen) return;
+
+        // 5. CRC 校验
+        quint8 recvCrc = static_cast<quint8>(tcpBuffer[totalLen - 1]);
+        QByteArray crcRange = tcpBuffer.mid(HEAD_LEN, LEN_LEN + payloadLen);
+        quint8 calcCrc = crc8Update(0x00, crcRange);
+
+        if (recvCrc != calcCrc) {
+            qDebug() << "❌ 主TCP CRC失败";
+            tcpBuffer.remove(0, 1);
+            continue;
+        }
+
+        // 6. 提取 payload 并分发
+        QByteArray payload = tcpBuffer.mid(HEAD_LEN + LEN_LEN, payloadLen);
+        tcpBuffer.remove(0, totalLen);
+        handleTcpPayload(payload);
     }
 }
 
+void MainWindow::sendCommandFrame(const QByteArray &payload)        //发送数据包，帧头（0xAA 0x55）+ 负载长度 + 负载 + CRC校验位
+{
+    if (tcpSocket->state() != QTcpSocket::ConnectedState) {
+        connect_error();
+        return;
+    }
+
+    QByteArray frame;
+    frame.append(static_cast<char>(0xAA));
+    frame.append(static_cast<char>(0x55));
+
+    quint32 len = static_cast<quint32>(payload.size());
+    frame.append(static_cast<char>((len >> 24) & 0xFF));
+    frame.append(static_cast<char>((len >> 16) & 0xFF));
+    frame.append(static_cast<char>((len >> 8) & 0xFF));
+    frame.append(static_cast<char>(len & 0xFF));
+
+    frame.append(payload);
+
+    // CRC8 覆盖 LEN(4) + PAYLOAD
+    QByteArray crcRange = frame.mid(2, 4) + payload;
+    quint8 crc = crc8Update(0x00, crcRange);
+    frame.append(static_cast<char>(crc));
+
+    tcpSocket->write(frame);
+}
+
+void MainWindow::handleTcpPayload(const QByteArray &payload)        //处理主TCP收到的数据包解析后的帧体
+{
+    if (payload.isEmpty()) return;
+
+    quint8 first = static_cast<quint8>(payload[0]);
+
+    // 单字节命令
+    // 注意：本机按钮发出的 0x0F/0x10 会被 car.py 广播回所有客户端（包括自己），
+    // 这里用 500ms 抑制窗口避免"点一次、切两次"的回环。
+    if (first == 0x0F) {
+        if (localCmdTimer.elapsed() - lastCaptureCmdMs < 500) {
+            qDebug() << "↩️ 忽略本机拍照命令回环";
+            return;
+        }
+        qDebug() << "📸 收到拍照命令";
+        on_captureBtn_clicked();
+        return;
+    }
+    if (first == 0x10) {
+        if (localCmdTimer.elapsed() - lastRecordCmdMs < 500) {
+            qDebug() << "↩️ 忽略本机录像命令回环";
+            return;
+        }
+        qDebug() << "🎥 收到录像切换命令";
+        on_recordBtn_clicked();
+        return;
+    }
+
+    // JSON 消息（首字节是 '{'）
+    if (first == '{') {
+        QJsonParseError err;
+        QJsonDocument doc = QJsonDocument::fromJson(payload, &err);
+        if (err.error != QJsonParseError::NoError) {
+            qDebug() << "❌ JSON解析失败:" << err.errorString();
+            return;
+        }
+        QJsonObject obj = doc.object();
+        QString msgType = obj["type"].toString();
+
+        if (msgType == "music_list") {
+            QJsonArray musicArray = obj["data"].toArray();
+            musicListCache.clear();
+            for (int i = 0; i < musicArray.size(); i++)
+                musicListCache.append(musicArray[i].toString());
+            if (musicListCache.isEmpty()) {
+                QMessageBox::warning(this, "提示", "未检测到音乐文件缓存");
+                return;
+            }
+            updateMusicWidget();
+            updateMusicLabel();
+            updateMusicHighlight();
+        }
+        else if (msgType == "sensor_data") {
+            sensorUpdata(obj["sensor"].toObject());
+        }
+        else if (msgType == "music_status") {
+            musicUpdata(obj["music"].toObject());
+        }
+        else if (msgType == "voice_result") {
+            QJsonObject dataObj = obj["data"].toObject();
+            appendVoiceResult(dataObj["text"].toString(),
+                              dataObj["timestamp"].toDouble());
+        }
+    }
+}
 /***********功能页面切换按钮的函数***********/
 void MainWindow::on_CarControlButton_clicked() { ui->stackedWidget->setCurrentWidget(ui->CarControlPage); }
 void MainWindow::on_SenSorDataButton_clicked() { ui->stackedWidget->setCurrentWidget(ui->SensorDataPage); }
@@ -318,47 +390,74 @@ void MainWindow::on_FrontButton_clicked()
 {
     if(tcpSocket->state() != QTcpSocket::ConnectedState) {connect_error();}
     quint8 cmd = MOVE_FORWARD;
-    tcpSocket->write((char*)&cmd, 1);
+    sendCommandFrame(QByteArray(1, static_cast<char>(cmd)));
 }
 void MainWindow::on_LeftButton_clicked()
 {
-    if(tcpSocket->state() != QTcpSocket::ConnectedState) {connect_error();}
+    if(tcpSocket->state() != QTcpSocket::ConnectedState)
+    {   connect_error();
+        return;
+    }
+
     quint8 cmd = TURN_LEFT;
-    tcpSocket->write((char*)&cmd, 1);
+    sendCommandFrame(QByteArray(1, static_cast<char>(cmd)));
 }
 void MainWindow::on_RightButton_clicked()
 {
-    if(tcpSocket->state() != QTcpSocket::ConnectedState) {connect_error();}
+    if(tcpSocket->state() != QTcpSocket::ConnectedState)
+    {   connect_error();
+        return;
+    }
+
     quint8 cmd = TURN_RIGHT;
-    tcpSocket->write((char*)&cmd, 1);
+    sendCommandFrame(QByteArray(1, static_cast<char>(cmd)));
 }
 void MainWindow::on_BackButton_clicked()
 {
-    if(tcpSocket->state() != QTcpSocket::ConnectedState) {connect_error();}
+    if(tcpSocket->state() != QTcpSocket::ConnectedState)
+    {   connect_error();
+        return;
+    }
+
     quint8 cmd = BACK_OFF;
-    tcpSocket->write((char*)&cmd, 1);
+    sendCommandFrame(QByteArray(1, static_cast<char>(cmd)));
 }
 void MainWindow::on_SwitchModeButton_clicked()
 {
-    if(tcpSocket->state() != QTcpSocket::ConnectedState) {connect_error();}
+    ui->SwitchModeButton->setEnabled(false);
+    if(tcpSocket->state() != QTcpSocket::ConnectedState)
+    {
+        connect_error();
+        ui->SwitchModeButton->setEnabled(true);
+        return;
+    }
+    ui->SwitchModeButton->setEnabled(true);
+
+    if (car_mode == MANUAL) {
+        car_mode = AUTOMATIC;
+        ui->CarModeLabel->setText("当前模式：自主避障");
+        ui->Line_Follow_Button->setText("开启");
+    }
+    else {   // AUTOMATIC 或 LINE_FOLLOW → 切到 MANUAL
+        car_mode = MANUAL;
+        ui->CarModeLabel->setText("当前模式：手动操控");
+        ui->Line_Follow_Button->setText("开启");
+    }
+
     quint8 cmd = CAR_MODE_SWITCH;
-    tcpSocket->write((char*)&cmd, 1);
-    if(ui->CarModeLabel->text() == "当前模式：自主避障")
-    {ui->CarModeLabel->setText("当前模式：手动操作");}
-    else if(ui->CarModeLabel->text() == "当前模式：手动操作")
-    {ui->CarModeLabel->setText("当前模式：自主避障");}
+    sendCommandFrame(QByteArray(1, static_cast<char>(cmd)));
 }
 void MainWindow::on_LedButton_clicked()
 {
-    if(tcpSocket->state() != QTcpSocket::ConnectedState) {connect_error();}
+    if(tcpSocket->state() != QTcpSocket::ConnectedState) {connect_error();return;}
     quint8 cmd = LED_SWITCH;
-    tcpSocket->write((char*)&cmd, 1);
+    sendCommandFrame(QByteArray(1, static_cast<char>(cmd)));
 }
 void MainWindow::on_RightCirlcleButton_clicked()
 {
-    if(tcpSocket->state() != QTcpSocket::ConnectedState) {connect_error();}
+    if(tcpSocket->state() != QTcpSocket::ConnectedState) {connect_error();return;}
     quint8 cmd = CUSTOMIZATION;
-    tcpSocket->write((char*)&cmd, 1);
+    sendCommandFrame(QByteArray(1, static_cast<char>(cmd)));
 }
 void MainWindow::on_UpdatePWMBtn_clicked()
 {
@@ -434,30 +533,17 @@ void MainWindow::on_UpdatePWMBtn_clicked()
     }
 
     // 5. 手动构造字节数组发送（确保小端模式，与STM32兼容）
-    QByteArray cmdData;
-    cmdData.resize(9);  // cmd(1) + rightPWM(4) + leftPWM(4) = 9字节
-
-    // 第1字节：命令码
-    cmdData[0] = static_cast<char>(PWM_UPDATE);  // 0x19
-
-    // 第2-5字节：rightPWM (小端模式)
-    cmdData[1] = static_cast<char>(rightPWM & 0xFF);
-    cmdData[2] = static_cast<char>((rightPWM >> 8) & 0xFF);
-    cmdData[3] = static_cast<char>((rightPWM >> 16) & 0xFF);
-    cmdData[4] = static_cast<char>((rightPWM >> 24) & 0xFF);
-
-    // 第6-9字节：leftPWM (小端模式)
-    cmdData[5] = static_cast<char>(leftPWM & 0xFF);
-    cmdData[6] = static_cast<char>((leftPWM >> 8) & 0xFF);
-    cmdData[7] = static_cast<char>((leftPWM >> 16) & 0xFF);
-    cmdData[8] = static_cast<char>((leftPWM >> 24) & 0xFF);
-
-    // 调试输出（发送到Qt的调试控制台）
-    qDebug() << "Sending PWM Update - Left:" << leftPWM << "Right:" << rightPWM;
-    qDebug() << "Hex data:" << cmdData.toHex();
-
-    // 发送数据
-    tcpSocket->write(cmdData);
+    QByteArray payload;
+    payload.append(static_cast<char>(PWM_UPDATE));
+    payload.append(static_cast<char>(rightPWM & 0xFF));
+    payload.append(static_cast<char>((rightPWM >> 8) & 0xFF));
+    payload.append(static_cast<char>((rightPWM >> 16) & 0xFF));
+    payload.append(static_cast<char>((rightPWM >> 24) & 0xFF));
+    payload.append(static_cast<char>(leftPWM & 0xFF));
+    payload.append(static_cast<char>((leftPWM >> 8) & 0xFF));
+    payload.append(static_cast<char>((leftPWM >> 16) & 0xFF));
+    payload.append(static_cast<char>((leftPWM >> 24) & 0xFF));
+    sendCommandFrame(payload);
 
     // 6. 清空输入框
     ui->RightPWMlineEdit->clear();
@@ -474,7 +560,7 @@ void MainWindow::on_SwitchBtn_clicked()
 {
     if(tcpSocket->state() != QTcpSocket::ConnectedState) {connect_error(); return;}
     quint8 cmd = SWITCH_MUSIC;
-    tcpSocket->write((char*)&cmd, 1);
+    sendCommandFrame(QByteArray(1, static_cast<char>(cmd)));
     if (is_playing == 0)
     {
         ui->SwitchBtn->setIcon(QIcon(":/image/暂停.png"));
@@ -488,7 +574,7 @@ void MainWindow::on_SwitchBtn_clicked()
 }
 void MainWindow::on_PrevBtn_clicked()
 {
-    if(tcpSocket->state() != QTcpSocket::ConnectedState) {connect_error();}
+    if(tcpSocket->state() != QTcpSocket::ConnectedState) {connect_error();return;}
     if (musicListCache.isEmpty())
     {
         QMessageBox::warning(this, "提示", "未检测到音乐文件缓存");
@@ -499,7 +585,7 @@ void MainWindow::on_PrevBtn_clicked()
     isManualMusicSwitch = true;
     musicSwitchTimer->start();
     quint8 cmd = PREV_MUSIC;
-    tcpSocket->write((char*)&cmd, 1);
+    sendCommandFrame(QByteArray(1, static_cast<char>(cmd)));
     updateMusicLabel();
     updateMusicHighlight();
     ui->SwitchBtn->setIcon(QIcon(":/image/暂停.png"));
@@ -507,7 +593,7 @@ void MainWindow::on_PrevBtn_clicked()
 }
 void MainWindow::on_NextBtn_clicked()
 {
-    if(tcpSocket->state() != QTcpSocket::ConnectedState) {connect_error();}
+    if(tcpSocket->state() != QTcpSocket::ConnectedState) {connect_error();return;}
     if (musicListCache.isEmpty())
     {
         QMessageBox::warning(this, "提示", "未检测到音乐文件缓存");
@@ -518,7 +604,7 @@ void MainWindow::on_NextBtn_clicked()
     isManualMusicSwitch = true;
     musicSwitchTimer->start();
     quint8 cmd = NEXT_MUSIC;
-    tcpSocket->write((char*)&cmd, 1);
+    sendCommandFrame(QByteArray(1, static_cast<char>(cmd)));
     updateMusicLabel();
     updateMusicHighlight();
     ui->SwitchBtn->setIcon(QIcon(":/image/暂停.png"));
@@ -526,42 +612,41 @@ void MainWindow::on_NextBtn_clicked()
 }
 void MainWindow::on_VolumeSlider_valueChanged(int value)
 {
-    if(tcpSocket->state() != QTcpSocket::ConnectedState) {connect_error();}
-    QByteArray cmdData;
-    cmdData.append(VOLUMN_MUSIC);
-    cmdData.append(static_cast<char>(value));
-    tcpSocket->write(cmdData);
+    QByteArray payload;
+    payload.append(static_cast<char>(VOLUMN_MUSIC));
+    payload.append(static_cast<char>(value));
+    sendCommandFrame(payload);
 }
 void MainWindow::on_MusicListWidget_itemClicked(QListWidgetItem *item)
 {
-    if(tcpSocket->state() != QTcpSocket::ConnectedState) {connect_error();}
+    if(tcpSocket->state() != QTcpSocket::ConnectedState) {connect_error();return;}
     if (!item) return;
     currentMusicIndex = ui->MusicListWidget->row(item);
     isManualMusicSwitch = true;
     musicSwitchTimer->start();
     updateMusicLabel();
     updateMusicHighlight();
-    QByteArray cmdData;
-    cmdData.append(PLAY_SPECIFIC_MUSIC);
-    cmdData.append(static_cast<char>(currentMusicIndex));
-    tcpSocket->write(cmdData);
+    QByteArray payload;
+    payload.append(static_cast<char>(PLAY_SPECIFIC_MUSIC));
+    payload.append(static_cast<char>(currentMusicIndex));
+    sendCommandFrame(payload);
     ui->SwitchBtn->setIcon(QIcon(":/image/暂停.png"));
     is_playing = 1;
 }
 void MainWindow::on_ProgressSlider_sliderReleased()
 {
-    if(tcpSocket->state() != QTcpSocket::ConnectedState) {connect_error();}
+    if(tcpSocket->state() != QTcpSocket::ConnectedState) {connect_error();return;}
     int value = ui->ProgressSlider->value();
-    QByteArray cmdData;
-    cmdData.append(PROGRESS_MUSIC);
-    cmdData.append(static_cast<char>(value));
-    tcpSocket->write(cmdData);
+    QByteArray payload;
+    payload.append(static_cast<char>(PROGRESS_MUSIC));
+    payload.append(static_cast<char>(value));
+    sendCommandFrame(payload);
 }
 void MainWindow::on_MusicModeBtn_released()
 {
     if(tcpSocket->state() != QTcpSocket::ConnectedState) {connect_error(); return;}
     quint8 cmd = MUSIC_MODE_SWITCH;
-    tcpSocket->write((char*)&cmd, 1);
+    sendCommandFrame(QByteArray(1, static_cast<char>(cmd)));
     if(music_mode == 0)
     {
         ui->MusicModeBtn->setText("单曲循环");
@@ -605,7 +690,7 @@ void MainWindow::updateMusicHighlight()
 }
 void MainWindow::musicUpdata(QJsonObject musicObj)
 {
-    bool playing = musicObj["is_playing"].toBool();
+    bool playing = musicObj["music_is_playing"].toBool();
     if (playing)
     {
         ui->SwitchBtn->setIcon(QIcon(":/image/暂停.png"));
@@ -655,13 +740,14 @@ void MainWindow::musicUpdata(QJsonObject musicObj)
 /*************传感器的函数************/
 void MainWindow::sensorUpdata(QJsonObject sensorObj)
 {
-    int temp = sensorObj["temp"].toInt();
-    int humi = sensorObj["humi"].toInt();
+    float temp = sensorObj["temp"].toDouble();
+    float humi = sensorObj["humi"].toDouble();
     int encoderLeft = sensorObj["encoder_left_cnt"].toInt();
     int encoderRight = sensorObj["encoder_right_cnt"].toInt();
     int piAdc = sensorObj["pi_bat_voltage"].toInt();
     int motorAdc = sensorObj["motor_bat_voltage"].toInt();
     float yaw = static_cast<float>(sensorObj["yaw"].toDouble());
+    int mode = sensorObj["mode"].toInt();
 
     addEncoderData(encoderLeft, encoderRight, yaw);  // 传入 yaw
     Sensor_Fault(temp, humi, encoderLeft, encoderRight, piAdc, motorAdc);
@@ -674,13 +760,13 @@ void MainWindow::sensorUpdata(QJsonObject sensorObj)
     float piVol_mV = (static_cast<float>(piAdc) / 4096.0f) * 3.3f * (133.0f/33.0f) * 1000.0f + 100;
     float motorVol_mV = (static_cast<float>(motorAdc) / 4096.0f) * 3.3f * (133.0f/33.0f) * 1000.0f + 100;
 
-    double piBatPercent = (piVol_mV - VOL_BAT_EMPTY) / (double)(VOL_BAT_FULL - VOL_BAT_EMPTY) * 100.0;
-    piBatPercent = qBound(0.0, piBatPercent, 100.0);
-    double motorBatPercent = (motorVol_mV - VOL_BAT_EMPTY) / (double)(VOL_BAT_FULL - VOL_BAT_EMPTY) * 100.0;
-    motorBatPercent = qBound(0.0, motorBatPercent, 100.0);
+    float piBatPercent = (piVol_mV - VOL_BAT_EMPTY) / (float)(VOL_BAT_FULL - VOL_BAT_EMPTY) * 100.0f;
+    piBatPercent = qBound(0.0f, piBatPercent, 100.0f);
+    float motorBatPercent = (motorVol_mV - VOL_BAT_EMPTY) / (float)(VOL_BAT_FULL - VOL_BAT_EMPTY) * 100.0f;
+    motorBatPercent = qBound(0.0f, motorBatPercent, 100.0f);
 
-    // 一阶低通滤波
-    filteredPiBatPercent = filterAlpha * piBatPercent + (1.0f - filterAlpha) * filteredPiBatPercent;
+    // 一阶低通滤波，抑制电量读数跳动
+    filteredPiBatPercent    = filterAlpha * piBatPercent    + (1.0f - filterAlpha) * filteredPiBatPercent;
     filteredMotorBatPercent = filterAlpha * motorBatPercent + (1.0f - filterAlpha) * filteredMotorBatPercent;
 
     ui->TempLabel->setText(QString("温度：%1℃").arg(temp));
@@ -688,6 +774,29 @@ void MainWindow::sensorUpdata(QJsonObject sensorObj)
     ui->SpeedLabel->setText(QString("车速：%1 mm/s").arg(speed, 0, 'f', 1));
     ui->piBatLabel->setText(QString("树莓派电池电量：%1%").arg(filteredPiBatPercent, 0, 'f', 1));
     ui->MotorBatLabel->setText(QString("电机电池电量：%1%").arg(filteredMotorBatPercent, 0, 'f', 1));
+
+    QString modeText;
+    switch (mode)
+    {
+        case AUTOMATIC:
+            modeText = "当前模式：自主避障";
+            car_mode = AUTOMATIC;
+            ui->Line_Follow_Button->setText("开启");
+            break;
+        case MANUAL:
+            modeText = "当前模式：手动操控";
+            car_mode = MANUAL;
+            ui->Line_Follow_Button->setText("开启");
+            break;
+        case LINE_FOLLOW:
+            modeText = "当前模式：红外循迹";
+            car_mode = LINE_FOLLOW;
+            ui->Line_Follow_Button->setText("关闭");
+            break;
+        default:
+            return;
+    }
+    ui->CarModeLabel->setText(modeText);
 }
 /*************传感器的函数************/
 
@@ -702,26 +811,22 @@ void MainWindow::on_UpdataParameterBtn_clicked()
     }
 
     // 1. 从Label中读取当前参数值（作为默认值）
-    float currentKp = 0.0f, currentKi = 0.0f;
-    int32_t currentILim = 0, currentPWMLim = 0;
+    float currentKp = 0.0f, currentYawKp = 0.0f;
+    int32_t currentPWMLim = 0;
     bool ok;
 
     // 解析 KpLabel 文本，格式如 "KP : 0.01"
     QString kpText = ui->KpLabel->text().remove("KP : ");
     currentKp = kpText.toFloat(&ok);
-    if (!ok) currentKp = 0.01f;
+    if (!ok) currentKp = 0.0f;
 
-    QString kiText = ui->KiLabel->text().remove("KI : ");
-    currentKi = kiText.toFloat(&ok);
-    if (!ok) currentKi = 0.001f;
-
-    QString ilimText = ui->IlimLabel->text().remove("I_lim : ");
-    currentILim = ilimText.toInt(&ok);
-    if (!ok) currentILim = 1000;
+    QString yawkpText = ui->YawKpLabel->text().remove("YAW_KP : ");
+    currentYawKp = yawkpText.toFloat(&ok);
+    if (!ok) currentYawKp = 0.0f;
 
     QString pwmText = ui->PWMlimLabel->text().remove("PWM_lim : ");
     currentPWMLim = pwmText.toInt(&ok);
-    if (!ok) currentPWMLim = 4320;
+    if (!ok) currentPWMLim = 0;
 
     // 2. 处理Kp输入（float类型）
     if (!ui->KpLineEdit->text().isEmpty()) {
@@ -736,41 +841,20 @@ void MainWindow::on_UpdataParameterBtn_clicked()
         }
     }
 
-    // 3. 处理Ki输入（float类型）
-    if (!ui->KiLineEdit->text().isEmpty()) {
-        QString kiInput = ui->KiLineEdit->text();
+    // 3. 处理YawKp输入（float类型）
+    if (!ui->YawKpLineEdit->text().isEmpty()) {
+        QString yawkpInput = ui->YawKpLineEdit->text();
         bool isFloat = false;
-        float tempValue = kiInput.toFloat(&isFloat);
+        float tempValue = yawkpInput.toFloat(&isFloat);
         if (isFloat) {
-            currentKi = tempValue;
+            currentYawKp = tempValue;
         } else {
-            QMessageBox::warning(this, "提示", "Ki格式错误，请输入有效的数字（如：0.1 或 2）");
+            QMessageBox::warning(this, "提示", "YawKp格式错误，请输入有效的数字（如：0.1 或 2）");
             return;
         }
     }
 
-    // 4. 处理I_Lim输入（int32_t类型）
-    if (!ui->IlimLineEdit->text().isEmpty()) {
-        QString ilimInput = ui->IlimLineEdit->text();
-        bool isInt = false;
-        int tempValue = ilimInput.toInt(&isInt);
-        if (isInt) {
-            currentILim = static_cast<int32_t>(tempValue);
-        } else {
-            // 尝试转换为浮点数再取整
-            bool isFloat = false;
-            float floatValue = ilimInput.toFloat(&isFloat);
-            if (isFloat) {
-                currentILim = static_cast<int32_t>(floatValue);
-                QMessageBox::information(this, "提示", QString("I_Lim已从浮点数转换为整数：%1").arg(currentILim));
-            } else {
-                QMessageBox::warning(this, "提示", "I_Lim格式错误，请输入有效的整数（如：800）");
-                return;
-            }
-        }
-    }
-
-    // 5. 处理PWM_Lim输入（int32_t类型）
+    // 4. 处理PWM_Lim输入（int32_t类型）
     if (!ui->PWMlimLineEdit->text().isEmpty()) {
         QString pwmInput = ui->PWMlimLineEdit->text();
         bool isInt = false;
@@ -791,17 +875,13 @@ void MainWindow::on_UpdataParameterBtn_clicked()
         }
     }
 
-    // 6. 可选：添加数值范围检查
+    // 5. 可选：添加数值范围检查
     if (currentKp < 0) {
         QMessageBox::warning(this, "提示", "Kp不能为负数");
         return;
     }
-    if (currentKi < 0) {
-        QMessageBox::warning(this, "提示", "Ki不能为负数");
-        return;
-    }
-    if (currentILim < 0) {
-        QMessageBox::warning(this, "提示", "I_Lim不能为负数");
+    if (currentYawKp < 0) {
+        QMessageBox::warning(this, "提示", "YawKp不能为负数");
         return;
     }
     if (currentPWMLim < 0) {
@@ -809,27 +889,24 @@ void MainWindow::on_UpdataParameterBtn_clicked()
         return;
     }
 
-    // 7. 打包发送
+    // 6. 打包发送
     PIDParams params;
     params.cmd = PID_PARAMETER;
     params.Kp = currentKp;
-    params.Ki = currentKi;
-    params.I_Lim = currentILim;
+    params.Yaw_Kp = currentYawKp;
     params.PWM_Lim = currentPWMLim;
 
-    QByteArray cmdData((char*)&params, sizeof(PIDParams));
-    tcpSocket->write(cmdData);
+    QByteArray payload(reinterpret_cast<const char*>(&params), sizeof(PIDParams));
+    sendCommandFrame(payload);
 
-    // 8. 更新Label显示新值
-    ui->KpLabel->setText(QString("KP : %1").arg(params.Kp, 0, 'f', 1));  // 保留3位小数
-    ui->KiLabel->setText(QString("KI : %1").arg(params.Ki, 0, 'f', 1));  // 保留3位小数
-    ui->IlimLabel->setText(QString("I_lim : %1").arg(params.I_Lim));
+    // 7. 更新Label显示新值
+    ui->KpLabel->setText(QString("KP : %1").arg(params.Kp, 0, 'f', 1));
+    ui->YawKpLabel->setText(QString("Yaw_Kp : %1").arg(params.Yaw_Kp, 0, 'f', 1));
     ui->PWMlimLabel->setText(QString("PWM_lim : %1").arg(params.PWM_Lim));
 
-    // 9. 清空输入框（可选）
+    // 8. 清空输入框（可选）
     ui->KpLineEdit->clear();
-    ui->KiLineEdit->clear();
-    ui->IlimLineEdit->clear();
+    ui->YawKpLineEdit->clear();
     ui->PWMlimLineEdit->clear();
 
     QMessageBox::information(this, "提示", "参数已发送并更新");
@@ -895,59 +972,81 @@ void MainWindow::on_DataClearBtn_clicked()
 
 
 /*************实时画面的函数************/
+// 说明：摄像头 socket、帧拆包、CRC 校验、JPEG 落盘都在 CameraWorker（工作线程）中完成，
+//       主线程只负责显示、保存照片和录像调度，UI 不会被视频流阻塞。
 void MainWindow::on_captureBtn_clicked()
 {
-    if (!cameraOn || lastFrameImage.isNull()) {
-        camera_connect_error();
+    if (!cameraOn) {
+        QMessageBox::warning(this, "提示", "请先开启摄像头");
         return;
     }
-
     if (photoSaveDir.isEmpty()) {
         QMessageBox::warning(this, "提示", "请先选择照片保存目录");
         return;
     }
+    if (lastFrameImage.isNull()) {
+        QMessageBox::warning(this, "提示", "还没有收到摄像头画面");
+        return;
+    }
 
-    QPixmap pixmap = ui->videoLabel->pixmap(Qt::ReturnByValue);
-    if (pixmap.isNull()) {
-        QMessageBox::warning(this, "提示", "没有可用的图像");
+    QDir dir(photoSaveDir);
+    if (!dir.exists() && !dir.mkpath(".")) {
+        QMessageBox::warning(this, "提示", "无法创建目录：" + photoSaveDir);
         return;
     }
 
     QString timestamp = QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss_zzz");
     QString fileName = QString("%1/photo_%2.jpg").arg(photoSaveDir).arg(timestamp);
 
-    if (pixmap.save(fileName, "JPEG", 90)) {
+    // 保存原始分辨率、已镜像的图像
+    if (lastFrameImage.save(fileName, "JPEG", 95)) {
         QMessageBox::information(this, "提示", "照片已保存至：\n" + fileName);
     } else {
-        QMessageBox::warning(this, "提示", "保存失败，请检查目录权限");
+        QMessageBox::warning(this, "提示", "保存失败，请检查目录权限或存储空间");
     }
 }
+
 void MainWindow::on_recordBtn_clicked()
 {
-    if (!cameraOn) { camera_connect_error(); return; }
+    if (!cameraOn) {
+        QMessageBox::warning(this, "提示", "请先开启摄像头");
+        return;
+    }
 
-    if (!isRecording) {
+    if (!isRecording)
+    {
+        /* ---------- 开始录像 ---------- */
         if (videoSaveDir.isEmpty()) {
             QMessageBox::warning(this, "提示", "请先选择视频保存目录");
             return;
         }
         QDir dir(videoSaveDir);
         if (!dir.exists() && !dir.mkpath(".")) {
-            QMessageBox::warning(this, "提示", "无法创建目录：" + videoSaveDir);
+            QMessageBox::warning(this, "提示", "无法创建目录：" + videoSaveDir + "\n请检查存储权限");
             return;
         }
-        QString timestamp = QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss");
-        QString path = QString("%1/rec_%2.mp4").arg(videoSaveDir).arg(timestamp);
 
+        QString timestamp = QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss");
+        currentVideoPath = QString("%1/rec_%2.mp4").arg(videoSaveDir).arg(timestamp);
+
+        recordingPendingStart = true;
         isRecording = true;
-        emit requestStartRecording(path);       // 交给 worker
+        emit requestStartRecording(currentVideoPath);   // 交给工作线程，收到第一帧后建文件
+
         ui->recordBtn->setText("停止录像");
-    } else {
-        emit requestStopRecording();
+        QMessageBox::information(this, "提示", "开始录像，文件将保存在：\n" + currentVideoPath);
+    }
+    else
+    {
+        /* ---------- 停止录像 ---------- */
+        emit requestStopRecording();                    // 由工作线程关闭并写完 moov
         isRecording = false;
+        recordingPendingStart = false;
         ui->recordBtn->setText("开始录像");
+        QMessageBox::information(this, "提示", "录像已停止");
     }
 }
+
 void MainWindow::on_selectPhotoDirBtn_clicked()
 {
     QString dir = QFileDialog::getExistingDirectory(this, "选择照片保存目录", photoSaveDir);
@@ -957,6 +1056,7 @@ void MainWindow::on_selectPhotoDirBtn_clicked()
         QMessageBox::information(this, "提示", "照片保存目录已设置为：" + dir);
     }
 }
+
 void MainWindow::on_selectVideoDirBtn_clicked()
 {
     QString dir = QFileDialog::getExistingDirectory(this, "选择视频保存目录", videoSaveDir);
@@ -966,85 +1066,155 @@ void MainWindow::on_selectVideoDirBtn_clicked()
         QMessageBox::information(this, "提示", "视频保存目录已设置为：" + dir);
     }
 }
+
 void MainWindow::on_cameraSwitchBtn_clicked()
 {
+    ui->cameraSwitchBtn->setEnabled(false);
+
     if (tcpSocket->state() != QTcpSocket::ConnectedState) {
         connect_error();
+        ui->cameraSwitchBtn->setEnabled(true);
         return;
     }
+    ui->cameraSwitchBtn->setEnabled(true);
 
-    if (!cameraOn) {
-        // 通知树莓派打开摄像头
+    if (!cameraOn)
+    {
+        /* ---------- 开启摄像头 ---------- */
+        cameraConnected = false;
+
+        // ① 通知树莓派打开摄像头（car.py 收到 0x12 后 camera_enabled.set() 并开始监听 8889）
         quint8 cmd = CAMERA_ON;
-        tcpSocket->write((char*)&cmd, 1);        // ★ 改成这样
+        sendCommandFrame(QByteArray(1, static_cast<char>(cmd)));
 
-        // 延迟 200ms 再连（等树莓派摄像头线程起来）
-        QTimer::singleShot(200, this, [this]() {
-            emit requestStartCamera(RASPI_IP, 8889);
-        });
+        // ② 让工作线程延迟 200ms 再连接，给树莓派的摄像头线程留出初始化时间
+        emit requestStartCamera(RASPI_IP, CAMERA_PORT);
 
         ui->cameraSwitchBtn->setText("关闭摄像头");
         cameraOn = true;
-    } else {
+    }
+    else
+    {
+        /* ---------- 关闭摄像头 ---------- */
         quint8 cmd = CAMERA_OFF;
-        tcpSocket->write((char*)&cmd, 1);        // ★ 改成这样
+        sendCommandFrame(QByteArray(1, static_cast<char>(cmd)));
+
         emit requestStopCamera();
-        ui->cameraSwitchBtn->setText("开启摄像头");
+
+        if (isRecording) {                     // 关摄像头前先收尾录像，避免 mdat 没写完
+            isRecording = false;
+            recordingPendingStart = false;
+            ui->recordBtn->setText("开始录像");
+        }
+
+        cameraConnected = false;
         cameraOn = false;
+        ui->cameraSwitchBtn->setText("开启摄像头");
         ui->videoLabel->clear();
         lastFrameImage = QImage();
     }
 }
-void MainWindow::onFrameReady(const QImage &img)
-{
-    lastFrameImage = img;   // 拍照用
 
-    // 只有当前在摄像头页面才刷新，省 CPU
-    if (ui->stackedWidget->currentWidget() == ui->CameraPage) {
-        ui->videoLabel->setPixmap(
-            QPixmap::fromImage(img).scaled(ui->videoLabel->size(),
-                                           Qt::KeepAspectRatio,
-                                           Qt::FastTransformation));
+// 工作线程每收到一帧就发一次（原始 JPEG + 采集时间戳）
+void MainWindow::on_videoFrame(const QByteArray &jpegData, quint64 ts_us)
+{
+    QImage img;
+    if (!img.loadFromData(jpegData, "JPEG")) {
+        qDebug() << "JPEG 解码失败，帧大小:" << jpegData.size();
+        return;
     }
-}
-void MainWindow::onCameraConnected()
-{
-    qDebug() << "✅ 摄像头连接成功";
+    QImage rotated = img.mirrored(true, true);
+    lastFrameImage   = rotated;      // 拍照与录像尺寸检查用
+    lastFrameTimeUs  = ts_us;
+
+    if (ui->stackedWidget->currentWidget() != ui->CameraPage) return;   // 没在实时画面页就不刷 UI
+
+    ui->videoLabel->setPixmap(QPixmap::fromImage(rotated).scaled(
+        ui->videoLabel->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
 }
 
-void MainWindow::onCameraError(const QString &msg)
+void MainWindow::on_cameraConnected()
 {
-    QMessageBox::warning(this, "提示", "摄像头错误：" + msg);
+    qDebug() << "✅ 摄像头TCP连接成功";
+    cameraConnected = true;
+}
+
+void MainWindow::on_cameraError(const QString &msg)
+{
+    qDebug() << "❌ 摄像头连接错误:" << msg;
 
     QDateTime current = QDateTime::currentDateTime();
-    QString ts = current.toString("yyyy-MM-dd hh:mm:ss.zzz");
+    QString timestamp = current.toString("yyyy-MM-dd hh:mm:ss.zzz");
     int row = ui->FaultTableWidget->rowCount();
     ui->FaultTableWidget->insertRow(row);
-    ui->FaultTableWidget->setItem(row, 0, new QTableWidgetItem(ts));
+    ui->FaultTableWidget->setItem(row, 0, new QTableWidgetItem(timestamp));
     ui->FaultTableWidget->setItem(row, 1, new QTableWidgetItem("摄像头TCP连接错误"));
 
-    ui->cameraSwitchBtn->setText("开启摄像头");
-    cameraOn = false;
+    if (cameraOn) {
+        QMessageBox::warning(this, "提示", "摄像头连接失败：" + msg);
+        cameraOn = false;
+        cameraConnected = false;
+        ui->cameraSwitchBtn->setText("开启摄像头");
+        ui->videoLabel->clear();
+    }
 }
 
-void MainWindow::onRecordingStarted(const QString &path)
+void MainWindow::on_recordingStarted(const QString &path)
 {
-    QMessageBox::information(this, "提示", "开始录像，文件：\n" + path);
+    recordingPendingStart = false;
+    qDebug() << "🎥 录像中：" << path;
 }
 
-void MainWindow::onRecordingFailed(const QString &msg)
+void MainWindow::on_recordingFailed(const QString &msg)
 {
-    QMessageBox::warning(this, "提示", "录像启动失败：" + msg);
     isRecording = false;
+    recordingPendingStart = false;
+    ui->recordBtn->setText("开始录像");
+    QMessageBox::warning(this, "提示", "录像失败：" + msg);
+}
+
+void MainWindow::on_recordingStopped()
+{
+    isRecording = false;
+    recordingPendingStart = false;
     ui->recordBtn->setText("开始录像");
 }
 /*************实时画面的函数************/
 
 
-/*************故障诊断的函数************/
-void MainWindow::Sensor_Fault(int temp, int humi, int encoderLeft, int encoderRight, int piAdc, int motorAdc)
+/*************数据包协议工具函数************/
+quint8 MainWindow::crc8Update(quint8 crc, const QByteArray &data)   //CRC8: poly=0x07, init=0x00（与 car.py 的 crc8_update 一致）
 {
-    if(temp > 50 || temp < -10 || (temp == 0 && humi == 0))
+    for (char ch : data) {
+        crc ^= static_cast<quint8>(ch);
+        for (int i = 0; i < 8; ++i) {
+            if (crc & 0x80)
+                crc = static_cast<quint8>((crc << 1) ^ 0x07);
+            else
+                crc = static_cast<quint8>(crc << 1);
+        }
+    }
+    return crc;
+}
+
+int MainWindow::findFrameHeader(const QByteArray &buf)              //寻找帧头（AA 55）在缓存区中的位置
+{
+    const int n = buf.size();
+    for (int i = 0; i + 1 < n; ++i) {
+        if (static_cast<quint8>(buf[i])     == 0xAA &&
+            static_cast<quint8>(buf[i + 1]) == 0x55) {
+            return i;
+        }
+    }
+    return -1;
+}
+/*************数据包协议工具函数************/
+
+
+/*************故障诊断的函数************/
+void MainWindow::Sensor_Fault(float temp, float humi, int encoderLeft, int encoderRight, int piAdc, int motorAdc)
+{
+    if(temp > 80.0f || temp < -40.0f || (temp == 0.0f && humi == 0.0f))
     {
         QDateTime current = QDateTime::currentDateTime();
         QString timestamp = current.toString("yyyy-MM-dd hh:mm:ss.zzz");
@@ -1054,7 +1224,7 @@ void MainWindow::Sensor_Fault(int temp, int humi, int encoderLeft, int encoderRi
         ui->FaultTableWidget->setItem(row, 1, new QTableWidgetItem("温度异常"));
     }
 
-    if(humi > 95 || humi < 25 || (temp == 0 && humi == 0))
+    if(humi > 100.0f || humi < 0.0f || (temp == 0.0f && humi == 0.0f))
     {
         QDateTime current = QDateTime::currentDateTime();
         QString timestamp = current.toString("yyyy-MM-dd hh:mm:ss.zzz");
@@ -1109,49 +1279,64 @@ void MainWindow::Sensor_Fault(int temp, int humi, int encoderLeft, int encoderRi
 /*************轨迹行走的函数************/
 void MainWindow::on_Line_Follow_Button_clicked()
 {
-    if(Line_Follow_Mode == 0)
+    ui->Line_Follow_Button->setEnabled(false);
+    if(tcpSocket->state() != QTcpSocket::ConnectedState)
     {
-        if(tcpSocket->state() != QTcpSocket::ConnectedState) {connect_error();}
-        quint8 cmd = LINE_FOLLOW_MODE_SWITCH;
-        tcpSocket->write((char*)&cmd, 1);
-        ui->Line_Follow_Button->setText("关闭");
-        Line_Follow_Mode = 1;
+        connect_error();
+        ui->Line_Follow_Button->setEnabled(true);
+        return;
     }
-    else
-    {
-        if(tcpSocket->state() != QTcpSocket::ConnectedState) {connect_error();}
-        quint8 cmd = LINE_FOLLOW_MODE_SWITCH;
-        tcpSocket->write((char*)&cmd, 1);
+    ui->Line_Follow_Button->setEnabled(true);
+
+    if (car_mode == LINE_FOLLOW) {
+        // 从循迹切到手动
+        car_mode = MANUAL;
+        ui->CarModeLabel->setText("当前模式：手动操控");
         ui->Line_Follow_Button->setText("开启");
-        Line_Follow_Mode = 0;
+    } else {
+        // 从手动/避障切到循迹
+        car_mode = LINE_FOLLOW;
+        ui->CarModeLabel->setText("当前模式：红外循迹");
+        ui->Line_Follow_Button->setText("关闭");
     }
+
+    quint8 cmd = LINE_FOLLOW_MODE_SWITCH;
+    sendCommandFrame(QByteArray(1, static_cast<char>(cmd)));
 }
 void MainWindow::on_Trajectory_Z_Button_clicked()
 {
-    if(tcpSocket->state() != QTcpSocket::ConnectedState) {connect_error();}
+    if(tcpSocket->state() != QTcpSocket::ConnectedState) {connect_error();return;}
     quint8 cmd = TRAJECTORY_Z;
-    tcpSocket->write((char*)&cmd, 1);
+    sendCommandFrame(QByteArray(1, static_cast<char>(cmd)));
 }
 void MainWindow::on_Trajectory_J_Button_clicked()
 {
-    if(tcpSocket->state() != QTcpSocket::ConnectedState) {connect_error();}
+    if(tcpSocket->state() != QTcpSocket::ConnectedState) {connect_error();return;}
     quint8 cmd = TRAJECTORY_J;
-    tcpSocket->write((char*)&cmd, 1);
+    sendCommandFrame(QByteArray(1, static_cast<char>(cmd)));
 }
 void MainWindow::on_Trajectory_U_Button_clicked()
 {
-    if(tcpSocket->state() != QTcpSocket::ConnectedState) {connect_error();}
+    if(tcpSocket->state() != QTcpSocket::ConnectedState) {connect_error();return;}
     quint8 cmd = TRAJECTORY_U;
-    tcpSocket->write((char*)&cmd, 1);
+    sendCommandFrame(QByteArray(1, static_cast<char>(cmd)));
 }
 /*************轨迹行走的函数************/
 
 /*************语音识别的函数************/
 void MainWindow::on_VoiceInteractionSwitchBtn_clicked()
 {
-    if(tcpSocket->state() != QTcpSocket::ConnectedState) {connect_error();}
+    ui->VoiceInteractionSwitchBtn->setEnabled(false);
+    if(tcpSocket->state() != QTcpSocket::ConnectedState)
+    {
+        connect_error();
+        ui->VoiceInteractionSwitchBtn->setEnabled(true);
+        return;
+    }
+    ui->VoiceInteractionSwitchBtn->setEnabled(true);
+
     quint8 cmd = VOICE_INTERACTION_SWITCH;
-    tcpSocket->write((char*)&cmd, 1);
+    sendCommandFrame(QByteArray(1, static_cast<char>(cmd)));
 
     if(VoiceInteractionOn == false)
     {
@@ -1164,25 +1349,15 @@ void MainWindow::on_VoiceInteractionSwitchBtn_clicked()
         VoiceInteractionOn = false;
     }
 }
+void MainWindow::appendVoiceResult(const QString &text, double timestamp)
+{
+    QDateTime time = QDateTime::fromSecsSinceEpoch(static_cast<qint64>(timestamp));
+    QString timeStr = time.toString("hh:mm:ss");
+    QString line = QString("[%1] 识别结果：%2").arg(timeStr, text);
+
+    ui->voiceResultTextEdit->appendPlainText(line);   // 自动换行追加
+    // 移动光标到底部，保证滚动条自动跟随
+    ui->voiceResultTextEdit->moveCursor(QTextCursor::End);
+    ui->voiceResultTextEdit->ensureCursorVisible();
+}
 /*************语音识别的函数************/
-
-void MainWindow::on_pushButton1_clicked()
-{
-    if(tcpSocket->state() != QTcpSocket::ConnectedState) {connect_error();}
-    quint8 cmd = 0x31;
-    tcpSocket->write((char*)&cmd, 1);
-}
-
-void MainWindow::on_pushButton2_clicked()
-{
-    if(tcpSocket->state() != QTcpSocket::ConnectedState) {connect_error();}
-    quint8 cmd = 0x32;
-    tcpSocket->write((char*)&cmd, 1);
-}
-
-void MainWindow::on_pushButton3_clicked()
-{
-    if(tcpSocket->state() != QTcpSocket::ConnectedState) {connect_error();}
-    quint8 cmd = 0x33;
-    tcpSocket->write((char*)&cmd, 1);
-}

@@ -17,8 +17,8 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
-        cameraworker.h
         cameraworker.cpp
+        cameraworker.h
         mp4writer.cpp
         mp4writer.h
 )
@@ -39,8 +39,7 @@ if(ANDROID)
 endif()
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-
-qt_add_executable(home
+    qt_add_executable(home
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
         source.qrc
@@ -112,4 +111,8 @@ install(TARGETS home
 
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(home)
+endif()
+
+if(ANDROID)
+    set(QT_ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
 endif()

@@ -1,0 +1,166 @@
+{
+    "classes": [
+        {
+            "className": "CameraWorker",
+            "lineNumber": 10,
+            "object": true,
+            "qualifiedClassName": "CameraWorker",
+            "signals": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "image",
+                            "type": "QImage"
+                        }
+                    ],
+                    "index": 0,
+                    "lineNumber": 25,
+                    "name": "frameReady",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "index": 1,
+                    "lineNumber": 26,
+                    "name": "connected",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "msg",
+                            "type": "QString"
+                        }
+                    ],
+                    "index": 2,
+                    "lineNumber": 27,
+                    "name": "errorOccurred",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "path",
+                            "type": "QString"
+                        }
+                    ],
+                    "index": 3,
+                    "lineNumber": 28,
+                    "name": "recordingStarted",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "msg",
+                            "type": "QString"
+                        }
+                    ],
+                    "index": 4,
+                    "lineNumber": 29,
+                    "name": "recordingFailed",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "index": 5,
+                    "lineNumber": 30,
+                    "name": "recordingStopped",
+                    "returnType": "void"
+                }
+            ],
+            "slots": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "ip",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "port",
+                            "type": "quint16"
+                        }
+                    ],
+                    "index": 6,
+                    "lineNumber": 19,
+                    "name": "start",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "index": 7,
+                    "lineNumber": 20,
+                    "name": "stop",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "filePath",
+                            "type": "QString"
+                        }
+                    ],
+                    "index": 8,
+                    "lineNumber": 21,
+                    "name": "startRecording",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "index": 9,
+                    "lineNumber": 22,
+                    "name": "stopRecording",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "index": 10,
+                    "lineNumber": 33,
+                    "name": "onReadyRead",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "index": 11,
+                    "lineNumber": 34,
+                    "name": "onConnected",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "err",
+                            "type": "QAbstractSocket::SocketError"
+                        }
+                    ],
+                    "index": 12,
+                    "lineNumber": 35,
+                    "name": "onSocketError",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "index": 13,
+                    "lineNumber": 36,
+                    "name": "onConnectTimeout",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QObject"
+                }
+            ]
+        }
+    ],
+    "inputFile": "cameraworker.h",
+    "outputRevision": 69
+}
