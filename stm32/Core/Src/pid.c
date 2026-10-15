@@ -11,7 +11,6 @@
 // 内环（编码器速度差环）
 volatile float Kp = 90.0f;
 volatile uint16_t PWM_Limit = 4320;    // PWM 输出限幅
-float DIFF_LIMIT = 1200.0f;   // 内环目标差速限幅（脉冲/周期）
 
 // 外环（航向角环）
 volatile float YAW_KP = 2.0f;          // 航向 P
@@ -22,7 +21,6 @@ volatile int16_t encoder_left = 0, encoder_right = 0;
 volatile int32_t total_encoder_left = 0;
 volatile int32_t total_encoder_right = 0;
 
-uint32_t last_pid_time = 0;
 int16_t last_left = 0, last_right = 0;
 
 /* ---------- 内环状态 ---------- */
@@ -32,17 +30,16 @@ int16_t pid_base_pwm = 0;
 
 /* ---------- 外环状态 ---------- */
 float yaw_target_diff = 0.0f;    			// 记录外环输出，用于传感器读取失败、数据异常时沿用上一次外环输出
-static float start_yaw = 0.0f;
-static uint8_t yaw_initialized = 0;
 static uint32_t last_yaw_time = 0;
-
-static uint8_t debug_cnt = 0;
 
 static float yaw_target_angle = 0.0f;		//航向角度
 static uint8_t yaw_target_set = 0;			//标志位，表示当前是否设置过航向角度。0表示没有设定过，1表示设定过
 
 //调试
 float g_last_yaw = 0;
+
+static uint32_t last_pid_tick = 0;
+#define PID_PERIOD_MS 20
 /* ==================== 基础函数 ==================== */
 
 void PI_Param_Clear(void)
@@ -56,37 +53,32 @@ void PI_Param_Clear(void)
 	
 	last_left = 0;
     last_right = 0;
-    last_pid_time = HAL_GetTick();
+    last_pid_tick = HAL_GetTick() - PID_PERIOD_MS;
+	
+	__HAL_TIM_SET_COUNTER(&htim2, 0);
+	__HAL_TIM_SET_COUNTER(&htim4, 0);
 }
 
-//如果距离上次读取编码器超过20ms，调用后才会读取编码器，如果编码器读数异常大，将保留上次读取的数据
+//读取编码器，如果编码器读数异常大，将保留上次读取的数据
 void Read_Encoder(void)
 {
-    uint32_t current_time = HAL_GetTick();
-    uint32_t time_diff = current_time - last_pid_time;
+	int16_t left  = __HAL_TIM_GET_COUNTER(&htim4);
+	int16_t right = __HAL_TIM_GET_COUNTER(&htim2);
 
-    if (time_diff >= 20)
-    {
-        int16_t left  = __HAL_TIM_GET_COUNTER(&htim4);
-        int16_t right = __HAL_TIM_GET_COUNTER(&htim2);
+	// 软滤波：异常跳变
+	if (abs((int)left  - last_left)  > 200) left  = last_left;
+	if (abs((int)right - last_right) > 200) right = last_right;
+	last_left  = left;
+	last_right = right;
 
-        // 软滤波：异常跳变
-        if (abs((int)left  - last_left)  > 200) left  = last_left;
-        if (abs((int)right - last_right) > 200) right = last_right;
-        last_left  = left;
-        last_right = right;
+	encoder_left  = left;
+	encoder_right = right;
 
-        encoder_left  = left;
-        encoder_right = right;
+	total_encoder_left  += left;
+	total_encoder_right += right;
 
-        total_encoder_left  += left;
-        total_encoder_right += right;
-
-        __HAL_TIM_SET_COUNTER(&htim2, 0);
-        __HAL_TIM_SET_COUNTER(&htim4, 0);
-
-        last_pid_time = current_time;
-    }
+	__HAL_TIM_SET_COUNTER(&htim2, 0);
+	__HAL_TIM_SET_COUNTER(&htim4, 0);
 }
 
 /* ==================== 外环：航向角环 ==================== */
@@ -100,16 +92,12 @@ float Yaw_Loop_Update()
 	uint16_t pwm_lim_local;
 
 	__disable_irq();
-	kp_local     = Kp;
 	yawkp_local  = YAW_KP;
-	pwm_lim_local = PWM_Limit;
 	__enable_irq();
 		
     float pitch, roll, current_yaw;
 
     uint32_t now = HAL_GetTick();
-    if (now - last_yaw_time < 20) return yaw_target_diff;	//如果距离上次计算外环还没过20ms，就用上次的外环输出（传感器读取频率有限，没必要太快）
-    last_yaw_time = now;
 
     if (mpu_dmp_get_data(&pitch, &roll, &current_yaw) != 0)		//读取失败，返回上次的外环输出
         return yaw_target_diff;
@@ -146,20 +134,17 @@ float Speed_Loop_Update(float target_diff)
 
 	__disable_irq();
 	kp_local     = Kp;
-	yawkp_local  = YAW_KP;
 	pwm_lim_local = PWM_Limit;
 	__enable_irq();
 	
-    Read_Encoder();
-
     float actual_diff = (float)(encoder_right - encoder_left);
     pid_error = target_diff - actual_diff;   // 内环误差
 
     pid_output = pid_error * kp_local;
 
     // 输出限幅
-    if (pid_output >  pwm_lim_local) pid_output =  PWM_Limit;
-    if (pid_output < -pwm_lim_local) pid_output = -PWM_Limit;
+    if (pid_output >  pwm_lim_local) pid_output =  pwm_lim_local;
+    if (pid_output < -pwm_lim_local) pid_output = -pwm_lim_local;
 
     return pid_output;
 }
@@ -167,10 +152,15 @@ float Speed_Loop_Update(float target_diff)
 /* ==================== 主控制非阻塞函数 ==================== */
 void PID_Go_Straight(int16_t base_pwm)			//由全局变量yaw_target_angle控制直行方向
 {
+	uint32_t now = HAL_GetTick();
+    if (now - last_pid_tick < PID_PERIOD_MS) return;   // 唯一节流点
+    last_pid_tick = now;
+	
     pid_base_pwm = base_pwm;
 
     /* ---- 外环：航向 → 目标差速 ---- */
-    float target_diff = Yaw_Loop_Update();
+    Read_Encoder();                              
+    float target_diff = Yaw_Loop_Update();       
 
     /* ---- 内环：跟踪目标差速 → PWM 补偿 ---- */
     float compensation = Speed_Loop_Update(target_diff);

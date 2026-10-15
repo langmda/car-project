@@ -1,6 +1,6 @@
 Dependencies for Project 'bizhang', Target 'bizhang': (DO NOT MODIFY !)
 F (startup_stm32f103xb.s)(0x6ACF66A5)(--cpu Cortex-M3 -g --apcs=interwork -I.\RTE\_bizhang-ID:\tool\Keil\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-ID:\tool\Keil\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include--pd "__UVISION_VERSION SETA 524" --pd "_RTE_ SETA 1" --pd "STM32F10X_MD SETA 1"--list startup_stm32f103xb.lst --xref -o bizhang\startup_stm32f103xb.o --depend bizhang\startup_stm32f103xb.d)
-F (..\Core\Src\user.c)(0x6ACF66A3)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ../Core/MPU6050/MyCode-I.\RTE\_bizhang-ID:\tool\Keil\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-ID:\tool\Keil\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_MD -DUSE_HAL_DRIVER -DSTM32F103xB-o bizhang\user.o --omf_browse bizhang\user.crf --depend bizhang\user.d)
+F (..\Core\Src\user.c)(0x6ACF7128)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ../Core/MPU6050/MyCode-I.\RTE\_bizhang-ID:\tool\Keil\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-ID:\tool\Keil\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_MD -DUSE_HAL_DRIVER -DSTM32F103xB-o bizhang\user.o --omf_browse bizhang\user.crf --depend bizhang\user.d)
 I (../Core/Inc/user.h)(0x6ACF66A3)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x6ACF66A4)
 I (../Core/Inc/stm32f1xx_hal_conf.h)(0x6ACF66A3)
@@ -39,7 +39,7 @@ I (../Core/Inc/uart.h)(0x6ACF66A3)
 I (../Core/Inc/usart.h)(0x6ACF66A3)
 I (../Core/Inc/main.h)(0x6ACF66A3)
 I (../Core/Inc/sensor.h)(0x6ACF66A3)
-I (../Core/Inc/pid.h)(0x6ACF66A3)
+I (../Core/Inc/pid.h)(0x6AD0BA04)
 I (D:\tool\Keil\ARM\ARMCC\include\stdio.h)(0x588B8344)
 I (../Core/Inc/trajectory.h)(0x6ACF66A3)
 I (../Core/Inc/infrared.h)(0x6ACF66A3)
@@ -221,7 +221,7 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h)(0x6ACF66A5)
 I (../Core/Inc/usart.h)(0x6ACF66A3)
 I (../Core/Inc/main.h)(0x6ACF66A3)
 I (../Core/Inc/user.h)(0x6ACF66A3)
-I (../Core/Inc/pid.h)(0x6ACF66A3)
+I (../Core/Inc/pid.h)(0x6AD0BA04)
 I (D:\tool\Keil\ARM\ARMCC\include\stdio.h)(0x588B8344)
 I (../Core/Inc/servo.h)(0x6ACF66A3)
 I (../Core/Inc/avoidance.h)(0x6ACF66A3)
@@ -265,11 +265,11 @@ I (../Core/Inc/dht11.h)(0x6ACF66A3)
 I (../Core/Inc/delay.h)(0x6ACF66A3)
 I (../Core/Inc/dht22.h)(0x6ACF66A3)
 I (../Core/Inc/usart.h)(0x6ACF66A3)
-I (../Core/Inc/pid.h)(0x6ACF66A3)
+I (../Core/Inc/pid.h)(0x6AD0BA04)
 I (../Core/Inc/user.h)(0x6ACF66A3)
 I (../Core/MPU6050/MyCode/inv_mpu.h)(0x6ACF66A3)
-F (..\Core\Src\pid.c)(0x6ACF66A3)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ../Core/MPU6050/MyCode-I.\RTE\_bizhang-ID:\tool\Keil\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-ID:\tool\Keil\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_MD -DUSE_HAL_DRIVER -DSTM32F103xB-o bizhang\pid.o --omf_browse bizhang\pid.crf --depend bizhang\pid.d)
-I (../Core/Inc/pid.h)(0x6ACF66A3)
+F (..\Core\Src\pid.c)(0x6AD0BE1F)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ../Core/MPU6050/MyCode-I.\RTE\_bizhang-ID:\tool\Keil\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-ID:\tool\Keil\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_MD -DUSE_HAL_DRIVER -DSTM32F103xB-o bizhang\pid.o --omf_browse bizhang\pid.crf --depend bizhang\pid.d)
+I (../Core/Inc/pid.h)(0x6AD0BA04)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x6ACF66A4)
 I (../Core/Inc/stm32f1xx_hal_conf.h)(0x6ACF66A3)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h)(0x6ACF66A4)
@@ -525,7 +525,7 @@ I (../Core/Inc/usart.h)(0x6ACF66A3)
 I (../Core/Inc/main.h)(0x6ACF66A3)
 I (D:\tool\Keil\ARM\ARMCC\include\stdio.h)(0x588B8344)
 I (D:\tool\Keil\ARM\ARMCC\include\math.h)(0x588B8344)
-I (../Core/Inc/pid.h)(0x6ACF66A3)
+I (../Core/Inc/pid.h)(0x6AD0BA04)
 I (../Core/Inc/tim.h)(0x6ACF66A3)
 F (../Core/Src/main.c)(0x6ACF66A3)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ../Core/MPU6050/MyCode-I.\RTE\_bizhang-ID:\tool\Keil\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-ID:\tool\Keil\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_MD -DUSE_HAL_DRIVER -DSTM32F103xB-o bizhang\main.o --omf_browse bizhang\main.crf --depend bizhang\main.d)
 I (../Core/Inc/main.h)(0x6ACF66A3)
@@ -574,7 +574,7 @@ I (../Core/Inc/sensor.h)(0x6ACF66A3)
 I (../Core/Inc/echo.h)(0x6ACF66A3)
 I (D:\tool\Keil\ARM\ARMCC\include\stdio.h)(0x588B8344)
 I (../Core/Inc/motor.h)(0x6ACF66A3)
-I (../Core/Inc/pid.h)(0x6ACF66A3)
+I (../Core/Inc/pid.h)(0x6AD0BA04)
 I (../Core/MPU6050/MyCode/inv_mpu.h)(0x6ACF66A3)
 I (../Core/Inc/servo.h)(0x6ACF66A3)
 I (../Core/Inc/infrared.h)(0x6ACF66A3)
@@ -881,8 +881,8 @@ I (../Core/Inc/usart.h)(0x6ACF66A3)
 I (D:\tool\Keil\ARM\ARMCC\include\stdio.h)(0x588B8344)
 I (D:\tool\Keil\ARM\ARMCC\include\math.h)(0x588B8344)
 I (D:\tool\Keil\ARM\ARMCC\include\string.h)(0x588B8344)
-F (..\Core\Src\avoidance.c)(0x6ACF6959)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ../Core/MPU6050/MyCode-I.\RTE\_bizhang-ID:\tool\Keil\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-ID:\tool\Keil\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_MD -DUSE_HAL_DRIVER -DSTM32F103xB-o bizhang\avoidance.o --omf_browse bizhang\avoidance.crf --depend bizhang\avoidance.d)
-I (..\Core\Src\avoidance.h)(0x6ACF690F)
+F (..\Core\Src\avoidance.c)(0x6AD0BE1F)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ../Core/MPU6050/MyCode-I.\RTE\_bizhang-ID:\tool\Keil\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-ID:\tool\Keil\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_MD -DUSE_HAL_DRIVER -DSTM32F103xB-o bizhang\avoidance.o --omf_browse bizhang\avoidance.crf --depend bizhang\avoidance.d)
+I (../Core/Inc/avoidance.h)(0x6ACF66A3)
 I (D:\tool\Keil\ARM\ARMCC\include\stdint.h)(0x588B8344)
 I (../Core/Inc/servo.h)(0x6ACF66A3)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x6ACF66A4)
@@ -917,7 +917,7 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h)(0x6ACF66A5)
 I (../Core/Inc/echo.h)(0x6ACF66A3)
 I (../Core/Inc/motor.h)(0x6ACF66A3)
 I (../Core/Inc/trajectory.h)(0x6ACF66A3)
-I (../Core/Inc/pid.h)(0x6ACF66A3)
+I (../Core/Inc/pid.h)(0x6AD0BA04)
 I (../Core/Inc/usart.h)(0x6ACF66A3)
 I (../Core/Inc/main.h)(0x6ACF66A3)
 I (../Core/Inc/delay.h)(0x6ACF66A3)

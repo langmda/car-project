@@ -17,7 +17,6 @@ typedef struct {
 
 void PI_Param_Clear(void);
 void Read_Encoder(void);
-float PID_Calculate(void);
 void PID_Go_Straight(int16_t base_pwm);
 void Debug_Print(const char* format, ...);
 void Print_Debug(void); 
@@ -31,7 +30,6 @@ extern volatile float Kp;
 extern volatile uint16_t PWM_Limit; 
 extern int16_t last_left, last_right;
 extern volatile float YAW_KP;
-extern uint32_t last_pid_time;
 
 void PID_Set_Yaw_Target(float target);
 void PID_Update_Yaw_Target(float target);
