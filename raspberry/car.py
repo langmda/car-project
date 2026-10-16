@@ -1411,7 +1411,8 @@ def camera_server_thread():
 
 #看门狗线程
 def watchdog_thread():
-    global ser
+    global ser, last_serial_activity, last_command_activity
+    global last_tcp_activity, last_music_activity, last_camera_activity
     while not shutdown_event.is_set():
         now = time.time()
 
@@ -1507,8 +1508,6 @@ if __name__ == "__main__":
     camera_ready_event.wait(timeout=5.0)        #等待摄像头线程初始化完成
     audio_source_t = AudioSource(shutdown_event=shutdown_event, debug=True)
     audio_source_t.start()
-    watchdog_t = threading.Thread(target=watchdog_thread, daemon=True)
-    watchdog_t.start()
 
     voice_detector = BaiduVoiceDetector(
         command_queue=command_queue,
@@ -1530,6 +1529,9 @@ if __name__ == "__main__":
     )
     wake_word_thread.start()
 
+    watchdog_t = threading.Thread(target=watchdog_thread, daemon=True)
+    watchdog_t.start()
+    
     try:
         while True:
             time.sleep(1)

@@ -49,15 +49,19 @@ void User_Code()
 				PID_Go_Straight(2000);
 				break;
 			case BACK_OFF:
+				PID_Reset_Yaw_Reference();
 				Set_Motor(-1200,  -1200);
 				break;
 			case TURN_LEFT:
+				PID_Reset_Yaw_Reference();
 				Set_Motor(-800, 800);
 				break;
 			case TURN_RIGHT:
+				PID_Reset_Yaw_Reference();
 				Set_Motor(800, -800);
 				break;
 			case CUSTOMIZATION:
+				PID_Reset_Yaw_Reference();
 				Set_Motor(leftPWM, rightPWM);
 				break;
 			case TRAJECTORY_Z:

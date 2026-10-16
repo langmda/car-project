@@ -1933,6 +1933,8 @@ C:/Users/Administrator/Desktop/project/car/car-project/qt-android/mainwindow.h
  mdp:D:/Android/Android SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/xlocale.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/QByteArray
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/QDateTime
+ mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/QDebug
+ mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/QElapsedTimer
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/QFile
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/QJsonArray
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/QJsonDocument
@@ -1990,11 +1992,15 @@ C:/Users/Administrator/Desktop/project/car/car-project/qt-android/mainwindow.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qdatetime.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qdeadlinetimer.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qdebug.h
+ mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qdir.h
+ mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qdirlisting.h
+ mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qelapsedtimer.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qendian.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qeventloop.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qexceptionhandling.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qfile.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qfiledevice.h
+ mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qfileinfo.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qflags.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qfloat16.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qforeach.h
@@ -2078,6 +2084,7 @@ C:/Users/Administrator/Desktop/project/car/car-project/qt-android/mainwindow.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qtformat_impl.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qthread.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qtimer.h
+ mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qtimezone.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qtmetamacros.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qtnoop.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qtpreprocessorsupport.h
@@ -2132,17 +2139,23 @@ C:/Users/Administrator/Desktop/project/car/car-project/qt-android/mainwindow.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtNetwork/qtnetwork-config.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtNetwork/qtnetworkexports.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtNetwork/qtnetworkglobal.h
+ mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/QFileDialog
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/QListWidgetItem
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/QMainWindow
+ mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/QMessageBox
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qabstractitemdelegate.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qabstractitemview.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qabstractscrollarea.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qabstractslider.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qabstractspinbox.h
+ mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qdialog.h
+ mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qdialogbuttonbox.h
+ mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qfiledialog.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qframe.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qlistview.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qlistwidget.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qmainwindow.h
+ mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qmessagebox.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qrubberband.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qsizepolicy.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qslider.h
@@ -2155,8 +2168,8 @@ C:/Users/Administrator/Desktop/project/car/car-project/qt-android/mainwindow.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qtwidgetsglobal.h
  mdp:D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qwidget.h
 C:/Users/Administrator/Desktop/project/car/car-project/qt-android/mp4writer.h
-C:/Users/Administrator/Desktop/project/car/car-project/qt-android/main.cpp
 C:/Users/Administrator/Desktop/project/car/car-project/qt-android/cameraworker.cpp
+C:/Users/Administrator/Desktop/project/car/car-project/qt-android/main.cpp
 C:/Users/Administrator/Desktop/project/car/car-project/qt-android/mainwindow.cpp
  uic:./ui_mainwindow.h
 C:/Users/Administrator/Desktop/project/car/car-project/qt-android/mp4writer.cpp

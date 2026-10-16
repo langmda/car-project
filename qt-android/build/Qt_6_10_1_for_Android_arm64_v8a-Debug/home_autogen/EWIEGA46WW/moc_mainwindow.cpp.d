@@ -890,6 +890,8 @@ C:/Users/Administrator/Desktop/project/car/car-project/qt-android/build/Qt_6_10_
   D:/Android/Android\ SDK/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/xlocale.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/QByteArray \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/QDateTime \
+  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/QDebug \
+  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/QElapsedTimer \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/QFile \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/QJsonArray \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/QJsonDocument \
@@ -947,11 +949,15 @@ C:/Users/Administrator/Desktop/project/car/car-project/qt-android/build/Qt_6_10_
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qdatetime.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qdeadlinetimer.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qdebug.h \
+  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qdir.h \
+  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qdirlisting.h \
+  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qelapsedtimer.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qendian.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qeventloop.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qexceptionhandling.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qfile.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qfiledevice.h \
+  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qfileinfo.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qflags.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qfloat16.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qforeach.h \
@@ -1035,6 +1041,7 @@ C:/Users/Administrator/Desktop/project/car/car-project/qt-android/build/Qt_6_10_
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qtformat_impl.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qthread.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qtimer.h \
+  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qtimezone.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qtmetamacros.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qtnoop.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtCore/qtpreprocessorsupport.h \
@@ -1089,17 +1096,23 @@ C:/Users/Administrator/Desktop/project/car/car-project/qt-android/build/Qt_6_10_
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtNetwork/qtnetwork-config.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtNetwork/qtnetworkexports.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtNetwork/qtnetworkglobal.h \
+  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/QFileDialog \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/QListWidgetItem \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/QMainWindow \
+  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/QMessageBox \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qabstractitemdelegate.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qabstractitemview.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qabstractscrollarea.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qabstractslider.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qabstractspinbox.h \
+  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qdialog.h \
+  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qdialogbuttonbox.h \
+  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qfiledialog.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qframe.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qlistview.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qlistwidget.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qmainwindow.h \
+  D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qmessagebox.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qrubberband.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qsizepolicy.h \
   D:/tool/Qt/6.10.1/android_arm64_v8a/include/QtWidgets/qslider.h \

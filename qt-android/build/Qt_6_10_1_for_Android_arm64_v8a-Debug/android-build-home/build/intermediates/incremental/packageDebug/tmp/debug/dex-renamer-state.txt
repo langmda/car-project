@@ -1,4 +1,4 @@
-#Wed Oct 14 21:00:11 CST 2026
+#Fri Oct 16 17:14:07 CST 2026
 base.2=C\:\\Users\\Administrator\\Desktop\\project\\car\\car-project\\qt-android\\build\\Qt_6_10_1_for_Android_arm64_v8a-Debug\\android-build-home\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\10\\classes.dex
 path.2=10/classes.dex
 base.1=C\:\\Users\\Administrator\\Desktop\\project\\car\\car-project\\qt-android\\build\\Qt_6_10_1_for_Android_arm64_v8a-Debug\\android-build-home\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex

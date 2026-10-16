@@ -2,7 +2,7 @@
     "classes": [
         {
             "className": "CameraWorker",
-            "lineNumber": 10,
+            "lineNumber": 19,
             "object": true,
             "qualifiedClassName": "CameraWorker",
             "signals": [
@@ -10,19 +10,23 @@
                     "access": "public",
                     "arguments": [
                         {
-                            "name": "image",
-                            "type": "QImage"
+                            "name": "jpegData",
+                            "type": "QByteArray"
+                        },
+                        {
+                            "name": "ts_us",
+                            "type": "quint64"
                         }
                     ],
                     "index": 0,
-                    "lineNumber": 25,
-                    "name": "frameReady",
+                    "lineNumber": 34,
+                    "name": "videoFrame",
                     "returnType": "void"
                 },
                 {
                     "access": "public",
                     "index": 1,
-                    "lineNumber": 26,
+                    "lineNumber": 35,
                     "name": "connected",
                     "returnType": "void"
                 },
@@ -35,7 +39,7 @@
                         }
                     ],
                     "index": 2,
-                    "lineNumber": 27,
+                    "lineNumber": 36,
                     "name": "errorOccurred",
                     "returnType": "void"
                 },
@@ -48,7 +52,7 @@
                         }
                     ],
                     "index": 3,
-                    "lineNumber": 28,
+                    "lineNumber": 37,
                     "name": "recordingStarted",
                     "returnType": "void"
                 },
@@ -61,14 +65,14 @@
                         }
                     ],
                     "index": 4,
-                    "lineNumber": 29,
+                    "lineNumber": 38,
                     "name": "recordingFailed",
                     "returnType": "void"
                 },
                 {
                     "access": "public",
                     "index": 5,
-                    "lineNumber": 30,
+                    "lineNumber": 39,
                     "name": "recordingStopped",
                     "returnType": "void"
                 }
@@ -87,14 +91,14 @@
                         }
                     ],
                     "index": 6,
-                    "lineNumber": 19,
+                    "lineNumber": 28,
                     "name": "start",
                     "returnType": "void"
                 },
                 {
                     "access": "public",
                     "index": 7,
-                    "lineNumber": 20,
+                    "lineNumber": 29,
                     "name": "stop",
                     "returnType": "void"
                 },
@@ -107,28 +111,28 @@
                         }
                     ],
                     "index": 8,
-                    "lineNumber": 21,
+                    "lineNumber": 30,
                     "name": "startRecording",
                     "returnType": "void"
                 },
                 {
                     "access": "public",
                     "index": 9,
-                    "lineNumber": 22,
+                    "lineNumber": 31,
                     "name": "stopRecording",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
                     "index": 10,
-                    "lineNumber": 33,
+                    "lineNumber": 42,
                     "name": "onReadyRead",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
                     "index": 11,
-                    "lineNumber": 34,
+                    "lineNumber": 43,
                     "name": "onConnected",
                     "returnType": "void"
                 },
@@ -141,14 +145,14 @@
                         }
                     ],
                     "index": 12,
-                    "lineNumber": 35,
+                    "lineNumber": 44,
                     "name": "onSocketError",
                     "returnType": "void"
                 },
                 {
                     "access": "private",
                     "index": 13,
-                    "lineNumber": 36,
+                    "lineNumber": 45,
                     "name": "onConnectTimeout",
                     "returnType": "void"
                 }

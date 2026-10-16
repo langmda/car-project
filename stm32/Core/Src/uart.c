@@ -171,3 +171,15 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
         __HAL_DMA_DISABLE_IT(&hdma_usart2_rx, DMA_IT_HT);
     }
 }
+
+/* ---------- 修改：串口错误回调 ---------- */
+void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
+{
+    if (huart->Instance == USART2) {
+        __HAL_UART_CLEAR_PEFLAG(huart);      // 清 ORE/NE/FE/PE
+        huart->ErrorCode = HAL_UART_ERROR_NONE;
+        huart->RxState   = HAL_UART_STATE_READY;
+        HAL_UARTEx_ReceiveToIdle_DMA(huart, (uint8_t *)uart_rx_buffer, sizeof(uart_rx_buffer));
+        __HAL_DMA_DISABLE_IT(&hdma_usart2_rx, DMA_IT_HT);
+    }
+}

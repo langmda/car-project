@@ -39,10 +39,10 @@ template <> constexpr inline auto CameraWorker::qt_create_metaobjectdata<qt_meta
     namespace QMC = QtMocConstants;
     QtMocHelpers::StringRefStorage qt_stringData {
         "CameraWorker",
-        "frameReady",
+        "videoFrame",
         "",
-        "QImage",
-        "image",
+        "jpegData",
+        "ts_us",
         "connected",
         "errorOccurred",
         "msg",
@@ -66,9 +66,9 @@ template <> constexpr inline auto CameraWorker::qt_create_metaobjectdata<qt_meta
     };
 
     QtMocHelpers::UintData qt_methods {
-        // Signal 'frameReady'
-        QtMocHelpers::SignalData<void(const QImage &)>(1, 2, QMC::AccessPublic, QMetaType::Void, {{
-            { 0x80000000 | 3, 4 },
+        // Signal 'videoFrame'
+        QtMocHelpers::SignalData<void(const QByteArray &, quint64)>(1, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::QByteArray, 3 }, { QMetaType::ULongLong, 4 },
         }}),
         // Signal 'connected'
         QtMocHelpers::SignalData<void()>(5, 2, QMC::AccessPublic, QMetaType::Void),
@@ -131,7 +131,7 @@ void CameraWorker::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
     auto *_t = static_cast<CameraWorker *>(_o);
     if (_c == QMetaObject::InvokeMetaMethod) {
         switch (_id) {
-        case 0: _t->frameReady((*reinterpret_cast<std::add_pointer_t<QImage>>(_a[1]))); break;
+        case 0: _t->videoFrame((*reinterpret_cast<std::add_pointer_t<QByteArray>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<quint64>>(_a[2]))); break;
         case 1: _t->connected(); break;
         case 2: _t->errorOccurred((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
         case 3: _t->recordingStarted((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
@@ -161,7 +161,7 @@ void CameraWorker::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
         }
     }
     if (_c == QMetaObject::IndexOfMethod) {
-        if (QtMocHelpers::indexOfMethod<void (CameraWorker::*)(const QImage & )>(_a, &CameraWorker::frameReady, 0))
+        if (QtMocHelpers::indexOfMethod<void (CameraWorker::*)(const QByteArray & , quint64 )>(_a, &CameraWorker::videoFrame, 0))
             return;
         if (QtMocHelpers::indexOfMethod<void (CameraWorker::*)()>(_a, &CameraWorker::connected, 1))
             return;
@@ -208,9 +208,9 @@ int CameraWorker::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 }
 
 // SIGNAL 0
-void CameraWorker::frameReady(const QImage & _t1)
+void CameraWorker::videoFrame(const QByteArray & _t1, quint64 _t2)
 {
-    QMetaObject::activate<void>(this, &staticMetaObject, 0, nullptr, _t1);
+    QMetaObject::activate<void>(this, &staticMetaObject, 0, nullptr, _t1, _t2);
 }
 
 // SIGNAL 1

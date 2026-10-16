@@ -765,15 +765,11 @@ void MainWindow::sensorUpdata(QJsonObject sensorObj)
     float motorBatPercent = (motorVol_mV - VOL_BAT_EMPTY) / (float)(VOL_BAT_FULL - VOL_BAT_EMPTY) * 100.0f;
     motorBatPercent = qBound(0.0f, motorBatPercent, 100.0f);
 
-    // 一阶低通滤波，抑制电量读数跳动
-    filteredPiBatPercent    = filterAlpha * piBatPercent    + (1.0f - filterAlpha) * filteredPiBatPercent;
-    filteredMotorBatPercent = filterAlpha * motorBatPercent + (1.0f - filterAlpha) * filteredMotorBatPercent;
-
     ui->TempLabel->setText(QString("温度：%1℃").arg(temp));
     ui->HumiLabel->setText(QString("湿度：%1%").arg(humi));
     ui->SpeedLabel->setText(QString("车速：%1 mm/s").arg(speed, 0, 'f', 1));
-    ui->piBatLabel->setText(QString("树莓派电池电量：%1%").arg(filteredPiBatPercent, 0, 'f', 1));
-    ui->MotorBatLabel->setText(QString("电机电池电量：%1%").arg(filteredMotorBatPercent, 0, 'f', 1));
+    ui->piBatLabel->setText(QString("树莓派电池电量：%1%").arg(piBatPercent, 0, 'f', 1));
+    ui->MotorBatLabel->setText(QString("电机电池电量：%1%").arg(motorBatPercent, 0, 'f', 1));
 
     QString modeText;
     switch (mode)

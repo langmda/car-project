@@ -152,6 +152,38 @@ float Speed_Loop_Update(float target_diff)
 /* ==================== Ö÷¿ØÖÆ·Ç×èÈûº¯Êı ==================== */
 void PID_Go_Straight(int16_t base_pwm)			//ÓÉÈ«¾Ö±äÁ¿yaw_target_angle¿ØÖÆÖ±ĞĞ·½Ïò
 {
+	if (!yaw_target_set) 
+	{
+		float p, r, y, sum = 0.0f;
+		int   got = 0;
+
+		/* 1. ÏÈÉ²Í££¬µÈĞı×ª¹ßĞÔË¥¼õ */
+		Set_Motor(0, 0);
+		HAL_Delay(60);
+
+		/* 2. ¶ªÆú FIFO Àï³Â¾ÉµÄ£¨Ğı×ªÖĞµÄ£©°ü */
+		for (int i = 0; i < 5; i++) {
+			mpu_dmp_get_data(&p, &r, &y);
+			HAL_Delay(5);
+		}
+
+		/* 3. Á¬²É 3 ´ÎÈ¡Æ½¾ù£¬±Ü¿ªµ¥´ÎÖÍºóÓëÔëÉù */
+		for (int i = 0; i < 3; i++) {
+			if (mpu_dmp_get_data(&p, &r, &y) == 0) { sum += y; got++; }
+			HAL_Delay(5);
+		}
+		if (got == 0) return;              /* Ò»´Î¶¼Ã»¶Áµ½£¬ÕâÅÄ²»Êä³ö£¬ÏÂÅÄÖØÀ´ */
+
+		if (sum < 0) sum += 360.0f * got;  /* ¹éÒ»µ½ 0~360£¬Óë±Õ»·ÄÚ²¿Ò»ÖÂ */
+		yaw_target_angle = sum / got;
+		yaw_target_set   = 1;
+
+		PI_Param_Clear();                  /* ÇåµôµÈ´ıÆÚ¼ä±àÂëÆ÷²ĞÁô£¬Ïû³ıµÚÒ»ÅÄ¾Ş·ù²¹³¥ */
+		Set_Motor(0, 0);
+		last_pid_tick = HAL_GetTick();     /* ´ÓÕâÒ»ÅÄÖØĞÂ¼ÆÊ± */
+		return;
+	}
+	
 	uint32_t now = HAL_GetTick();
     if (now - last_pid_tick < PID_PERIOD_MS) return;   // Î¨Ò»½ÚÁ÷µã
     last_pid_tick = now;
@@ -185,6 +217,7 @@ void PID_Go_Straight(int16_t base_pwm)			//ÓÉÈ«¾Ö±äÁ¿yaw_target_angle¿ØÖÆÖ±ĞĞ·½Ï
 
     Set_Motor(left_pwm, right_pwm);
 	
+	/*
 	static uint32_t last_dbg = 0;
     if (HAL_GetTick() - last_dbg >= 200) {
         last_dbg = HAL_GetTick();
@@ -197,6 +230,7 @@ void PID_Go_Straight(int16_t base_pwm)			//ÓÉÈ«¾Ö±äÁ¿yaw_target_angle¿ØÖÆÖ±ĞĞ·½Ï
                 left_pwm, right_pwm);
         HAL_UART_Transmit(&huart2, (uint8_t*)dbg, strlen(dbg), 100);
     }
+	*/
 }
 
 //±ÜÕÏÖĞ×ªÏòºóµ÷ÓÃ£¬Çå³ı¼ÇÂ¼µÄÍâ»·Êä³ö£¬Ë¢ĞÂº½Ïò½Ç¶È

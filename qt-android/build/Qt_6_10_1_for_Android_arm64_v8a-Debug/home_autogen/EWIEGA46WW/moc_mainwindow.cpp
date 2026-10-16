@@ -96,22 +96,20 @@ template <> constexpr inline auto MainWindow::qt_create_metaobjectdata<qt_meta_t
         "on_selectPhotoDirBtn_clicked",
         "on_selectVideoDirBtn_clicked",
         "on_cameraSwitchBtn_clicked",
-        "onFrameReady",
-        "QImage",
-        "img",
-        "onCameraConnected",
-        "onCameraError",
+        "on_videoFrame",
+        "jpegData",
+        "ts_us",
+        "on_cameraConnected",
+        "on_cameraError",
         "msg",
-        "onRecordingStarted",
-        "onRecordingFailed",
+        "on_recordingStarted",
+        "on_recordingFailed",
+        "on_recordingStopped",
         "on_Line_Follow_Button_clicked",
         "on_Trajectory_Z_Button_clicked",
         "on_Trajectory_J_Button_clicked",
         "on_Trajectory_U_Button_clicked",
-        "on_VoiceInteractionSwitchBtn_clicked",
-        "on_pushButton1_clicked",
-        "on_pushButton2_clicked",
-        "on_pushButton3_clicked"
+        "on_VoiceInteractionSwitchBtn_clicked"
     };
 
     QtMocHelpers::UintData qt_methods {
@@ -217,40 +215,36 @@ template <> constexpr inline auto MainWindow::qt_create_metaobjectdata<qt_meta_t
         QtMocHelpers::SlotData<void()>(56, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'on_cameraSwitchBtn_clicked'
         QtMocHelpers::SlotData<void()>(57, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'onFrameReady'
-        QtMocHelpers::SlotData<void(const QImage &)>(58, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { 0x80000000 | 59, 60 },
+        // Slot 'on_videoFrame'
+        QtMocHelpers::SlotData<void(const QByteArray &, quint64)>(58, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::QByteArray, 59 }, { QMetaType::ULongLong, 60 },
         }}),
-        // Slot 'onCameraConnected'
+        // Slot 'on_cameraConnected'
         QtMocHelpers::SlotData<void()>(61, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'onCameraError'
+        // Slot 'on_cameraError'
         QtMocHelpers::SlotData<void(const QString &)>(62, 2, QMC::AccessPrivate, QMetaType::Void, {{
             { QMetaType::QString, 63 },
         }}),
-        // Slot 'onRecordingStarted'
+        // Slot 'on_recordingStarted'
         QtMocHelpers::SlotData<void(const QString &)>(64, 2, QMC::AccessPrivate, QMetaType::Void, {{
             { QMetaType::QString, 12 },
         }}),
-        // Slot 'onRecordingFailed'
+        // Slot 'on_recordingFailed'
         QtMocHelpers::SlotData<void(const QString &)>(65, 2, QMC::AccessPrivate, QMetaType::Void, {{
             { QMetaType::QString, 63 },
         }}),
-        // Slot 'on_Line_Follow_Button_clicked'
+        // Slot 'on_recordingStopped'
         QtMocHelpers::SlotData<void()>(66, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_Trajectory_Z_Button_clicked'
+        // Slot 'on_Line_Follow_Button_clicked'
         QtMocHelpers::SlotData<void()>(67, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_Trajectory_J_Button_clicked'
+        // Slot 'on_Trajectory_Z_Button_clicked'
         QtMocHelpers::SlotData<void()>(68, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_Trajectory_U_Button_clicked'
+        // Slot 'on_Trajectory_J_Button_clicked'
         QtMocHelpers::SlotData<void()>(69, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_VoiceInteractionSwitchBtn_clicked'
+        // Slot 'on_Trajectory_U_Button_clicked'
         QtMocHelpers::SlotData<void()>(70, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_pushButton1_clicked'
+        // Slot 'on_VoiceInteractionSwitchBtn_clicked'
         QtMocHelpers::SlotData<void()>(71, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_pushButton2_clicked'
-        QtMocHelpers::SlotData<void()>(72, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_pushButton3_clicked'
-        QtMocHelpers::SlotData<void()>(73, 2, QMC::AccessPrivate, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -320,19 +314,17 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 43: _t->on_selectPhotoDirBtn_clicked(); break;
         case 44: _t->on_selectVideoDirBtn_clicked(); break;
         case 45: _t->on_cameraSwitchBtn_clicked(); break;
-        case 46: _t->onFrameReady((*reinterpret_cast<std::add_pointer_t<QImage>>(_a[1]))); break;
-        case 47: _t->onCameraConnected(); break;
-        case 48: _t->onCameraError((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
-        case 49: _t->onRecordingStarted((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
-        case 50: _t->onRecordingFailed((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
-        case 51: _t->on_Line_Follow_Button_clicked(); break;
-        case 52: _t->on_Trajectory_Z_Button_clicked(); break;
-        case 53: _t->on_Trajectory_J_Button_clicked(); break;
-        case 54: _t->on_Trajectory_U_Button_clicked(); break;
-        case 55: _t->on_VoiceInteractionSwitchBtn_clicked(); break;
-        case 56: _t->on_pushButton1_clicked(); break;
-        case 57: _t->on_pushButton2_clicked(); break;
-        case 58: _t->on_pushButton3_clicked(); break;
+        case 46: _t->on_videoFrame((*reinterpret_cast<std::add_pointer_t<QByteArray>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<quint64>>(_a[2]))); break;
+        case 47: _t->on_cameraConnected(); break;
+        case 48: _t->on_cameraError((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
+        case 49: _t->on_recordingStarted((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
+        case 50: _t->on_recordingFailed((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
+        case 51: _t->on_recordingStopped(); break;
+        case 52: _t->on_Line_Follow_Button_clicked(); break;
+        case 53: _t->on_Trajectory_Z_Button_clicked(); break;
+        case 54: _t->on_Trajectory_J_Button_clicked(); break;
+        case 55: _t->on_Trajectory_U_Button_clicked(); break;
+        case 56: _t->on_VoiceInteractionSwitchBtn_clicked(); break;
         default: ;
         }
     }
@@ -369,14 +361,14 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 59)
+        if (_id < 57)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 59;
+        _id -= 57;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 59)
+        if (_id < 57)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 59;
+        _id -= 57;
     }
     return _id;
 }

@@ -19,13 +19,13 @@
 #include <QtWidgets/QListWidget>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QPlainTextEdit>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSlider>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTableWidget>
-#include <QtWidgets/QTextEdit>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
@@ -110,14 +110,15 @@ public:
     QSpacerItem *horizontalSpacer_58;
     QSpacerItem *verticalSpacer_23;
     QGridLayout *gridLayout_4;
-    QPushButton *Trajectory_U_Button;
     QSpacerItem *horizontalSpacer_52;
-    QPushButton *Trajectory_J_Button;
-    QPushButton *Trajectory_Z_Button;
-    QSpacerItem *horizontalSpacer_54;
     QSpacerItem *horizontalSpacer_55;
+    QPushButton *Trajectory_U_Button;
     QSpacerItem *horizontalSpacer_53;
+    QPushButton *Trajectory_J_Button;
+    QSpacerItem *horizontalSpacer_54;
+    QPushButton *Trajectory_Z_Button;
     QSpacerItem *verticalSpacer_24;
+    QWidget *widget_3;
     QWidget *FaultPage;
     QVBoxLayout *verticalLayout_20;
     QHBoxLayout *horizontalLayout_22;
@@ -138,13 +139,8 @@ public:
     QSpacerItem *horizontalSpacer_59;
     QPushButton *VoiceInteractionSwitchBtn;
     QSpacerItem *horizontalSpacer_3;
-    QHBoxLayout *horizontalLayout_28;
-    QPushButton *pushButton1;
-    QSpacerItem *horizontalSpacer_62;
-    QPushButton *pushButton2;
-    QSpacerItem *horizontalSpacer_60;
-    QPushButton *pushButton3;
-    QTextEdit *voiceResultTextEdit;
+    QPlainTextEdit *voiceResultTextEdit;
+    QSpacerItem *verticalSpacer_27;
     QWidget *ParameterPage;
     QVBoxLayout *verticalLayout_15;
     QHBoxLayout *horizontalLayout_2;
@@ -156,14 +152,12 @@ public:
     QPushButton *UpdataParameterBtn;
     QSpacerItem *horizontalSpacer_24;
     QGridLayout *gridLayout_3;
-    QLabel *PWMlimLabel;
-    QLabel *IlimLabel;
-    QLineEdit *IlimLineEdit;
-    QLineEdit *PWMlimLineEdit;
-    QLineEdit *KpLineEdit;
-    QLineEdit *KiLineEdit;
     QLabel *KpLabel;
-    QLabel *KiLabel;
+    QLineEdit *YawKpLineEdit;
+    QLineEdit *PWMlimLineEdit;
+    QLabel *PWMlimLabel;
+    QLabel *YawKpLabel;
+    QLineEdit *KpLineEdit;
     QSpacerItem *verticalSpacer_8;
     QWidget *MusicPage;
     QVBoxLayout *verticalLayout_6;
@@ -249,18 +243,18 @@ public:
     QSpacerItem *horizontalSpacer_12;
     QHBoxLayout *horizontalLayout_6;
     QSpacerItem *horizontalSpacer_8;
-    QGridLayout *gridLayout;
-    QSpacerItem *horizontalSpacer_4;
-    QPushButton *FrontButton;
-    QSpacerItem *horizontalSpacer_5;
+    QGridLayout *gridLayout_5;
     QPushButton *LeftButton;
-    QSpacerItem *horizontalSpacer_2;
-    QPushButton *BackButton;
+    QSpacerItem *horizontalSpacer_66;
+    QPushButton *FrontButton;
+    QSpacerItem *horizontalSpacer_67;
+    QSpacerItem *horizontalSpacer_68;
     QPushButton *RightButton;
-    QSpacerItem *horizontalSpacer;
+    QSpacerItem *horizontalSpacer_69;
     QPushButton *RightCirlcleButton;
+    QPushButton *BackButton;
     QSpacerItem *horizontalSpacer_9;
-    QSpacerItem *verticalSpacer_26;
+    QWidget *widget_2;
     QWidget *SensorDataPage;
     QVBoxLayout *verticalLayout_3;
     QHBoxLayout *horizontalLayout_8;
@@ -296,7 +290,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName("MainWindow");
-        MainWindow->resize(678, 836);
+        MainWindow->resize(798, 823);
         QSizePolicy sizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -846,6 +840,14 @@ public:
 
         gridLayout_4 = new QGridLayout();
         gridLayout_4->setObjectName("gridLayout_4");
+        horizontalSpacer_52 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+
+        gridLayout_4->addItem(horizontalSpacer_52, 0, 0, 1, 1);
+
+        horizontalSpacer_55 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+
+        gridLayout_4->addItem(horizontalSpacer_55, 0, 4, 1, 1);
+
         Trajectory_U_Button = new QPushButton(TrajectoryPage);
         Trajectory_U_Button->setObjectName("Trajectory_U_Button");
         Trajectory_U_Button->setStyleSheet(QString::fromUtf8("QPushButton {\n"
@@ -866,9 +868,9 @@ public:
 
         gridLayout_4->addWidget(Trajectory_U_Button, 0, 5, 1, 1);
 
-        horizontalSpacer_52 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+        horizontalSpacer_53 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
-        gridLayout_4->addItem(horizontalSpacer_52, 0, 0, 1, 1);
+        gridLayout_4->addItem(horizontalSpacer_53, 0, 6, 1, 1);
 
         Trajectory_J_Button = new QPushButton(TrajectoryPage);
         Trajectory_J_Button->setObjectName("Trajectory_J_Button");
@@ -890,6 +892,10 @@ public:
 
         gridLayout_4->addWidget(Trajectory_J_Button, 0, 3, 1, 1);
 
+        horizontalSpacer_54 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+
+        gridLayout_4->addItem(horizontalSpacer_54, 0, 2, 1, 1);
+
         Trajectory_Z_Button = new QPushButton(TrajectoryPage);
         Trajectory_Z_Button->setObjectName("Trajectory_Z_Button");
         Trajectory_Z_Button->setStyleSheet(QString::fromUtf8("QPushButton {\n"
@@ -901,7 +907,7 @@ public:
 "    border: none;\n"
 "    background-color: rgb(37, 161, 244);\n"
 "    qproperty-icon: url(:/image/z.png);\n"
-"    qproperty-iconSize: 65px 65px;  /* \346\216\247\345\210\266\345\233\276\346\240\207\345\244\247\345\260\217 */\n"
+"    qproperty-iconSize: 70px 70px;  /* \346\216\247\345\210\266\345\233\276\346\240\207\345\244\247\345\260\217 */\n"
 "}\n"
 "\n"
 "QPushButton:pressed {\n"
@@ -910,24 +916,17 @@ public:
 
         gridLayout_4->addWidget(Trajectory_Z_Button, 0, 1, 1, 1);
 
-        horizontalSpacer_54 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
-
-        gridLayout_4->addItem(horizontalSpacer_54, 0, 2, 1, 1);
-
-        horizontalSpacer_55 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
-
-        gridLayout_4->addItem(horizontalSpacer_55, 0, 4, 1, 1);
-
-        horizontalSpacer_53 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
-
-        gridLayout_4->addItem(horizontalSpacer_53, 0, 6, 1, 1);
-
 
         verticalLayout_22->addLayout(gridLayout_4);
 
         verticalSpacer_24 = new QSpacerItem(20, 40, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
 
         verticalLayout_22->addItem(verticalSpacer_24);
+
+        widget_3 = new QWidget(TrajectoryPage);
+        widget_3->setObjectName("widget_3");
+
+        verticalLayout_22->addWidget(widget_3);
 
         stackedWidget->addWidget(TrajectoryPage);
         FaultPage = new QWidget();
@@ -1035,53 +1034,18 @@ public:
 
         verticalLayout_41->addLayout(horizontalLayout_27);
 
-        horizontalLayout_28 = new QHBoxLayout();
-        horizontalLayout_28->setObjectName("horizontalLayout_28");
-        pushButton1 = new QPushButton(VoiceInteractionPage);
-        pushButton1->setObjectName("pushButton1");
-        pushButton1->setStyleSheet(QString::fromUtf8("font: 18pt \"Microsoft YaHei UI\";\n"
-"background-color: rgb(37, 161, 244);\n"
-"color: rgb(0, 0, 0);\n"
-""));
-
-        horizontalLayout_28->addWidget(pushButton1);
-
-        horizontalSpacer_62 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
-
-        horizontalLayout_28->addItem(horizontalSpacer_62);
-
-        pushButton2 = new QPushButton(VoiceInteractionPage);
-        pushButton2->setObjectName("pushButton2");
-        pushButton2->setStyleSheet(QString::fromUtf8("font: 18pt \"Microsoft YaHei UI\";\n"
-"background-color: rgb(37, 161, 244);\n"
-"color: rgb(0, 0, 0);\n"
-""));
-
-        horizontalLayout_28->addWidget(pushButton2);
-
-        horizontalSpacer_60 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
-
-        horizontalLayout_28->addItem(horizontalSpacer_60);
-
-        pushButton3 = new QPushButton(VoiceInteractionPage);
-        pushButton3->setObjectName("pushButton3");
-        pushButton3->setStyleSheet(QString::fromUtf8("font: 18pt \"Microsoft YaHei UI\";\n"
-"background-color: rgb(37, 161, 244);\n"
-"color: rgb(0, 0, 0);\n"
-""));
-
-        horizontalLayout_28->addWidget(pushButton3);
-
-
-        verticalLayout_41->addLayout(horizontalLayout_28);
-
-        voiceResultTextEdit = new QTextEdit(VoiceInteractionPage);
+        voiceResultTextEdit = new QPlainTextEdit(VoiceInteractionPage);
         voiceResultTextEdit->setObjectName("voiceResultTextEdit");
-        voiceResultTextEdit->setStyleSheet(QString::fromUtf8("font: 12pt \"Microsoft YaHei UI\";\n"
+        voiceResultTextEdit->setStyleSheet(QString::fromUtf8("font: 8pt \"Microsoft YaHei UI\";\n"
 "color: rgb(0, 0, 0);"));
         voiceResultTextEdit->setReadOnly(true);
+        voiceResultTextEdit->setMaximumBlockCount(500);
 
         verticalLayout_41->addWidget(voiceResultTextEdit);
+
+        verticalSpacer_27 = new QSpacerItem(20, 40, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
+
+        verticalLayout_41->addItem(verticalSpacer_27);
 
         stackedWidget->addWidget(VoiceInteractionPage);
         ParameterPage = new QWidget();
@@ -1136,48 +1100,6 @@ public:
 
         gridLayout_3 = new QGridLayout();
         gridLayout_3->setObjectName("gridLayout_3");
-        PWMlimLabel = new QLabel(ParameterPage);
-        PWMlimLabel->setObjectName("PWMlimLabel");
-        PWMlimLabel->setStyleSheet(QString::fromUtf8("font: 18pt \"Microsoft YaHei UI\";\n"
-"color: rgb(0, 0, 0);"));
-
-        gridLayout_3->addWidget(PWMlimLabel, 5, 0, 1, 1);
-
-        IlimLabel = new QLabel(ParameterPage);
-        IlimLabel->setObjectName("IlimLabel");
-        IlimLabel->setStyleSheet(QString::fromUtf8("font: 18pt \"Microsoft YaHei UI\";\n"
-"color: rgb(0, 0, 0);"));
-
-        gridLayout_3->addWidget(IlimLabel, 4, 0, 1, 1);
-
-        IlimLineEdit = new QLineEdit(ParameterPage);
-        IlimLineEdit->setObjectName("IlimLineEdit");
-        IlimLineEdit->setStyleSheet(QString::fromUtf8("font: 18pt \"Microsoft YaHei UI\";\n"
-"color: rgb(0, 0, 0);"));
-
-        gridLayout_3->addWidget(IlimLineEdit, 4, 1, 1, 1);
-
-        PWMlimLineEdit = new QLineEdit(ParameterPage);
-        PWMlimLineEdit->setObjectName("PWMlimLineEdit");
-        PWMlimLineEdit->setStyleSheet(QString::fromUtf8("font: 18pt \"Microsoft YaHei UI\";\n"
-"color: rgb(0, 0, 0);"));
-
-        gridLayout_3->addWidget(PWMlimLineEdit, 5, 1, 1, 1);
-
-        KpLineEdit = new QLineEdit(ParameterPage);
-        KpLineEdit->setObjectName("KpLineEdit");
-        KpLineEdit->setStyleSheet(QString::fromUtf8("font: 18pt \"Microsoft YaHei UI\";\n"
-"color: rgb(0, 0, 0);"));
-
-        gridLayout_3->addWidget(KpLineEdit, 1, 1, 1, 1);
-
-        KiLineEdit = new QLineEdit(ParameterPage);
-        KiLineEdit->setObjectName("KiLineEdit");
-        KiLineEdit->setStyleSheet(QString::fromUtf8("font: 18pt \"Microsoft YaHei UI\";\n"
-"color: rgb(0, 0, 0);"));
-
-        gridLayout_3->addWidget(KiLineEdit, 2, 1, 1, 1);
-
         KpLabel = new QLabel(ParameterPage);
         KpLabel->setObjectName("KpLabel");
         KpLabel->setStyleSheet(QString::fromUtf8("font: 18pt \"Microsoft YaHei UI\";\n"
@@ -1185,12 +1107,40 @@ public:
 
         gridLayout_3->addWidget(KpLabel, 1, 0, 1, 1);
 
-        KiLabel = new QLabel(ParameterPage);
-        KiLabel->setObjectName("KiLabel");
-        KiLabel->setStyleSheet(QString::fromUtf8("font: 18pt \"Microsoft YaHei UI\";\n"
+        YawKpLineEdit = new QLineEdit(ParameterPage);
+        YawKpLineEdit->setObjectName("YawKpLineEdit");
+        YawKpLineEdit->setStyleSheet(QString::fromUtf8("font: 18pt \"Microsoft YaHei UI\";\n"
 "color: rgb(0, 0, 0);"));
 
-        gridLayout_3->addWidget(KiLabel, 2, 0, 1, 1);
+        gridLayout_3->addWidget(YawKpLineEdit, 2, 1, 1, 1);
+
+        PWMlimLineEdit = new QLineEdit(ParameterPage);
+        PWMlimLineEdit->setObjectName("PWMlimLineEdit");
+        PWMlimLineEdit->setStyleSheet(QString::fromUtf8("font: 18pt \"Microsoft YaHei UI\";\n"
+"color: rgb(0, 0, 0);"));
+
+        gridLayout_3->addWidget(PWMlimLineEdit, 4, 1, 1, 1);
+
+        PWMlimLabel = new QLabel(ParameterPage);
+        PWMlimLabel->setObjectName("PWMlimLabel");
+        PWMlimLabel->setStyleSheet(QString::fromUtf8("font: 18pt \"Microsoft YaHei UI\";\n"
+"color: rgb(0, 0, 0);"));
+
+        gridLayout_3->addWidget(PWMlimLabel, 4, 0, 1, 1);
+
+        YawKpLabel = new QLabel(ParameterPage);
+        YawKpLabel->setObjectName("YawKpLabel");
+        YawKpLabel->setStyleSheet(QString::fromUtf8("font: 18pt \"Microsoft YaHei UI\";\n"
+"color: rgb(0, 0, 0);"));
+
+        gridLayout_3->addWidget(YawKpLabel, 2, 0, 1, 1);
+
+        KpLineEdit = new QLineEdit(ParameterPage);
+        KpLineEdit->setObjectName("KpLineEdit");
+        KpLineEdit->setStyleSheet(QString::fromUtf8("font: 18pt \"Microsoft YaHei UI\";\n"
+"color: rgb(0, 0, 0);"));
+
+        gridLayout_3->addWidget(KpLineEdit, 1, 1, 1, 1);
 
 
         verticalLayout_15->addLayout(gridLayout_3);
@@ -1398,6 +1348,11 @@ public:
 
         SwitchBtn = new QPushButton(MusicPage);
         SwitchBtn->setObjectName("SwitchBtn");
+        QSizePolicy sizePolicy2(QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Fixed);
+        sizePolicy2.setHorizontalStretch(0);
+        sizePolicy2.setVerticalStretch(0);
+        sizePolicy2.setHeightForWidth(SwitchBtn->sizePolicy().hasHeightForWidth());
+        SwitchBtn->setSizePolicy(sizePolicy2);
         SwitchBtn->setMinimumSize(QSize(50, 50));
         SwitchBtn->setMaximumSize(QSize(50, 50));
         SwitchBtn->setStyleSheet(QString::fromUtf8("QPushButton {\n"
@@ -1739,6 +1694,11 @@ public:
         horizontalLayout_34->setObjectName("horizontalLayout_34");
         UpdatePWMBtn = new QPushButton(CarControlPage);
         UpdatePWMBtn->setObjectName("UpdatePWMBtn");
+        QSizePolicy sizePolicy3(QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
+        sizePolicy3.setHorizontalStretch(0);
+        sizePolicy3.setVerticalStretch(0);
+        sizePolicy3.setHeightForWidth(UpdatePWMBtn->sizePolicy().hasHeightForWidth());
+        UpdatePWMBtn->setSizePolicy(sizePolicy3);
         UpdatePWMBtn->setStyleSheet(QString::fromUtf8("font: 18pt \"Microsoft YaHei UI\";\n"
 "background-color: rgb(37, 161, 244);\n"
 "color: rgb(0, 0, 0);\n"
@@ -1759,6 +1719,12 @@ public:
 
         RightPWMlineEdit = new QLineEdit(CarControlPage);
         RightPWMlineEdit->setObjectName("RightPWMlineEdit");
+        QSizePolicy sizePolicy4(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Expanding);
+        sizePolicy4.setHorizontalStretch(0);
+        sizePolicy4.setVerticalStretch(0);
+        sizePolicy4.setHeightForWidth(RightPWMlineEdit->sizePolicy().hasHeightForWidth());
+        RightPWMlineEdit->setSizePolicy(sizePolicy4);
+        RightPWMlineEdit->setStyleSheet(QString::fromUtf8(""));
 
         horizontalLayout_33->addWidget(RightPWMlineEdit);
 
@@ -1776,11 +1742,8 @@ public:
 
         LeftPWMlineEdit = new QLineEdit(CarControlPage);
         LeftPWMlineEdit->setObjectName("LeftPWMlineEdit");
-        QSizePolicy sizePolicy2(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Expanding);
-        sizePolicy2.setHorizontalStretch(0);
-        sizePolicy2.setVerticalStretch(0);
-        sizePolicy2.setHeightForWidth(LeftPWMlineEdit->sizePolicy().hasHeightForWidth());
-        LeftPWMlineEdit->setSizePolicy(sizePolicy2);
+        sizePolicy4.setHeightForWidth(LeftPWMlineEdit->sizePolicy().hasHeightForWidth());
+        LeftPWMlineEdit->setSizePolicy(sizePolicy4);
         LeftPWMlineEdit->setStyleSheet(QString::fromUtf8(""));
 
         horizontalLayout_30->addWidget(LeftPWMlineEdit);
@@ -1828,11 +1791,11 @@ public:
 
         LedButton = new QPushButton(CarControlPage);
         LedButton->setObjectName("LedButton");
-        QSizePolicy sizePolicy3(QSizePolicy::Policy::Maximum, QSizePolicy::Policy::Fixed);
-        sizePolicy3.setHorizontalStretch(0);
-        sizePolicy3.setVerticalStretch(0);
-        sizePolicy3.setHeightForWidth(LedButton->sizePolicy().hasHeightForWidth());
-        LedButton->setSizePolicy(sizePolicy3);
+        QSizePolicy sizePolicy5(QSizePolicy::Policy::Maximum, QSizePolicy::Policy::Fixed);
+        sizePolicy5.setHorizontalStretch(0);
+        sizePolicy5.setVerticalStretch(0);
+        sizePolicy5.setHeightForWidth(LedButton->sizePolicy().hasHeightForWidth());
+        LedButton->setSizePolicy(sizePolicy5);
         LedButton->setMinimumSize(QSize(0, 60));
         LedButton->setStyleSheet(QString::fromUtf8("font: 18pt \"Microsoft YaHei UI\";\n"
 "background-color: rgb(37, 161, 244);\n"
@@ -1854,51 +1817,16 @@ public:
 
         horizontalLayout_6->addItem(horizontalSpacer_8);
 
-        gridLayout = new QGridLayout();
-        gridLayout->setObjectName("gridLayout");
-        gridLayout->setHorizontalSpacing(7);
-        horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
-
-        gridLayout->addItem(horizontalSpacer_4, 6, 2, 1, 1);
-
-        FrontButton = new QPushButton(CarControlPage);
-        FrontButton->setObjectName("FrontButton");
-        QSizePolicy sizePolicy4(QSizePolicy::Policy::Fixed, QSizePolicy::Policy::Fixed);
-        sizePolicy4.setHorizontalStretch(0);
-        sizePolicy4.setVerticalStretch(0);
-        sizePolicy4.setHeightForWidth(FrontButton->sizePolicy().hasHeightForWidth());
-        FrontButton->setSizePolicy(sizePolicy4);
-        FrontButton->setMinimumSize(QSize(100, 100));
-        FrontButton->setMaximumSize(QSize(100, 100));
-        FrontButton->setStyleSheet(QString::fromUtf8("QPushButton {\n"
-"    border-radius: 25px;\n"
-"    min-width: 100px;\n"
-"    max-width: 100px;\n"
-"    min-height: 100px;\n"
-"    max-height: 100px;\n"
-"    border: none;\n"
-"    background-color: rgb(37, 161, 244);\n"
-"    qproperty-icon: url(:/image/\345\211\215\350\277\233.png);\n"
-"    qproperty-iconSize: 90px 90px;  /* \346\216\247\345\210\266\345\233\276\346\240\207\345\244\247\345\260\217 */\n"
-"}\n"
-"\n"
-"QPushButton:pressed {\n"
-"    background-color: rgb(30, 129, 195);\n"
-"}"));
-        FrontButton->setAutoRepeat(true);
-        FrontButton->setAutoRepeatDelay(100);
-        FrontButton->setAutoRepeatInterval(100);
-
-        gridLayout->addWidget(FrontButton, 4, 1, 1, 1);
-
-        horizontalSpacer_5 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
-
-        gridLayout->addItem(horizontalSpacer_5, 6, 0, 1, 1);
-
+        gridLayout_5 = new QGridLayout();
+        gridLayout_5->setObjectName("gridLayout_5");
+        gridLayout_5->setHorizontalSpacing(7);
         LeftButton = new QPushButton(CarControlPage);
         LeftButton->setObjectName("LeftButton");
-        sizePolicy4.setHeightForWidth(LeftButton->sizePolicy().hasHeightForWidth());
-        LeftButton->setSizePolicy(sizePolicy4);
+        QSizePolicy sizePolicy6(QSizePolicy::Policy::Fixed, QSizePolicy::Policy::Fixed);
+        sizePolicy6.setHorizontalStretch(0);
+        sizePolicy6.setVerticalStretch(0);
+        sizePolicy6.setHeightForWidth(LeftButton->sizePolicy().hasHeightForWidth());
+        LeftButton->setSizePolicy(sizePolicy6);
         LeftButton->setMinimumSize(QSize(100, 100));
         LeftButton->setMaximumSize(QSize(100, 100));
         LeftButton->setStyleSheet(QString::fromUtf8("QPushButton {\n"
@@ -1920,23 +1848,19 @@ public:
         LeftButton->setAutoExclusive(false);
         LeftButton->setAutoRepeatDelay(100);
 
-        gridLayout->addWidget(LeftButton, 5, 0, 1, 1);
+        gridLayout_5->addWidget(LeftButton, 5, 1, 1, 1);
 
-        horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+        horizontalSpacer_66 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
-        gridLayout->addItem(horizontalSpacer_2, 4, 2, 1, 1);
+        gridLayout_5->addItem(horizontalSpacer_66, 4, 1, 1, 1);
 
-        BackButton = new QPushButton(CarControlPage);
-        BackButton->setObjectName("BackButton");
-        QSizePolicy sizePolicy5(QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Fixed);
-        sizePolicy5.setHorizontalStretch(0);
-        sizePolicy5.setVerticalStretch(0);
-        sizePolicy5.setHeightForWidth(BackButton->sizePolicy().hasHeightForWidth());
-        BackButton->setSizePolicy(sizePolicy5);
-        BackButton->setMinimumSize(QSize(100, 100));
-        BackButton->setMaximumSize(QSize(100, 100));
-        BackButton->setBaseSize(QSize(100, 100));
-        BackButton->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+        FrontButton = new QPushButton(CarControlPage);
+        FrontButton->setObjectName("FrontButton");
+        sizePolicy6.setHeightForWidth(FrontButton->sizePolicy().hasHeightForWidth());
+        FrontButton->setSizePolicy(sizePolicy6);
+        FrontButton->setMinimumSize(QSize(100, 100));
+        FrontButton->setMaximumSize(QSize(100, 100));
+        FrontButton->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "    border-radius: 25px;\n"
 "    min-width: 100px;\n"
 "    max-width: 100px;\n"
@@ -1944,23 +1868,31 @@ public:
 "    max-height: 100px;\n"
 "    border: none;\n"
 "    background-color: rgb(37, 161, 244);\n"
-"    qproperty-icon: url(:/image/\345\220\216\351\200\200.png);\n"
+"    qproperty-icon: url(:/image/\345\211\215\350\277\233.png);\n"
 "    qproperty-iconSize: 90px 90px;  /* \346\216\247\345\210\266\345\233\276\346\240\207\345\244\247\345\260\217 */\n"
 "}\n"
 "\n"
 "QPushButton:pressed {\n"
 "    background-color: rgb(30, 129, 195);\n"
 "}"));
-        BackButton->setAutoRepeat(true);
-        BackButton->setAutoExclusive(false);
-        BackButton->setAutoRepeatDelay(100);
+        FrontButton->setAutoRepeat(true);
+        FrontButton->setAutoRepeatDelay(75);
+        FrontButton->setAutoRepeatInterval(75);
 
-        gridLayout->addWidget(BackButton, 6, 1, 1, 1);
+        gridLayout_5->addWidget(FrontButton, 4, 2, 1, 1);
+
+        horizontalSpacer_67 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+
+        gridLayout_5->addItem(horizontalSpacer_67, 4, 3, 1, 1);
+
+        horizontalSpacer_68 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+
+        gridLayout_5->addItem(horizontalSpacer_68, 6, 1, 1, 1);
 
         RightButton = new QPushButton(CarControlPage);
         RightButton->setObjectName("RightButton");
-        sizePolicy4.setHeightForWidth(RightButton->sizePolicy().hasHeightForWidth());
-        RightButton->setSizePolicy(sizePolicy4);
+        sizePolicy6.setHeightForWidth(RightButton->sizePolicy().hasHeightForWidth());
+        RightButton->setSizePolicy(sizePolicy6);
         RightButton->setMinimumSize(QSize(100, 100));
         RightButton->setMaximumSize(QSize(100, 100));
         RightButton->setStyleSheet(QString::fromUtf8("QPushButton {\n"
@@ -1982,11 +1914,11 @@ public:
         RightButton->setAutoExclusive(false);
         RightButton->setAutoRepeatDelay(100);
 
-        gridLayout->addWidget(RightButton, 5, 2, 1, 1);
+        gridLayout_5->addWidget(RightButton, 5, 3, 1, 1);
 
-        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+        horizontalSpacer_69 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
-        gridLayout->addItem(horizontalSpacer, 4, 0, 1, 1);
+        gridLayout_5->addItem(horizontalSpacer_69, 6, 3, 1, 1);
 
         RightCirlcleButton = new QPushButton(CarControlPage);
         RightCirlcleButton->setObjectName("RightCirlcleButton");
@@ -2009,10 +1941,38 @@ public:
         RightCirlcleButton->setAutoRepeat(true);
         RightCirlcleButton->setAutoRepeatDelay(100);
 
-        gridLayout->addWidget(RightCirlcleButton, 5, 1, 1, 1);
+        gridLayout_5->addWidget(RightCirlcleButton, 5, 2, 1, 1);
+
+        BackButton = new QPushButton(CarControlPage);
+        BackButton->setObjectName("BackButton");
+        sizePolicy2.setHeightForWidth(BackButton->sizePolicy().hasHeightForWidth());
+        BackButton->setSizePolicy(sizePolicy2);
+        BackButton->setMinimumSize(QSize(100, 100));
+        BackButton->setMaximumSize(QSize(100, 100));
+        BackButton->setBaseSize(QSize(100, 100));
+        BackButton->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+"    border-radius: 25px;\n"
+"    min-width: 100px;\n"
+"    max-width: 100px;\n"
+"    min-height: 100px;\n"
+"    max-height: 100px;\n"
+"    border: none;\n"
+"    background-color: rgb(37, 161, 244);\n"
+"    qproperty-icon: url(:/image/\345\220\216\351\200\200.png);\n"
+"    qproperty-iconSize: 90px 90px;  /* \346\216\247\345\210\266\345\233\276\346\240\207\345\244\247\345\260\217 */\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color: rgb(30, 129, 195);\n"
+"}"));
+        BackButton->setAutoRepeat(true);
+        BackButton->setAutoExclusive(false);
+        BackButton->setAutoRepeatDelay(100);
+
+        gridLayout_5->addWidget(BackButton, 6, 2, 1, 1);
 
 
-        horizontalLayout_6->addLayout(gridLayout);
+        horizontalLayout_6->addLayout(gridLayout_5);
 
         horizontalSpacer_9 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
@@ -2021,9 +1981,10 @@ public:
 
         verticalLayout->addLayout(horizontalLayout_6);
 
-        verticalSpacer_26 = new QSpacerItem(20, 40, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
+        widget_2 = new QWidget(CarControlPage);
+        widget_2->setObjectName("widget_2");
 
-        verticalLayout->addItem(verticalSpacer_26);
+        verticalLayout->addWidget(widget_2);
 
         stackedWidget->addWidget(CarControlPage);
         SensorDataPage = new QWidget();
@@ -2193,7 +2154,7 @@ public:
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName("menubar");
-        menubar->setGeometry(QRect(0, 0, 678, 25));
+        menubar->setGeometry(QRect(0, 0, 798, 25));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName("statusbar");
@@ -2201,7 +2162,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        stackedWidget->setCurrentIndex(7);
+        stackedWidget->setCurrentIndex(8);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -2241,16 +2202,12 @@ public:
         label_35->setText(QCoreApplication::translate("MainWindow", "\350\257\255\351\237\263\344\272\244\344\272\222", nullptr));
         VoiceInteraction_BackHomeButton->setText(QCoreApplication::translate("MainWindow", "\350\277\224\345\233\236\344\270\273\351\241\265", nullptr));
         VoiceInteractionSwitchBtn->setText(QCoreApplication::translate("MainWindow", "\346\211\223\345\274\200\350\257\255\351\237\263\350\257\206\345\210\253", nullptr));
-        pushButton1->setText(QCoreApplication::translate("MainWindow", "\346\210\221\345\234\250", nullptr));
-        pushButton2->setText(QCoreApplication::translate("MainWindow", "\345\274\200\345\247\213\345\275\225\345\203\217", nullptr));
-        pushButton3->setText(QCoreApplication::translate("MainWindow", "\345\201\234\346\255\242\345\275\225\345\203\217", nullptr));
         label_14->setText(QCoreApplication::translate("MainWindow", "\345\217\202\346\225\260\350\260\203\350\257\225", nullptr));
         Parameter_BackHomeButton->setText(QCoreApplication::translate("MainWindow", "\350\277\224\345\233\236\344\270\273\351\241\265", nullptr));
         UpdataParameterBtn->setText(QCoreApplication::translate("MainWindow", "\346\233\264\346\226\260\345\217\202\346\225\260", nullptr));
-        PWMlimLabel->setText(QCoreApplication::translate("MainWindow", "PWM_lim : 0", nullptr));
-        IlimLabel->setText(QCoreApplication::translate("MainWindow", "I_lim : 0", nullptr));
-        KpLabel->setText(QCoreApplication::translate("MainWindow", "KP : 0.0", nullptr));
-        KiLabel->setText(QCoreApplication::translate("MainWindow", "KI : 0.0", nullptr));
+        KpLabel->setText(QCoreApplication::translate("MainWindow", "KP :", nullptr));
+        PWMlimLabel->setText(QCoreApplication::translate("MainWindow", "PWM_lim :", nullptr));
+        YawKpLabel->setText(QCoreApplication::translate("MainWindow", "YAW_KP :", nullptr));
         label_3->setText(QCoreApplication::translate("MainWindow", "\351\237\263\344\271\220\346\222\255\346\224\276", nullptr));
         Music_BackHomeButton->setText(QCoreApplication::translate("MainWindow", "\350\277\224\345\233\236\344\270\273\351\241\265", nullptr));
         MusicLabel->setText(QCoreApplication::translate("MainWindow", "\345\275\223\345\211\215\346\222\255\346\224\276\357\274\232\346\227\240\351\237\263\344\271\220", nullptr));
@@ -2277,11 +2234,11 @@ public:
         SwitchModeButton->setText(QCoreApplication::translate("MainWindow", "\345\210\207\346\215\242\346\250\241\345\274\217", nullptr));
         CarModeLabel->setText(QCoreApplication::translate("MainWindow", "\345\275\223\345\211\215\346\250\241\345\274\217\357\274\232\346\211\213\345\212\250\346\223\215\344\275\234", nullptr));
         LedButton->setText(QCoreApplication::translate("MainWindow", "\347\201\257\345\205\211", nullptr));
-        FrontButton->setText(QString());
         LeftButton->setText(QString());
-        BackButton->setText(QString());
+        FrontButton->setText(QString());
         RightButton->setText(QString());
         RightCirlcleButton->setText(QCoreApplication::translate("MainWindow", "\350\207\252\345\256\232\344\271\211", nullptr));
+        BackButton->setText(QString());
         label_9->setText(QCoreApplication::translate("MainWindow", "\344\274\240\346\204\237\345\231\250\346\225\260\346\215\256", nullptr));
         SensorData_BackHomeButton->setText(QCoreApplication::translate("MainWindow", "\350\277\224\345\233\236\344\270\273\351\241\265", nullptr));
         TempLabel->setText(QCoreApplication::translate("MainWindow", "\346\270\251\345\272\246\357\274\232", nullptr));

@@ -233,6 +233,8 @@ void go_straight_blocking(int32_t distance_mm)
 {
     if (distance_mm == 0) return;
     
+	PID_Reset_Yaw_Reference();
+	
     const float wheel_circumference = 3.1415926f * WHEEL_DIAMETER;
     const float pulse_per_mm = (float)PULSE_PER_ROUND / wheel_circumference;
     int32_t target_pulse = (int32_t)((float)distance_mm * pulse_per_mm);
@@ -249,7 +251,7 @@ void go_straight_blocking(int32_t distance_mm)
     HAL_UART_Transmit(&huart2, (uint8_t*)debug_buf, strlen(debug_buf), 100);
     
     while (1) {
-        PID_Go_Straight(4000);
+        PID_Go_Straight(1500);
         
         int32_t delta_left = total_encoder_left - start_total_left;
         int32_t delta_right = total_encoder_right - start_total_right;
@@ -386,7 +388,7 @@ void trajectory_Z()
 {
 	go_straight_blocking(1200);
 	turn_angle_blocking(-120);
-	go_straight_blocking(2000);
+	go_straight_blocking(1800);
 	turn_angle_blocking(120);
 	go_straight_blocking(1200);
 }
@@ -398,6 +400,6 @@ void trajectory_J()
 void trajectory_U()
 {
 	go_straight_blocking(1000);
-	arc_blocking(-160, 3000);
+	arc_blocking(-160, 1500);
 	go_straight_blocking(1000);
 }
