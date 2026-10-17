@@ -877,13 +877,12 @@ def handle_song_end():
 
 
 def dynamic_speak(text):
-    """通过独立的 Sound 通道播放 TTS，不占用 pygame.mixer.music 的 BGM 轨道。"""
     global tts_client
     temp_file = None
     try:
         result = tts_client.synthesis(text, 'zh', 1, {
             'spd': 5, 'pit': 5, 'vol': 9, 'per': 4
-        })
+        }, timeout=5)                       # ← 网络超时
         if isinstance(result, dict):
             print(f"TTS合成失败: {result}")
             return
@@ -891,9 +890,17 @@ def dynamic_speak(text):
             f.write(result)
             temp_file = f.name
         sound = pygame.mixer.Sound(temp_file)
-        channel = pygame.mixer.Channel(1)   # 动态 TTS 专用通道
+        channel = pygame.mixer.Channel(1)
         channel.play(sound)
+
+        deadline = time.time() + 10.0       # ← 播放等待上限
         while channel and channel.get_busy():
+            if shutdown_event.is_set() or time.time() > deadline:
+                try:
+                    channel.stop()
+                except Exception:
+                    pass
+                break
             time.sleep(0.05)
     except Exception as e:
         print(f"动态TTS播放异常: {e}")
@@ -903,7 +910,6 @@ def dynamic_speak(text):
                 os.unlink(temp_file)
             except OSError:
                 pass
-
 
 # ==================== 内部命令分发 ====================
 def _handle_internal_command(command):
