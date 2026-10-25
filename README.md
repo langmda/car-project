@@ -1,3 +1,5 @@
+<img width="1706" height="1279" alt="5e4b9a0ee6565bff5aab4ebd48ca3ea6" src="https://github.com/user-attachments/assets/999f0e89-36e3-42b5-b35c-019650ca0684" />
+<img width="1706" height="1279" alt="fcb78873aef2aca0ad6f6256b7f14d4a" src="https://github.com/user-attachments/assets/d6b8fde6-86b8-4634-8a21-a50e3a1f2334" />
 # 基于 STM32 + 树莓派的智能小车
 
 一个四端协同的智能小车系统：**STM32** 负责实时运动控制，**树莓派**负责网络服务与多媒体，**手机端**提供 Qt 图形界面，另有自绘 PCB 承载硬件连接。
